@@ -21,6 +21,9 @@ export interface MapEngineOptions {
 
 const EASE = { duration: 700, essential: true } as const;
 
+/** How long to wait for the style before reporting the map as unusable. */
+const STYLE_LOAD_TIMEOUT_MS = 12_000;
+
 /** Used when WebGL is unavailable — the UI degrades to the list alone. */
 function createNullEngine(): MapEngine {
   const noop = () => {};
@@ -67,8 +70,11 @@ export function createMapEngine(
       pitchWithRotate: false,
       dragRotate: false,
     });
-  } catch {
-    // No WebGL context available in this browser.
+  } catch (error) {
+    // Usually a missing WebGL context, but any constructor failure lands here.
+    // Swallowing it silently made the map's absence impossible to diagnose, so
+    // the real cause always reaches the console.
+    console.error('[ListingMap] map construction failed', error);
     onError('webgl');
     return createNullEngine();
   }
@@ -83,14 +89,27 @@ export function createMapEngine(
     map.setFeatureState({ source: SOURCE_ID, id }, { [key]: value });
   };
 
+  // Every MapLibre error reaches the console. Filtering to tile failures alone
+  // meant a style that never loaded produced no map, no pins and no message.
   map.on('error', (event: ErrorEvent) => {
-    // Tile 404s surface here; style/source failures should not kill the UI.
-    if (/tile/i.test(String(event?.error?.message ?? ''))) {
-      onError('tile');
-    }
+    console.error('[ListingMap] map error', event?.error ?? event);
+    onError('tile');
   });
 
+  // If the style never loads, `load` never fires and the source and layers are
+  // never registered — the map stays blank with an empty listing count. Say so
+  // rather than failing silently.
+  const loadWatchdog = setTimeout(() => {
+    if (!ready) {
+      console.error(
+        `[ListingMap] style did not load within ${STYLE_LOAD_TIMEOUT_MS}ms: ${styleUrl}`,
+      );
+      onError('tile');
+    }
+  }, STYLE_LOAD_TIMEOUT_MS);
+
   map.on('load', async () => {
+    clearTimeout(loadWatchdog);
     await loadPinImages(map);
 
     map.addSource(SOURCE_ID, {
@@ -103,6 +122,11 @@ export function createMapEngine(
 
     for (const layer of buildClusterLayers()) map.addLayer(layer);
     map.addLayer(buildPinLayer());
+
+    console.info(
+      `[ListingMap] ready — ${pending.length} listing(s), ` +
+      `canvas ${map.getCanvas().width}x${map.getCanvas().height}`,
+    );
 
     const pointer = (on: boolean) => () => {
       map.getCanvas().style.cursor = on ? 'pointer' : '';
@@ -189,6 +213,9 @@ export function createMapEngine(
       return () => map.off('click', LAYER_CLUSTERS, handler);
     },
 
-    destroy: () => map.remove(),
+    destroy: () => {
+      clearTimeout(loadWatchdog);
+      map.remove();
+    },
   };
 }
