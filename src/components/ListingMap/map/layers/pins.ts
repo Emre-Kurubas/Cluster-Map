@@ -1,5 +1,5 @@
 import type { LayerSpecification } from 'maplibre-gl';
-import { LAYER_PINS, SOURCE_ID } from '../../config/mapStyle';
+import { LAYER_PINS, LAYER_PINS_ACTIVE, SOURCE_ID } from '../../config/mapStyle';
 import { CATEGORIES, CATEGORY_LIST } from '../../config/categories';
 
 /**
@@ -17,13 +17,13 @@ function buildIconExpression(): unknown[] {
   return expression;
 }
 
+/** Matches nothing. The starting filter for the highlight layer. */
+export const MATCH_NOTHING = ['in', ['get', 'id'], ['literal', []]];
+
 /**
  * One symbol layer draws every category pin. The icon is selected by data
  * expression rather than by one layer per category, so adding a category
  * costs a sprite entry and nothing else.
- *
- * Selection and hover scale the icon through feature-state, which never
- * touches React and never mutates the source.
  */
 export function buildPinLayer(): LayerSpecification {
   return {
@@ -38,12 +38,7 @@ export function buildPinLayer(): LayerSpecification {
       'icon-allow-overlap': true,
       'icon-ignore-placement': true,
       'icon-anchor': 'bottom',
-      'icon-size': [
-        'case',
-        ['boolean', ['feature-state', 'selected'], false], 1.25,
-        ['boolean', ['feature-state', 'hovered'], false], 1.12,
-        1,
-      ],
+      'icon-size': 1,
     },
     paint: {
       'icon-opacity': [
@@ -51,6 +46,34 @@ export function buildPinLayer(): LayerSpecification {
         6, 0.85,
         9, 1,
       ],
+    },
+  };
+}
+
+/**
+ * Enlarged copy of the pin layer, drawn above it and filtered to the hovered
+ * and selected ids.
+ *
+ * `icon-size` is a layout property and MapLibre rejects `feature-state` in
+ * layout properties — attempting it made addLayer throw, which left the map
+ * with no pin layer at all. Swapping this layer's filter achieves the same
+ * effect, still costs no React render, and still never touches the source.
+ */
+export function buildActivePinLayer(): LayerSpecification {
+  return {
+    id: LAYER_PINS_ACTIVE,
+    type: 'symbol',
+    source: SOURCE_ID,
+    filter: MATCH_NOTHING as never,
+    layout: {
+      'icon-image': buildIconExpression() as never,
+      'icon-allow-overlap': true,
+      'icon-ignore-placement': true,
+      'icon-anchor': 'bottom',
+      'icon-size': 1.3,
+    },
+    paint: {
+      'icon-opacity': 1,
     },
   };
 }

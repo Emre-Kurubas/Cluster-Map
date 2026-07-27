@@ -4,9 +4,11 @@ import type { ErrorEvent, GeoJSONSource, MapLayerMouseEvent } from 'maplibre-gl'
 import type { Point } from 'geojson';
 import { toGeoJSON } from '../lib/geo';
 import { loadPinImages } from './sprite/pinShapes';
-import { buildPinLayer } from './layers/pins';
+import { buildActivePinLayer, buildPinLayer } from './layers/pins';
 import { buildClusterLayers } from './layers/clusters';
-import { LAYER_CLUSTERS, LAYER_PINS, SOURCE_ID } from '../config/mapStyle';
+import {
+  LAYER_CLUSTERS, LAYER_PINS, LAYER_PINS_ACTIVE, SOURCE_ID,
+} from '../config/mapStyle';
 import {
   CLUSTER_MAX_ZOOM, CLUSTER_RADIUS, MAX_ZOOM, MIN_ZOOM, PROVINCE_FLY_ZOOM,
 } from '../config/constants';
@@ -84,16 +86,24 @@ export function createMapEngine(
   let hoveredId: number | null = null;
   let selectedId: number | null = null;
 
-  const setFeatureState = (id: number | null, key: string, value: boolean) => {
-    if (id === null || !ready) return;
-    map.setFeatureState({ source: SOURCE_ID, id }, { [key]: value });
+  /**
+   * Re-filter the highlight layer to the currently hovered/selected pins.
+   * Cheap: no source mutation, no React render.
+   */
+  const refreshHighlight = () => {
+    if (!ready || !map.getLayer(LAYER_PINS_ACTIVE)) return;
+    const ids = [selectedId, hoveredId].filter((id): id is number => id !== null);
+    map.setFilter(LAYER_PINS_ACTIVE, ['in', ['get', 'id'], ['literal', ids]] as never);
   };
 
-  // Every MapLibre error reaches the console. Filtering to tile failures alone
-  // meant a style that never loaded produced no map, no pins and no message.
+  // Every MapLibre error reaches the console — filtering to tile failures alone
+  // once hid a style that never loaded. The user-facing notice stays narrow
+  // though: only genuine tile/source failures mean "the basemap is unavailable".
+  // Showing it for a layer bug told the user to blame their network.
   map.on('error', (event: ErrorEvent) => {
+    const message = String(event?.error?.message ?? '');
     console.error('[ListingMap] map error', event?.error ?? event);
-    onError('tile');
+    if (/tile|source|fetch|network|load/i.test(message)) onError('tile');
   });
 
   // If the style never loads, `load` never fires and the source and layers are
@@ -122,6 +132,7 @@ export function createMapEngine(
 
     for (const layer of buildClusterLayers()) map.addLayer(layer);
     map.addLayer(buildPinLayer());
+    map.addLayer(buildActivePinLayer());
 
     console.info(
       `[ListingMap] ready — ${pending.length} listing(s), ` +
@@ -155,7 +166,9 @@ export function createMapEngine(
     },
 
     queryVisibleIds() {
-      if (!ready) return [];
+      // Querying a layer that failed to register throws on every map idle,
+      // which previously buried the one error that actually mattered.
+      if (!ready || !map.getLayer(LAYER_PINS)) return [];
       const features = map.queryRenderedFeatures({ layers: [LAYER_PINS] });
       const ids = new Set<number>();
       for (const feature of features) {
@@ -166,15 +179,13 @@ export function createMapEngine(
     },
 
     setHovered(id) {
-      setFeatureState(hoveredId, 'hovered', false);
       hoveredId = id;
-      setFeatureState(hoveredId, 'hovered', true);
+      refreshHighlight();
     },
 
     setSelected(id) {
-      setFeatureState(selectedId, 'selected', false);
       selectedId = id;
-      setFeatureState(selectedId, 'selected', true);
+      refreshHighlight();
     },
 
     zoomIn: () => map.zoomIn({ duration: 300 }),
