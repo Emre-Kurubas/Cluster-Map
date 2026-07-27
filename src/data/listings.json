@@ -12,7 +12,8 @@
       "lng": 35.3033
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200001.jpg",
-    "detailUrl": "/ilan/adana-icradan-satilik-500m2-i̇marli-arsa-81200001"
+    "detailUrl": "/ilan/adana-icradan-satilik-500m2-i̇marli-arsa-81200001",
+    "address": "Akkapı, Seyhan, Adana"
   },
   {
     "id": 81200002,
@@ -27,7 +28,8 @@
       "lng": 35.28384
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200002.jpg",
-    "detailUrl": "/ilan/adana-icradan-satilik-500m2-i̇marli-arsa-81200002"
+    "detailUrl": "/ilan/adana-icradan-satilik-500m2-i̇marli-arsa-81200002",
+    "address": "İsmetpaşa, Seyhan, Adana"
   },
   {
     "id": 81200003,
@@ -42,7 +44,8 @@
       "lng": 38.29588
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200003.jpg",
-    "detailUrl": "/ilan/adiyaman-icradan-satilik-500m2-i̇marli-arsa-81200003"
+    "detailUrl": "/ilan/adiyaman-icradan-satilik-500m2-i̇marli-arsa-81200003",
+    "address": "Siteler Mahallesi, Adıyaman"
   },
   {
     "id": 81200004,
@@ -57,7 +60,8 @@
       "lng": 38.30335
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200004.jpg",
-    "detailUrl": "/ilan/adiyaman-icradan-satilik-dubleks-mesken-81200004"
+    "detailUrl": "/ilan/adiyaman-icradan-satilik-dubleks-mesken-81200004",
+    "address": "Siteler Mahallesi, Adıyaman"
   },
   {
     "id": 81200005,
@@ -72,7 +76,8 @@
       "lng": 30.59328
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200005.jpg",
-    "detailUrl": "/ilan/afyonkarahisar-icradan-satilik-2015-model-hatchback-81200005"
+    "detailUrl": "/ilan/afyonkarahisar-icradan-satilik-2015-model-hatchback-81200005",
+    "address": "Fatih Mahallesi, Afyonkarahisar"
   },
   {
     "id": 81200006,
@@ -87,7 +92,8 @@
       "lng": 30.54422
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200006.jpg",
-    "detailUrl": "/ilan/afyonkarahisar-icradan-satilik-2018-model-ticari-81200006"
+    "detailUrl": "/ilan/afyonkarahisar-icradan-satilik-2018-model-ticari-81200006",
+    "address": "Kanlıca, Afyonkarahisar"
   },
   {
     "id": 81200007,
@@ -102,7 +108,8 @@
       "lng": 43.04058
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200007.jpg",
-    "detailUrl": "/ilan/agri-icradan-satilik-500m2-i̇marli-arsa-81200007"
+    "detailUrl": "/ilan/agri-icradan-satilik-500m2-i̇marli-arsa-81200007",
+    "address": "Fatih Mahallesi, Ağrı"
   },
   {
     "id": 81200008,
@@ -117,7 +124,8 @@
       "lng": 43.01397
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200008.jpg",
-    "detailUrl": "/ilan/agri-icradan-satilik-1000m2-tarla-81200008"
+    "detailUrl": "/ilan/agri-icradan-satilik-1000m2-tarla-81200008",
+    "address": "Abide Mahallesi, Ağrı"
   },
   {
     "id": 81200009,
@@ -132,7 +140,8 @@
       "lng": 35.83157
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200009.jpg",
-    "detailUrl": "/ilan/amasya-icradan-satilik-3+1-daire-81200009"
+    "detailUrl": "/ilan/amasya-icradan-satilik-3+1-daire-81200009",
+    "address": "Çakallar, Amasya"
   },
   {
     "id": 81200010,
@@ -147,7 +156,8 @@
       "lng": 35.81666
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200010.jpg",
-    "detailUrl": "/ilan/amasya-icradan-satilik-2015-model-hatchback-81200010"
+    "detailUrl": "/ilan/amasya-icradan-satilik-2015-model-hatchback-81200010",
+    "address": "Akbilek, Amasya"
   },
   {
     "id": 81200011,
@@ -162,7 +172,8 @@
       "lng": 32.84446
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200011.jpg",
-    "detailUrl": "/ilan/ankara-icradan-satilik-1000m2-tarla-81200011"
+    "detailUrl": "/ilan/ankara-icradan-satilik-1000m2-tarla-81200011",
+    "address": "Ayrancı Mahallesi, Çankaya, Ankara"
   },
   {
     "id": 81200012,
@@ -177,7 +188,8 @@
       "lng": 32.87618
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200012.jpg",
-    "detailUrl": "/ilan/ankara-icradan-satilik-mustakil-parsel-81200012"
+    "detailUrl": "/ilan/ankara-icradan-satilik-mustakil-parsel-81200012",
+    "address": "Gültepe Mahallesi, Altındağ, Ankara"
   },
   {
     "id": 81200013,
@@ -192,7 +204,8 @@
       "lng": 30.73865
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200013.jpg",
-    "detailUrl": "/ilan/antalya-icradan-satilik-2015-model-hatchback-81200013"
+    "detailUrl": "/ilan/antalya-icradan-satilik-2015-model-hatchback-81200013",
+    "address": "Şirinyalı Mahallesi, Muratpaşa, Antalya"
   },
   {
     "id": 81200014,
@@ -207,7 +220,8 @@
       "lng": 30.73876
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200014.jpg",
-    "detailUrl": "/ilan/antalya-icradan-satilik-sanari-i̇marli-arsa-81200014"
+    "detailUrl": "/ilan/antalya-icradan-satilik-sanari-i̇marli-arsa-81200014",
+    "address": "Kırcami Mahallesi, Muratpaşa, Antalya"
   },
   {
     "id": 81200015,
@@ -222,7 +236,8 @@
       "lng": 41.82142
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200015.jpg",
-    "detailUrl": "/ilan/artvin-icradan-satilik-2+1-daire-81200015"
+    "detailUrl": "/ilan/artvin-icradan-satilik-2+1-daire-81200015",
+    "address": "Çayağzı Mahallesi, Artvin"
   },
   {
     "id": 81200016,
@@ -237,7 +252,8 @@
       "lng": 41.85809
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200016.jpg",
-    "detailUrl": "/ilan/artvin-icradan-satilik-sanari-i̇marli-arsa-81200016"
+    "detailUrl": "/ilan/artvin-icradan-satilik-sanari-i̇marli-arsa-81200016",
+    "address": "Artvin"
   },
   {
     "id": 81200017,
@@ -252,7 +268,8 @@
       "lng": 27.81783
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200017.jpg",
-    "detailUrl": "/ilan/aydin-icradan-satilik-3+1-daire-81200017"
+    "detailUrl": "/ilan/aydin-icradan-satilik-3+1-daire-81200017",
+    "address": "Hasanefendi-Ramazan Paşa, Efeler, Aydın"
   },
   {
     "id": 81200018,
@@ -267,7 +284,8 @@
       "lng": 27.84304
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200018.jpg",
-    "detailUrl": "/ilan/aydin-icradan-satilik-2022-model-suv-81200018"
+    "detailUrl": "/ilan/aydin-icradan-satilik-2022-model-suv-81200018",
+    "address": "Kurtuluş, Efeler, Aydın"
   },
   {
     "id": 81200019,
@@ -282,7 +300,8 @@
       "lng": 27.88556
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200019.jpg",
-    "detailUrl": "/ilan/balikesir-icradan-satilik-500m2-i̇marli-arsa-81200019"
+    "detailUrl": "/ilan/balikesir-icradan-satilik-500m2-i̇marli-arsa-81200019",
+    "address": "Toygar Mahallesi, Karesi, Balıkesir"
   },
   {
     "id": 81200020,
@@ -297,7 +316,8 @@
       "lng": 27.84286
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200020.jpg",
-    "detailUrl": "/ilan/balikesir-icradan-satilik-2022-model-suv-81200020"
+    "detailUrl": "/ilan/balikesir-icradan-satilik-2022-model-suv-81200020",
+    "address": "Altıeylül, Balıkesir"
   },
   {
     "id": 81200021,
@@ -312,7 +332,8 @@
       "lng": 29.96378
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200021.jpg",
-    "detailUrl": "/ilan/bilecik-icradan-satilik-3+1-daire-81200021"
+    "detailUrl": "/ilan/bilecik-icradan-satilik-3+1-daire-81200021",
+    "address": "Bahçelievler Mahallesi, Bilecik"
   },
   {
     "id": 81200022,
@@ -327,7 +348,8 @@
       "lng": 29.98305
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200022.jpg",
-    "detailUrl": "/ilan/bilecik-icradan-satilik-kira-garantili-dukkan-81200022"
+    "detailUrl": "/ilan/bilecik-icradan-satilik-kira-garantili-dukkan-81200022",
+    "address": "Hürriyet 1. OSB Mahallesi, Bilecik"
   },
   {
     "id": 81200023,
@@ -342,7 +364,8 @@
       "lng": 40.46285
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200023.jpg",
-    "detailUrl": "/ilan/bingol-icradan-satilik-mustakil-parsel-81200023"
+    "detailUrl": "/ilan/bingol-icradan-satilik-mustakil-parsel-81200023",
+    "address": "Mirzan Mahallesi, Bingöl"
   },
   {
     "id": 81200024,
@@ -357,7 +380,8 @@
       "lng": 40.52966
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200024.jpg",
-    "detailUrl": "/ilan/bingol-icradan-satilik-2+1-daire-81200024"
+    "detailUrl": "/ilan/bingol-icradan-satilik-2+1-daire-81200024",
+    "address": "Simani Mah., Bingöl"
   },
   {
     "id": 81200025,
@@ -372,7 +396,8 @@
       "lng": 42.10752
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200025.jpg",
-    "detailUrl": "/ilan/bitlis-icradan-satilik-1000m2-tarla-81200025"
+    "detailUrl": "/ilan/bitlis-icradan-satilik-1000m2-tarla-81200025",
+    "address": "Bitlis"
   },
   {
     "id": 81200026,
@@ -387,7 +412,8 @@
       "lng": 42.14381
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200026.jpg",
-    "detailUrl": "/ilan/bitlis-icradan-satilik-sanari-i̇marli-arsa-81200026"
+    "detailUrl": "/ilan/bitlis-icradan-satilik-sanari-i̇marli-arsa-81200026",
+    "address": "Beş Minare Mahallesi, Bitlis"
   },
   {
     "id": 81200027,
@@ -402,7 +428,8 @@
       "lng": 31.61301
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200027.jpg",
-    "detailUrl": "/ilan/bolu-icradan-satilik-2015-model-hatchback-81200027"
+    "detailUrl": "/ilan/bolu-icradan-satilik-2015-model-hatchback-81200027",
+    "address": "Gölyüzü Mahallesi, Bolu"
   },
   {
     "id": 81200028,
@@ -417,7 +444,8 @@
       "lng": 31.61591
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200028.jpg",
-    "detailUrl": "/ilan/bolu-icradan-satilik-kira-garantili-dukkan-81200028"
+    "detailUrl": "/ilan/bolu-icradan-satilik-kira-garantili-dukkan-81200028",
+    "address": "Bolu"
   },
   {
     "id": 81200029,
@@ -432,7 +460,8 @@
       "lng": 30.31473
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200029.jpg",
-    "detailUrl": "/ilan/burdur-icradan-satilik-3+1-daire-81200029"
+    "detailUrl": "/ilan/burdur-icradan-satilik-3+1-daire-81200029",
+    "address": "Necati Bey Mahallesi, Burdur"
   },
   {
     "id": 81200030,
@@ -447,7 +476,8 @@
       "lng": 30.28113
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200030.jpg",
-    "detailUrl": "/ilan/burdur-icradan-satilik-1000m2-tarla-81200030"
+    "detailUrl": "/ilan/burdur-icradan-satilik-1000m2-tarla-81200030",
+    "address": "Karasenir Mahallesi, Burdur"
   },
   {
     "id": 81200031,
@@ -462,7 +492,8 @@
       "lng": 29.04193
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200031.jpg",
-    "detailUrl": "/ilan/bursa-icradan-satilik-dubleks-mesken-81200031"
+    "detailUrl": "/ilan/bursa-icradan-satilik-dubleks-mesken-81200031",
+    "address": "Soğanlı, Osmangazi, Bursa"
   },
   {
     "id": 81200032,
@@ -477,7 +508,8 @@
       "lng": 29.08503
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200032.jpg",
-    "detailUrl": "/ilan/bursa-icradan-satilik-2022-model-suv-81200032"
+    "detailUrl": "/ilan/bursa-icradan-satilik-2022-model-suv-81200032",
+    "address": "Davutkadı, Yıldırım, Bursa"
   },
   {
     "id": 81200033,
@@ -492,7 +524,8 @@
       "lng": 26.38294
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200033.jpg",
-    "detailUrl": "/ilan/canakkale-icradan-satilik-2015-model-hatchback-81200033"
+    "detailUrl": "/ilan/canakkale-icradan-satilik-2015-model-hatchback-81200033",
+    "address": "Eceabat, Çanakkale"
   },
   {
     "id": 81200034,
@@ -507,7 +540,8 @@
       "lng": 26.39648
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200034.jpg",
-    "detailUrl": "/ilan/canakkale-icradan-satilik-2020-model-sedan-81200034"
+    "detailUrl": "/ilan/canakkale-icradan-satilik-2020-model-sedan-81200034",
+    "address": "Fevzipaşa Mahallesi, Çanakkale"
   },
   {
     "id": 81200035,
@@ -522,7 +556,8 @@
       "lng": 33.65334
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200035.jpg",
-    "detailUrl": "/ilan/cankiri-icradan-satilik-500m2-i̇marli-arsa-81200035"
+    "detailUrl": "/ilan/cankiri-icradan-satilik-500m2-i̇marli-arsa-81200035",
+    "address": "Esentepe, Çankırı"
   },
   {
     "id": 81200036,
@@ -537,7 +572,8 @@
       "lng": 33.61191
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200036.jpg",
-    "detailUrl": "/ilan/cankiri-icradan-satilik-2+1-daire-81200036"
+    "detailUrl": "/ilan/cankiri-icradan-satilik-2+1-daire-81200036",
+    "address": "Abdulhalik Renda Mahallesi, Çankırı"
   },
   {
     "id": 81200037,
@@ -552,7 +588,8 @@
       "lng": 34.94683
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200037.jpg",
-    "detailUrl": "/ilan/corum-icradan-satilik-dubleks-mesken-81200037"
+    "detailUrl": "/ilan/corum-icradan-satilik-dubleks-mesken-81200037",
+    "address": "Mimar Sinan Mahallesi, Çorum"
   },
   {
     "id": 81200038,
@@ -567,7 +604,8 @@
       "lng": 34.93934
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200038.jpg",
-    "detailUrl": "/ilan/corum-icradan-satilik-2022-model-suv-81200038"
+    "detailUrl": "/ilan/corum-icradan-satilik-2022-model-suv-81200038",
+    "address": "Mimar Sinan Mahallesi, Çorum"
   },
   {
     "id": 81200039,
@@ -582,7 +620,8 @@
       "lng": 29.09313
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200039.jpg",
-    "detailUrl": "/ilan/denizli-icradan-satilik-kira-garantili-dukkan-81200039"
+    "detailUrl": "/ilan/denizli-icradan-satilik-kira-garantili-dukkan-81200039",
+    "address": "Kınıklı Mahallesi, Pamukkale, Denizli"
   },
   {
     "id": 81200040,
@@ -597,7 +636,8 @@
       "lng": 29.05188
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200040.jpg",
-    "detailUrl": "/ilan/denizli-icradan-satilik-3+1-daire-81200040"
+    "detailUrl": "/ilan/denizli-icradan-satilik-3+1-daire-81200040",
+    "address": "Şemikler Mahallesi, Merkezefendi, Denizli"
   },
   {
     "id": 81200041,
@@ -612,7 +652,8 @@
       "lng": 40.19378
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200041.jpg",
-    "detailUrl": "/ilan/diyarbakir-icradan-satilik-2+1-daire-81200041"
+    "detailUrl": "/ilan/diyarbakir-icradan-satilik-2+1-daire-81200041",
+    "address": "Yeniköy Mahallesi, Bağlar, Diyarbakır"
   },
   {
     "id": 81200042,
@@ -627,7 +668,8 @@
       "lng": 40.2479
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200042.jpg",
-    "detailUrl": "/ilan/diyarbakir-icradan-satilik-2015-model-hatchback-81200042"
+    "detailUrl": "/ilan/diyarbakir-icradan-satilik-2015-model-hatchback-81200042",
+    "address": "Bağıvar Mahallesi, Sur, Diyarbakır"
   },
   {
     "id": 81200043,
@@ -642,7 +684,8 @@
       "lng": 26.59302
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200043.jpg",
-    "detailUrl": "/ilan/edirne-icradan-satilik-kira-garantili-dukkan-81200043"
+    "detailUrl": "/ilan/edirne-icradan-satilik-kira-garantili-dukkan-81200043",
+    "address": "Atatürk Mahallesi, Edirne"
   },
   {
     "id": 81200044,
@@ -657,7 +700,8 @@
       "lng": 26.53575
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200044.jpg",
-    "detailUrl": "/ilan/edirne-icradan-satilik-500m2-i̇marli-arsa-81200044"
+    "detailUrl": "/ilan/edirne-icradan-satilik-500m2-i̇marli-arsa-81200044",
+    "address": "Karaağaç Mahallesi, Edirne"
   },
   {
     "id": 81200045,
@@ -672,7 +716,8 @@
       "lng": 39.19902
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200045.jpg",
-    "detailUrl": "/ilan/elazig-icradan-satilik-2+1-daire-81200045"
+    "detailUrl": "/ilan/elazig-icradan-satilik-2+1-daire-81200045",
+    "address": "Üniversite Mahallesi, Elazığ"
   },
   {
     "id": 81200046,
@@ -687,7 +732,8 @@
       "lng": 39.23077
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200046.jpg",
-    "detailUrl": "/ilan/elazig-icradan-satilik-500m2-i̇marli-arsa-81200046"
+    "detailUrl": "/ilan/elazig-icradan-satilik-500m2-i̇marli-arsa-81200046",
+    "address": "Yıldız Bağları Mah., Elazığ"
   },
   {
     "id": 81200047,
@@ -702,7 +748,8 @@
       "lng": 39.50959
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200047.jpg",
-    "detailUrl": "/ilan/erzincan-icradan-satilik-2018-model-ticari-81200047"
+    "detailUrl": "/ilan/erzincan-icradan-satilik-2018-model-ticari-81200047",
+    "address": "Başbağlar Mahallesi, Erzincan"
   },
   {
     "id": 81200048,
@@ -717,7 +764,8 @@
       "lng": 39.46649
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200048.jpg",
-    "detailUrl": "/ilan/erzincan-icradan-satilik-1000m2-tarla-81200048"
+    "detailUrl": "/ilan/erzincan-icradan-satilik-1000m2-tarla-81200048",
+    "address": "Ergenekon Mahallesi, Erzincan"
   },
   {
     "id": 81200049,
@@ -732,7 +780,8 @@
       "lng": 41.29769
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200049.jpg",
-    "detailUrl": "/ilan/erzurum-icradan-satilik-2015-model-hatchback-81200049"
+    "detailUrl": "/ilan/erzurum-icradan-satilik-2015-model-hatchback-81200049",
+    "address": "Kurtuluş Mahallesi, Yakutiye, Erzurum"
   },
   {
     "id": 81200050,
@@ -747,7 +796,8 @@
       "lng": 41.24047
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200050.jpg",
-    "detailUrl": "/ilan/erzurum-icradan-satilik-3+1-daire-81200050"
+    "detailUrl": "/ilan/erzurum-icradan-satilik-3+1-daire-81200050",
+    "address": "Müftü Solakzade, Palandöken, Erzurum"
   },
   {
     "id": 81200051,
@@ -762,7 +812,8 @@
       "lng": 30.48955
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200051.jpg",
-    "detailUrl": "/ilan/eskisehir-icradan-satilik-sanari-i̇marli-arsa-81200051"
+    "detailUrl": "/ilan/eskisehir-icradan-satilik-sanari-i̇marli-arsa-81200051",
+    "address": "Ertuğrulgazi Mahallesi, Tepebaşı, Eskişehir"
   },
   {
     "id": 81200052,
@@ -777,7 +828,8 @@
       "lng": 30.49245
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200052.jpg",
-    "detailUrl": "/ilan/eskisehir-icradan-satilik-kira-garantili-dukkan-81200052"
+    "detailUrl": "/ilan/eskisehir-icradan-satilik-kira-garantili-dukkan-81200052",
+    "address": "Ertuğrulgazi Mahallesi, Tepebaşı, Eskişehir"
   },
   {
     "id": 81200053,
@@ -792,7 +844,8 @@
       "lng": 37.36011
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200053.jpg",
-    "detailUrl": "/ilan/gaziantep-icradan-satilik-2018-model-ticari-81200053"
+    "detailUrl": "/ilan/gaziantep-icradan-satilik-2018-model-ticari-81200053",
+    "address": "Beylerbeyi Mahallesi, Şehitkamil, Gaziantep"
   },
   {
     "id": 81200054,
@@ -807,7 +860,8 @@
       "lng": 37.40326
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200054.jpg",
-    "detailUrl": "/ilan/gaziantep-icradan-satilik-sanari-i̇marli-arsa-81200054"
+    "detailUrl": "/ilan/gaziantep-icradan-satilik-sanari-i̇marli-arsa-81200054",
+    "address": "Sanayi Mahallesi, Şehitkamil, Gaziantep"
   },
   {
     "id": 81200055,
@@ -822,7 +876,8 @@
       "lng": 38.42346
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200055.jpg",
-    "detailUrl": "/ilan/giresun-icradan-satilik-2018-model-ticari-81200055"
+    "detailUrl": "/ilan/giresun-icradan-satilik-2018-model-ticari-81200055",
+    "address": "Çaykara, Giresun"
   },
   {
     "id": 81200056,
@@ -837,7 +892,8 @@
       "lng": 38.35815
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200056.jpg",
-    "detailUrl": "/ilan/giresun-icradan-satilik-2020-model-sedan-81200056"
+    "detailUrl": "/ilan/giresun-icradan-satilik-2020-model-sedan-81200056",
+    "address": "Çıtlakkale, Giresun"
   },
   {
     "id": 81200057,
@@ -852,7 +908,8 @@
       "lng": 39.47822
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200057.jpg",
-    "detailUrl": "/ilan/gumushane-icradan-satilik-2+1-daire-81200057"
+    "detailUrl": "/ilan/gumushane-icradan-satilik-2+1-daire-81200057",
+    "address": "Χαλκάντων, Çamlıca Mahallesi, Gümüşhane"
   },
   {
     "id": 81200058,
@@ -867,7 +924,8 @@
       "lng": 39.46369
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200058.jpg",
-    "detailUrl": "/ilan/gumushane-icradan-satilik-2+1-daire-81200058"
+    "detailUrl": "/ilan/gumushane-icradan-satilik-2+1-daire-81200058",
+    "address": "Özcan Mahallesi, Gümüşhane"
   },
   {
     "id": 81200059,
@@ -882,7 +940,8 @@
       "lng": 43.76829
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200059.jpg",
-    "detailUrl": "/ilan/hakkari-icradan-satilik-sanari-i̇marli-arsa-81200059"
+    "detailUrl": "/ilan/hakkari-icradan-satilik-sanari-i̇marli-arsa-81200059",
+    "address": "Keklikpınar, Hakkâri"
   },
   {
     "id": 81200060,
@@ -897,7 +956,8 @@
       "lng": 43.77948
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200060.jpg",
-    "detailUrl": "/ilan/hakkari-icradan-satilik-2020-model-sedan-81200060"
+    "detailUrl": "/ilan/hakkari-icradan-satilik-2020-model-sedan-81200060",
+    "address": "Hakkari-Van yolu, Hakkâri"
   },
   {
     "id": 81200061,
@@ -912,7 +972,8 @@
       "lng": 36.20544
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200061.jpg",
-    "detailUrl": "/ilan/hatay-icradan-satilik-2015-model-hatchback-81200061"
+    "detailUrl": "/ilan/hatay-icradan-satilik-2015-model-hatchback-81200061",
+    "address": "Antakya, Hatay"
   },
   {
     "id": 81200062,
@@ -927,7 +988,8 @@
       "lng": 36.12684
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200062.jpg",
-    "detailUrl": "/ilan/hatay-icradan-satilik-2018-model-ticari-81200062"
+    "detailUrl": "/ilan/hatay-icradan-satilik-2018-model-ticari-81200062",
+    "address": "Altınçay Mahallesi, Antakya, Hatay"
   },
   {
     "id": 81200063,
@@ -942,7 +1004,8 @@
       "lng": 30.56974
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200063.jpg",
-    "detailUrl": "/ilan/isparta-icradan-satilik-2022-model-suv-81200063"
+    "detailUrl": "/ilan/isparta-icradan-satilik-2022-model-suv-81200063",
+    "address": "Isparta"
   },
   {
     "id": 81200064,
@@ -957,7 +1020,8 @@
       "lng": 30.54063
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200064.jpg",
-    "detailUrl": "/ilan/isparta-icradan-satilik-500m2-i̇marli-arsa-81200064"
+    "detailUrl": "/ilan/isparta-icradan-satilik-500m2-i̇marli-arsa-81200064",
+    "address": "Fatih Mahallesi, Isparta"
   },
   {
     "id": 81200065,
@@ -972,7 +1036,8 @@
       "lng": 34.60865
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200065.jpg",
-    "detailUrl": "/ilan/mersin-icradan-satilik-2015-model-hatchback-81200065"
+    "detailUrl": "/ilan/mersin-icradan-satilik-2015-model-hatchback-81200065",
+    "address": "Demirtaş Mahallesi, Toroslar, Mersin"
   },
   {
     "id": 81200066,
@@ -987,7 +1052,8 @@
       "lng": 34.66
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200066.jpg",
-    "detailUrl": "/ilan/mersin-icradan-satilik-mustakil-parsel-81200066"
+    "detailUrl": "/ilan/mersin-icradan-satilik-mustakil-parsel-81200066",
+    "address": "Özgürlük, Akdeniz, Mersin"
   },
   {
     "id": 81200067,
@@ -1002,7 +1068,8 @@
       "lng": 28.97377
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200067.jpg",
-    "detailUrl": "/ilan/i̇stanbul-icradan-satilik-2015-model-hatchback-81200067"
+    "detailUrl": "/ilan/i̇stanbul-icradan-satilik-2015-model-hatchback-81200067",
+    "address": "Binbirdirek Mahallesi, Fatih, İstanbul"
   },
   {
     "id": 81200068,
@@ -1017,7 +1084,8 @@
       "lng": 28.9611
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200068.jpg",
-    "detailUrl": "/ilan/i̇stanbul-icradan-satilik-1000m2-tarla-81200068"
+    "detailUrl": "/ilan/i̇stanbul-icradan-satilik-1000m2-tarla-81200068",
+    "address": "Yavuz Sinan Mahallesi, Fatih, İstanbul"
   },
   {
     "id": 81200069,
@@ -1032,7 +1100,8 @@
       "lng": 27.10667
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200069.jpg",
-    "detailUrl": "/ilan/i̇zmir-icradan-satilik-2+1-daire-81200069"
+    "detailUrl": "/ilan/i̇zmir-icradan-satilik-2+1-daire-81200069",
+    "address": "Karşıyaka, İzmir"
   },
   {
     "id": 81200070,
@@ -1047,7 +1116,8 @@
       "lng": 27.1376
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200070.jpg",
-    "detailUrl": "/ilan/i̇zmir-icradan-satilik-2+1-daire-81200070"
+    "detailUrl": "/ilan/i̇zmir-icradan-satilik-2+1-daire-81200070",
+    "address": "Karşıyaka, İzmir"
   },
   {
     "id": 81200071,
@@ -1062,7 +1132,8 @@
       "lng": 43.08822
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200071.jpg",
-    "detailUrl": "/ilan/kars-icradan-satilik-2020-model-sedan-81200071"
+    "detailUrl": "/ilan/kars-icradan-satilik-2020-model-sedan-81200071",
+    "address": "Sukapı Mahallesi, Kars"
   },
   {
     "id": 81200072,
@@ -1077,7 +1148,8 @@
       "lng": 43.12634
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200072.jpg",
-    "detailUrl": "/ilan/kars-icradan-satilik-500m2-i̇marli-arsa-81200072"
+    "detailUrl": "/ilan/kars-icradan-satilik-500m2-i̇marli-arsa-81200072",
+    "address": "Atatürk Mahallesi, Kars"
   },
   {
     "id": 81200073,
@@ -1092,7 +1164,8 @@
       "lng": 33.75524
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200073.jpg",
-    "detailUrl": "/ilan/kastamonu-icradan-satilik-dubleks-mesken-81200073"
+    "detailUrl": "/ilan/kastamonu-icradan-satilik-dubleks-mesken-81200073",
+    "address": "37-50, Saraçlar Mahallesi, Kastamonu"
   },
   {
     "id": 81200074,
@@ -1107,7 +1180,8 @@
       "lng": 33.81433
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200074.jpg",
-    "detailUrl": "/ilan/kastamonu-icradan-satilik-dubleks-mesken-81200074"
+    "detailUrl": "/ilan/kastamonu-icradan-satilik-dubleks-mesken-81200074",
+    "address": "Çelebi, Kastamonu"
   },
   {
     "id": 81200075,
@@ -1122,7 +1196,8 @@
       "lng": 35.48253
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200075.jpg",
-    "detailUrl": "/ilan/kayseri-icradan-satilik-sanari-i̇marli-arsa-81200075"
+    "detailUrl": "/ilan/kayseri-icradan-satilik-sanari-i̇marli-arsa-81200075",
+    "address": "Seyrani Mahallesi, Kocasinan, Kayseri"
   },
   {
     "id": 81200076,
@@ -1137,7 +1212,8 @@
       "lng": 35.46088
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200076.jpg",
-    "detailUrl": "/ilan/kayseri-icradan-satilik-2020-model-sedan-81200076"
+    "detailUrl": "/ilan/kayseri-icradan-satilik-2020-model-sedan-81200076",
+    "address": "Mithatpaşa Mahallesi, Kocasinan, Kayseri"
   },
   {
     "id": 81200077,
@@ -1152,7 +1228,8 @@
       "lng": 27.1829
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200077.jpg",
-    "detailUrl": "/ilan/kirklareli-icradan-satilik-1000m2-tarla-81200077"
+    "detailUrl": "/ilan/kirklareli-icradan-satilik-1000m2-tarla-81200077",
+    "address": "Karahıdır Mahallesi, Kırklareli"
   },
   {
     "id": 81200078,
@@ -1167,7 +1244,8 @@
       "lng": 27.18315
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200078.jpg",
-    "detailUrl": "/ilan/kirklareli-icradan-satilik-2015-model-hatchback-81200078"
+    "detailUrl": "/ilan/kirklareli-icradan-satilik-2015-model-hatchback-81200078",
+    "address": "Bademlik Mahallesi, Kırklareli"
   },
   {
     "id": 81200079,
@@ -1182,7 +1260,8 @@
       "lng": 34.12904
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200079.jpg",
-    "detailUrl": "/ilan/kirsehir-icradan-satilik-1000m2-tarla-81200079"
+    "detailUrl": "/ilan/kirsehir-icradan-satilik-1000m2-tarla-81200079",
+    "address": "Çukurçayır, Kırşehir"
   },
   {
     "id": 81200080,
@@ -1197,7 +1276,8 @@
       "lng": 34.19053
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200080.jpg",
-    "detailUrl": "/ilan/kirsehir-icradan-satilik-2022-model-suv-81200080"
+    "detailUrl": "/ilan/kirsehir-icradan-satilik-2022-model-suv-81200080",
+    "address": "Güneykent, Kırşehir"
   },
   {
     "id": 81200081,
@@ -1212,7 +1292,8 @@
       "lng": 29.91692
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200081.jpg",
-    "detailUrl": "/ilan/kocaeli-icradan-satilik-sanari-i̇marli-arsa-81200081"
+    "detailUrl": "/ilan/kocaeli-icradan-satilik-sanari-i̇marli-arsa-81200081",
+    "address": "Kuzey Marmara Otoyolu Atalay Coşkunoğlu Tüneli, Derince, Kocaeli"
   },
   {
     "id": 81200082,
@@ -1227,7 +1308,8 @@
       "lng": 29.86333
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200082.jpg",
-    "detailUrl": "/ilan/kocaeli-icradan-satilik-1000m2-tarla-81200082"
+    "detailUrl": "/ilan/kocaeli-icradan-satilik-1000m2-tarla-81200082",
+    "address": "41-77, Derince, Kocaeli"
   },
   {
     "id": 81200083,
@@ -1242,7 +1324,8 @@
       "lng": 32.51054
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200083.jpg",
-    "detailUrl": "/ilan/konya-icradan-satilik-2022-model-suv-81200083"
+    "detailUrl": "/ilan/konya-icradan-satilik-2022-model-suv-81200083",
+    "address": "Yediler Mahallesi, Karatay, Konya"
   },
   {
     "id": 81200084,
@@ -1257,7 +1340,8 @@
       "lng": 32.49634
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200084.jpg",
-    "detailUrl": "/ilan/konya-icradan-satilik-dubleks-mesken-81200084"
+    "detailUrl": "/ilan/konya-icradan-satilik-dubleks-mesken-81200084",
+    "address": "Şemsitebrizi Mahallesi, Karatay, Konya"
   },
   {
     "id": 81200085,
@@ -1272,7 +1356,8 @@
       "lng": 29.97363
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200085.jpg",
-    "detailUrl": "/ilan/kutahya-icradan-satilik-2020-model-sedan-81200085"
+    "detailUrl": "/ilan/kutahya-icradan-satilik-2020-model-sedan-81200085",
+    "address": "Kütahya"
   },
   {
     "id": 81200086,
@@ -1287,7 +1372,8 @@
       "lng": 30.0194
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200086.jpg",
-    "detailUrl": "/ilan/kutahya-icradan-satilik-2022-model-suv-81200086"
+    "detailUrl": "/ilan/kutahya-icradan-satilik-2022-model-suv-81200086",
+    "address": "75. Yıl Mahallesi, Kütahya"
   },
   {
     "id": 81200087,
@@ -1302,7 +1388,8 @@
       "lng": 38.27367
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200087.jpg",
-    "detailUrl": "/ilan/malatya-icradan-satilik-2018-model-ticari-81200087"
+    "detailUrl": "/ilan/malatya-icradan-satilik-2018-model-ticari-81200087",
+    "address": "Hoca Ahmet Yesevi Mahallesi, Yeşilyurt, Malatya"
   },
   {
     "id": 81200088,
@@ -1317,7 +1404,8 @@
       "lng": 38.34547
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200088.jpg",
-    "detailUrl": "/ilan/malatya-icradan-satilik-500m2-i̇marli-arsa-81200088"
+    "detailUrl": "/ilan/malatya-icradan-satilik-500m2-i̇marli-arsa-81200088",
+    "address": "Orduzu Mahallesi, Battalgazi, Malatya"
   },
   {
     "id": 81200089,
@@ -1332,7 +1420,8 @@
       "lng": 27.39805
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200089.jpg",
-    "detailUrl": "/ilan/manisa-icradan-satilik-2+1-daire-81200089"
+    "detailUrl": "/ilan/manisa-icradan-satilik-2+1-daire-81200089",
+    "address": "Laleli Mahallesi, Yunus Emre, Manisa"
   },
   {
     "id": 81200090,
@@ -1347,7 +1436,8 @@
       "lng": 27.466
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200090.jpg",
-    "detailUrl": "/ilan/manisa-icradan-satilik-2020-model-sedan-81200090"
+    "detailUrl": "/ilan/manisa-icradan-satilik-2020-model-sedan-81200090",
+    "address": "Akpınar, Şehzadeler, Manisa"
   },
   {
     "id": 81200091,
@@ -1362,7 +1452,8 @@
       "lng": 36.97141
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200091.jpg",
-    "detailUrl": "/ilan/kahramanmaras-icradan-satilik-2018-model-ticari-81200091"
+    "detailUrl": "/ilan/kahramanmaras-icradan-satilik-2018-model-ticari-81200091",
+    "address": "İncirlipınar, Dulkadiroğlu, Kahramanmaraş"
   },
   {
     "id": 81200092,
@@ -1377,7 +1468,8 @@
       "lng": 36.95235
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200092.jpg",
-    "detailUrl": "/ilan/kahramanmaras-icradan-satilik-1000m2-tarla-81200092"
+    "detailUrl": "/ilan/kahramanmaras-icradan-satilik-1000m2-tarla-81200092",
+    "address": "Eyüp Sultan, Dulkadiroğlu, Kahramanmaraş"
   },
   {
     "id": 81200093,
@@ -1392,7 +1484,8 @@
       "lng": 40.73253
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200093.jpg",
-    "detailUrl": "/ilan/mardin-icradan-satilik-mustakil-parsel-81200093"
+    "detailUrl": "/ilan/mardin-icradan-satilik-mustakil-parsel-81200093",
+    "address": "Artuklu, Mardin"
   },
   {
     "id": 81200094,
@@ -1407,7 +1500,8 @@
       "lng": 40.69002
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200094.jpg",
-    "detailUrl": "/ilan/mardin-icradan-satilik-2022-model-suv-81200094"
+    "detailUrl": "/ilan/mardin-icradan-satilik-2022-model-suv-81200094",
+    "address": "Nur Mah., Artuklu, Mardin"
   },
   {
     "id": 81200095,
@@ -1422,7 +1516,8 @@
       "lng": 28.40046
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200095.jpg",
-    "detailUrl": "/ilan/mugla-icradan-satilik-2022-model-suv-81200095"
+    "detailUrl": "/ilan/mugla-icradan-satilik-2022-model-suv-81200095",
+    "address": "Orhaniye Mahallesi, Menteşe, Muğla"
   },
   {
     "id": 81200096,
@@ -1437,7 +1532,8 @@
       "lng": 28.40084
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200096.jpg",
-    "detailUrl": "/ilan/mugla-icradan-satilik-2020-model-sedan-81200096"
+    "detailUrl": "/ilan/mugla-icradan-satilik-2020-model-sedan-81200096",
+    "address": "Orhaniye Mahallesi, Menteşe, Muğla"
   },
   {
     "id": 81200097,
@@ -1452,7 +1548,8 @@
       "lng": 41.50948
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200097.jpg",
-    "detailUrl": "/ilan/mus-icradan-satilik-2022-model-suv-81200097"
+    "detailUrl": "/ilan/mus-icradan-satilik-2022-model-suv-81200097",
+    "address": "Yeni Mahalle, Muş"
   },
   {
     "id": 81200098,
@@ -1467,7 +1564,8 @@
       "lng": 41.47051
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200098.jpg",
-    "detailUrl": "/ilan/mus-icradan-satilik-kira-garantili-dukkan-81200098"
+    "detailUrl": "/ilan/mus-icradan-satilik-kira-garantili-dukkan-81200098",
+    "address": "Bağlar, Muş"
   },
   {
     "id": 81200099,
@@ -1482,7 +1580,8 @@
       "lng": 34.7004
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200099.jpg",
-    "detailUrl": "/ilan/nevsehir-icradan-satilik-2018-model-ticari-81200099"
+    "detailUrl": "/ilan/nevsehir-icradan-satilik-2018-model-ticari-81200099",
+    "address": "Kıratlıoğlu Mahallesi, Nevşehir Merkez"
   },
   {
     "id": 81200100,
@@ -1497,7 +1596,8 @@
       "lng": 34.72209
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200100.jpg",
-    "detailUrl": "/ilan/nevsehir-icradan-satilik-2015-model-hatchback-81200100"
+    "detailUrl": "/ilan/nevsehir-icradan-satilik-2015-model-hatchback-81200100",
+    "address": "Raşitbey, Nevşehir Merkez"
   },
   {
     "id": 81200101,
@@ -1512,7 +1612,8 @@
       "lng": 34.70091
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200101.jpg",
-    "detailUrl": "/ilan/nigde-icradan-satilik-1000m2-tarla-81200101"
+    "detailUrl": "/ilan/nigde-icradan-satilik-1000m2-tarla-81200101",
+    "address": "Nar Mahallesi, Niğde"
   },
   {
     "id": 81200102,
@@ -1527,7 +1628,8 @@
       "lng": 34.68257
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200102.jpg",
-    "detailUrl": "/ilan/nigde-icradan-satilik-sanari-i̇marli-arsa-81200102"
+    "detailUrl": "/ilan/nigde-icradan-satilik-sanari-i̇marli-arsa-81200102",
+    "address": "Efendibey Mah., Efendibey Mahallesi, Niğde"
   },
   {
     "id": 81200103,
@@ -1542,7 +1644,8 @@
       "lng": 37.86026
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200103.jpg",
-    "detailUrl": "/ilan/ordu-icradan-satilik-2020-model-sedan-81200103"
+    "detailUrl": "/ilan/ordu-icradan-satilik-2020-model-sedan-81200103",
+    "address": "Nizamettin Mahallesi, Altınordu, Ordu"
   },
   {
     "id": 81200104,
@@ -1557,7 +1660,8 @@
       "lng": 37.90047
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200104.jpg",
-    "detailUrl": "/ilan/ordu-icradan-satilik-2015-model-hatchback-81200104"
+    "detailUrl": "/ilan/ordu-icradan-satilik-2015-model-hatchback-81200104",
+    "address": "Şirinevler Mahallesi, Altınordu, Ordu"
   },
   {
     "id": 81200105,
@@ -1572,7 +1676,8 @@
       "lng": 40.49305
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200105.jpg",
-    "detailUrl": "/ilan/rize-icradan-satilik-2015-model-hatchback-81200105"
+    "detailUrl": "/ilan/rize-icradan-satilik-2015-model-hatchback-81200105",
+    "address": "Rize"
   },
   {
     "id": 81200106,
@@ -1587,7 +1692,8 @@
       "lng": 40.54249
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200106.jpg",
-    "detailUrl": "/ilan/rize-icradan-satilik-1000m2-tarla-81200106"
+    "detailUrl": "/ilan/rize-icradan-satilik-1000m2-tarla-81200106",
+    "address": "Rize"
   },
   {
     "id": 81200107,
@@ -1602,7 +1708,8 @@
       "lng": 30.40491
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200107.jpg",
-    "detailUrl": "/ilan/sakarya-icradan-satilik-mustakil-parsel-81200107"
+    "detailUrl": "/ilan/sakarya-icradan-satilik-mustakil-parsel-81200107",
+    "address": "Tekeler Mahallesi, Adapazarı, Sakarya"
   },
   {
     "id": 81200108,
@@ -1617,7 +1724,8 @@
       "lng": 30.38103
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200108.jpg",
-    "detailUrl": "/ilan/sakarya-icradan-satilik-kira-garantili-dukkan-81200108"
+    "detailUrl": "/ilan/sakarya-icradan-satilik-kira-garantili-dukkan-81200108",
+    "address": "Hanlıköy Mahallesi, Arifiye, Sakarya"
   },
   {
     "id": 81200109,
@@ -1632,7 +1740,8 @@
       "lng": 36.3001
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200109.jpg",
-    "detailUrl": "/ilan/samsun-icradan-satilik-mustakil-parsel-81200109"
+    "detailUrl": "/ilan/samsun-icradan-satilik-mustakil-parsel-81200109",
+    "address": "Büyükkolpınar Mahallesi, Atakum, Samsun"
   },
   {
     "id": 81200110,
@@ -1647,7 +1756,8 @@
       "lng": 36.32524
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200110.jpg",
-    "detailUrl": "/ilan/samsun-icradan-satilik-kira-garantili-dukkan-81200110"
+    "detailUrl": "/ilan/samsun-icradan-satilik-kira-garantili-dukkan-81200110",
+    "address": "Reşadiye Mahallesi, İlkadım, Samsun"
   },
   {
     "id": 81200111,
@@ -1662,7 +1772,8 @@
       "lng": 41.94206
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200111.jpg",
-    "detailUrl": "/ilan/siirt-icradan-satilik-2018-model-ticari-81200111"
+    "detailUrl": "/ilan/siirt-icradan-satilik-2018-model-ticari-81200111",
+    "address": "Kooperatif Mah., Siirt"
   },
   {
     "id": 81200112,
@@ -1677,7 +1788,8 @@
       "lng": 41.98593
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200112.jpg",
-    "detailUrl": "/ilan/siirt-icradan-satilik-2+1-daire-81200112"
+    "detailUrl": "/ilan/siirt-icradan-satilik-2+1-daire-81200112",
+    "address": "Tillo, Siirt"
   },
   {
     "id": 81200113,
@@ -1692,7 +1804,8 @@
       "lng": 35.17636
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200113.jpg",
-    "detailUrl": "/ilan/sinop-icradan-satilik-sanari-i̇marli-arsa-81200113"
+    "detailUrl": "/ilan/sinop-icradan-satilik-sanari-i̇marli-arsa-81200113",
+    "address": "Ada Mahallesi, Sinop"
   },
   {
     "id": 81200114,
@@ -1707,7 +1820,8 @@
       "lng": 35.16018
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200114.jpg",
-    "detailUrl": "/ilan/sinop-icradan-satilik-2022-model-suv-81200114"
+    "detailUrl": "/ilan/sinop-icradan-satilik-2022-model-suv-81200114",
+    "address": "Yeni Mahallesi, Sinop"
   },
   {
     "id": 81200115,
@@ -1722,7 +1836,8 @@
       "lng": 36.99452
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200115.jpg",
-    "detailUrl": "/ilan/sivas-icradan-satilik-500m2-i̇marli-arsa-81200115"
+    "detailUrl": "/ilan/sivas-icradan-satilik-500m2-i̇marli-arsa-81200115",
+    "address": "Akdeğirmen Mahallesi, Sivas"
   },
   {
     "id": 81200116,
@@ -1737,7 +1852,8 @@
       "lng": 36.98391
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200116.jpg",
-    "detailUrl": "/ilan/sivas-icradan-satilik-2+1-daire-81200116"
+    "detailUrl": "/ilan/sivas-icradan-satilik-2+1-daire-81200116",
+    "address": "Gültepe Mahallesi, Sivas"
   },
   {
     "id": 81200117,
@@ -1752,7 +1868,8 @@
       "lng": 27.49522
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200117.jpg",
-    "detailUrl": "/ilan/tekirdag-icradan-satilik-sanari-i̇marli-arsa-81200117"
+    "detailUrl": "/ilan/tekirdag-icradan-satilik-sanari-i̇marli-arsa-81200117",
+    "address": "100. Yıl Mahallesi, Süleymanpaşa, Tekirdağ"
   },
   {
     "id": 81200118,
@@ -1767,7 +1884,8 @@
       "lng": 27.53973
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200118.jpg",
-    "detailUrl": "/ilan/tekirdag-icradan-satilik-2+1-daire-81200118"
+    "detailUrl": "/ilan/tekirdag-icradan-satilik-2+1-daire-81200118",
+    "address": "İstiklal Mahallesi, Süleymanpaşa, Tekirdağ"
   },
   {
     "id": 81200119,
@@ -1782,7 +1900,8 @@
       "lng": 36.56181
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200119.jpg",
-    "detailUrl": "/ilan/tokat-icradan-satilik-2018-model-ticari-81200119"
+    "detailUrl": "/ilan/tokat-icradan-satilik-2018-model-ticari-81200119",
+    "address": "Oğulbey Mahallesi, Tokat"
   },
   {
     "id": 81200120,
@@ -1797,7 +1916,8 @@
       "lng": 36.5576
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200120.jpg",
-    "detailUrl": "/ilan/tokat-icradan-satilik-2+1-daire-81200120"
+    "detailUrl": "/ilan/tokat-icradan-satilik-2+1-daire-81200120",
+    "address": "Bahçelievler Mahallesi, Tokat"
   },
   {
     "id": 81200121,
@@ -1812,7 +1932,8 @@
       "lng": 39.70213
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200121.jpg",
-    "detailUrl": "/ilan/trabzon-icradan-satilik-2018-model-ticari-81200121"
+    "detailUrl": "/ilan/trabzon-icradan-satilik-2018-model-ticari-81200121",
+    "address": "2 Nolu Erdoğdu Mahallesi, Ortahisar, Trabzon"
   },
   {
     "id": 81200122,
@@ -1827,7 +1948,8 @@
       "lng": 39.72564
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200122.jpg",
-    "detailUrl": "/ilan/trabzon-icradan-satilik-sanari-i̇marli-arsa-81200122"
+    "detailUrl": "/ilan/trabzon-icradan-satilik-sanari-i̇marli-arsa-81200122",
+    "address": "Boztepe Mahallesi, Ortahisar, Trabzon"
   },
   {
     "id": 81200123,
@@ -1842,7 +1964,8 @@
       "lng": 39.55404
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200123.jpg",
-    "detailUrl": "/ilan/tunceli-icradan-satilik-3+1-daire-81200123"
+    "detailUrl": "/ilan/tunceli-icradan-satilik-3+1-daire-81200123",
+    "address": "Esentepe Mah., Tunceli Merkez"
   },
   {
     "id": 81200124,
@@ -1857,7 +1980,8 @@
       "lng": 39.56115
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200124.jpg",
-    "detailUrl": "/ilan/tunceli-icradan-satilik-mustakil-parsel-81200124"
+    "detailUrl": "/ilan/tunceli-icradan-satilik-mustakil-parsel-81200124",
+    "address": "Yeni Mah., Tunceli Merkez"
   },
   {
     "id": 81200125,
@@ -1872,7 +1996,8 @@
       "lng": 38.77002
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200125.jpg",
-    "detailUrl": "/ilan/sanliurfa-icradan-satilik-sanari-i̇marli-arsa-81200125"
+    "detailUrl": "/ilan/sanliurfa-icradan-satilik-sanari-i̇marli-arsa-81200125",
+    "address": "Mehmetçik Mahallesi, Karaköprü, Şanlıurfa"
   },
   {
     "id": 81200126,
@@ -1887,7 +2012,8 @@
       "lng": 38.78216
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200126.jpg",
-    "detailUrl": "/ilan/sanliurfa-icradan-satilik-dubleks-mesken-81200126"
+    "detailUrl": "/ilan/sanliurfa-icradan-satilik-dubleks-mesken-81200126",
+    "address": "Haleplibahçe Mah., Eyyübiye, Şanlıurfa"
   },
   {
     "id": 81200127,
@@ -1902,7 +2028,8 @@
       "lng": 29.39126
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200127.jpg",
-    "detailUrl": "/ilan/usak-icradan-satilik-2022-model-suv-81200127"
+    "detailUrl": "/ilan/usak-icradan-satilik-2022-model-suv-81200127",
+    "address": "Bozkurt Mahallesi, Uşak"
   },
   {
     "id": 81200128,
@@ -1917,7 +2044,8 @@
       "lng": 29.39406
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200128.jpg",
-    "detailUrl": "/ilan/usak-icradan-satilik-2018-model-ticari-81200128"
+    "detailUrl": "/ilan/usak-icradan-satilik-2018-model-ticari-81200128",
+    "address": "Kemalöz Mahallesi, Uşak"
   },
   {
     "id": 81200129,
@@ -1932,7 +2060,8 @@
       "lng": 43.35611
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200129.jpg",
-    "detailUrl": "/ilan/van-icradan-satilik-dubleks-mesken-81200129"
+    "detailUrl": "/ilan/van-icradan-satilik-dubleks-mesken-81200129",
+    "address": "Hatuniye Mahallesi, İpekyolu, Van"
   },
   {
     "id": 81200130,
@@ -1947,7 +2076,8 @@
       "lng": 43.35738
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200130.jpg",
-    "detailUrl": "/ilan/van-icradan-satilik-sanari-i̇marli-arsa-81200130"
+    "detailUrl": "/ilan/van-icradan-satilik-sanari-i̇marli-arsa-81200130",
+    "address": "Selimbey Mahallesi, İpekyolu, Van"
   },
   {
     "id": 81200131,
@@ -1962,7 +2092,8 @@
       "lng": 34.85255
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200131.jpg",
-    "detailUrl": "/ilan/yozgat-icradan-satilik-2022-model-suv-81200131"
+    "detailUrl": "/ilan/yozgat-icradan-satilik-2022-model-suv-81200131",
+    "address": "Divanlı, Yozgat Merkez"
   },
   {
     "id": 81200132,
@@ -1977,7 +2108,8 @@
       "lng": 34.78216
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200132.jpg",
-    "detailUrl": "/ilan/yozgat-icradan-satilik-2018-model-ticari-81200132"
+    "detailUrl": "/ilan/yozgat-icradan-satilik-2018-model-ticari-81200132",
+    "address": "Mehmet Hulusi Efendi, Yozgat Merkez"
   },
   {
     "id": 81200133,
@@ -1992,7 +2124,8 @@
       "lng": 31.79353
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200133.jpg",
-    "detailUrl": "/ilan/zonguldak-icradan-satilik-2+1-daire-81200133"
+    "detailUrl": "/ilan/zonguldak-icradan-satilik-2+1-daire-81200133",
+    "address": "Meşrutiyet Mahallesi, Zonguldak"
   },
   {
     "id": 81200134,
@@ -2007,7 +2140,8 @@
       "lng": 31.7803
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200134.jpg",
-    "detailUrl": "/ilan/zonguldak-icradan-satilik-2022-model-suv-81200134"
+    "detailUrl": "/ilan/zonguldak-icradan-satilik-2022-model-suv-81200134",
+    "address": "On Temmuz Mahallesi, Zonguldak"
   },
   {
     "id": 81200135,
@@ -2022,7 +2156,8 @@
       "lng": 34.0191
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200135.jpg",
-    "detailUrl": "/ilan/aksaray-icradan-satilik-1000m2-tarla-81200135"
+    "detailUrl": "/ilan/aksaray-icradan-satilik-1000m2-tarla-81200135",
+    "address": "Zafer, Aksaray"
   },
   {
     "id": 81200136,
@@ -2037,7 +2172,8 @@
       "lng": 34.01963
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200136.jpg",
-    "detailUrl": "/ilan/aksaray-icradan-satilik-mustakil-parsel-81200136"
+    "detailUrl": "/ilan/aksaray-icradan-satilik-mustakil-parsel-81200136",
+    "address": "Şifahane Mahallesi, Aksaray"
   },
   {
     "id": 81200137,
@@ -2052,7 +2188,8 @@
       "lng": 40.21251
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200137.jpg",
-    "detailUrl": "/ilan/bayburt-icradan-satilik-dubleks-mesken-81200137"
+    "detailUrl": "/ilan/bayburt-icradan-satilik-dubleks-mesken-81200137",
+    "address": "Tuzcuzade Mahallesi, Bayburt"
   },
   {
     "id": 81200138,
@@ -2067,7 +2204,8 @@
       "lng": 40.26336
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200138.jpg",
-    "detailUrl": "/ilan/bayburt-icradan-satilik-2015-model-hatchback-81200138"
+    "detailUrl": "/ilan/bayburt-icradan-satilik-2015-model-hatchback-81200138",
+    "address": "Halfikale Mahallesi, Bayburt"
   },
   {
     "id": 81200139,
@@ -2082,7 +2220,8 @@
       "lng": 33.24178
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200139.jpg",
-    "detailUrl": "/ilan/karaman-icradan-satilik-dubleks-mesken-81200139"
+    "detailUrl": "/ilan/karaman-icradan-satilik-dubleks-mesken-81200139",
+    "address": "Elmaşehir, Karaman"
   },
   {
     "id": 81200140,
@@ -2097,7 +2236,8 @@
       "lng": 33.18516
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200140.jpg",
-    "detailUrl": "/ilan/karaman-icradan-satilik-1000m2-tarla-81200140"
+    "detailUrl": "/ilan/karaman-icradan-satilik-1000m2-tarla-81200140",
+    "address": "Fatih, Karaman"
   },
   {
     "id": 81200141,
@@ -2112,7 +2252,8 @@
       "lng": 33.54814
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200141.jpg",
-    "detailUrl": "/ilan/kirikkale-icradan-satilik-dubleks-mesken-81200141"
+    "detailUrl": "/ilan/kirikkale-icradan-satilik-dubleks-mesken-81200141",
+    "address": "Yuva Mahallesi, Kırıkkale Merkez"
   },
   {
     "id": 81200142,
@@ -2127,7 +2268,8 @@
       "lng": 33.53782
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200142.jpg",
-    "detailUrl": "/ilan/kirikkale-icradan-satilik-1000m2-tarla-81200142"
+    "detailUrl": "/ilan/kirikkale-icradan-satilik-1000m2-tarla-81200142",
+    "address": "Yuva Mahallesi, Kırıkkale Merkez"
   },
   {
     "id": 81200143,
@@ -2142,7 +2284,8 @@
       "lng": 41.16329
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200143.jpg",
-    "detailUrl": "/ilan/batman-icradan-satilik-500m2-i̇marli-arsa-81200143"
+    "detailUrl": "/ilan/batman-icradan-satilik-500m2-i̇marli-arsa-81200143",
+    "address": "Tilmerc Mahallesi, Batman"
   },
   {
     "id": 81200144,
@@ -2157,7 +2300,8 @@
       "lng": 41.09797
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200144.jpg",
-    "detailUrl": "/ilan/batman-icradan-satilik-2022-model-suv-81200144"
+    "detailUrl": "/ilan/batman-icradan-satilik-2022-model-suv-81200144",
+    "address": "Gültepe Mahallesi, Batman"
   },
   {
     "id": 81200145,
@@ -2172,7 +2316,8 @@
       "lng": 42.42728
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200145.jpg",
-    "detailUrl": "/ilan/sirnak-icradan-satilik-3+1-daire-81200145"
+    "detailUrl": "/ilan/sirnak-icradan-satilik-3+1-daire-81200145",
+    "address": "Şehrinuh Mah., Şırnak Merkez"
   },
   {
     "id": 81200146,
@@ -2187,7 +2332,8 @@
       "lng": 42.42308
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200146.jpg",
-    "detailUrl": "/ilan/sirnak-icradan-satilik-kira-garantili-dukkan-81200146"
+    "detailUrl": "/ilan/sirnak-icradan-satilik-kira-garantili-dukkan-81200146",
+    "address": "Kaymakamçeşmesi, Şırnak Merkez"
   },
   {
     "id": 81200147,
@@ -2202,7 +2348,8 @@
       "lng": 32.31704
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200147.jpg",
-    "detailUrl": "/ilan/bartin-icradan-satilik-2015-model-hatchback-81200147"
+    "detailUrl": "/ilan/bartin-icradan-satilik-2015-model-hatchback-81200147",
+    "address": "Aladağ, Bartın"
   },
   {
     "id": 81200148,
@@ -2217,7 +2364,8 @@
       "lng": 32.36717
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200148.jpg",
-    "detailUrl": "/ilan/bartin-icradan-satilik-2+1-daire-81200148"
+    "detailUrl": "/ilan/bartin-icradan-satilik-2+1-daire-81200148",
+    "address": "Ağdacı, Bartın"
   },
   {
     "id": 81200149,
@@ -2232,7 +2380,8 @@
       "lng": 42.71323
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200149.jpg",
-    "detailUrl": "/ilan/ardahan-icradan-satilik-1000m2-tarla-81200149"
+    "detailUrl": "/ilan/ardahan-icradan-satilik-1000m2-tarla-81200149",
+    "address": "İnönü, Ardahan"
   },
   {
     "id": 81200150,
@@ -2247,7 +2396,8 @@
       "lng": 42.67484
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200150.jpg",
-    "detailUrl": "/ilan/ardahan-icradan-satilik-2015-model-hatchback-81200150"
+    "detailUrl": "/ilan/ardahan-icradan-satilik-2015-model-hatchback-81200150",
+    "address": "Halilefendi, Ardahan"
   },
   {
     "id": 81200151,
@@ -2262,7 +2412,8 @@
       "lng": 44.04155
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200151.jpg",
-    "detailUrl": "/ilan/igdir-icradan-satilik-sanari-i̇marli-arsa-81200151"
+    "detailUrl": "/ilan/igdir-icradan-satilik-sanari-i̇marli-arsa-81200151",
+    "address": "Pir Sultan Abdal Mahallesi, Iğdır"
   },
   {
     "id": 81200152,
@@ -2277,7 +2428,8 @@
       "lng": 44.05075
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200152.jpg",
-    "detailUrl": "/ilan/igdir-icradan-satilik-2018-model-ticari-81200152"
+    "detailUrl": "/ilan/igdir-icradan-satilik-2018-model-ticari-81200152",
+    "address": "Özgür, Iğdır"
   },
   {
     "id": 81200153,
@@ -2292,7 +2444,8 @@
       "lng": 29.27197
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200153.jpg",
-    "detailUrl": "/ilan/yalova-icradan-satilik-dubleks-mesken-81200153"
+    "detailUrl": "/ilan/yalova-icradan-satilik-dubleks-mesken-81200153",
+    "address": "Bayraktepe Mahallesi, Yalova"
   },
   {
     "id": 81200154,
@@ -2307,7 +2460,8 @@
       "lng": 29.25489
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200154.jpg",
-    "detailUrl": "/ilan/yalova-icradan-satilik-2020-model-sedan-81200154"
+    "detailUrl": "/ilan/yalova-icradan-satilik-2020-model-sedan-81200154",
+    "address": "Bahçelievler Mahallesi, Yalova"
   },
   {
     "id": 81200155,
@@ -2322,7 +2476,8 @@
       "lng": 32.65507
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200155.jpg",
-    "detailUrl": "/ilan/karabuk-icradan-satilik-1000m2-tarla-81200155"
+    "detailUrl": "/ilan/karabuk-icradan-satilik-1000m2-tarla-81200155",
+    "address": "Kılavuzlar Mahallesi, Karabük"
   },
   {
     "id": 81200156,
@@ -2337,7 +2492,8 @@
       "lng": 32.64139
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200156.jpg",
-    "detailUrl": "/ilan/karabuk-icradan-satilik-2018-model-ticari-81200156"
+    "detailUrl": "/ilan/karabuk-icradan-satilik-2018-model-ticari-81200156",
+    "address": "Kurtuluş Mahallesi, Karabük"
   },
   {
     "id": 81200157,
@@ -2352,7 +2508,8 @@
       "lng": 37.09177
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200157.jpg",
-    "detailUrl": "/ilan/kilis-icradan-satilik-sanari-i̇marli-arsa-81200157"
+    "detailUrl": "/ilan/kilis-icradan-satilik-sanari-i̇marli-arsa-81200157",
+    "address": "Mehmet Abdi Bulut Mahallesi, Kilis"
   },
   {
     "id": 81200158,
@@ -2367,7 +2524,8 @@
       "lng": 37.10176
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200158.jpg",
-    "detailUrl": "/ilan/kilis-icradan-satilik-mustakil-parsel-81200158"
+    "detailUrl": "/ilan/kilis-icradan-satilik-mustakil-parsel-81200158",
+    "address": "Atatürk Mahallesi, Kilis"
   },
   {
     "id": 81200159,
@@ -2382,7 +2540,8 @@
       "lng": 36.24497
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200159.jpg",
-    "detailUrl": "/ilan/osmaniye-icradan-satilik-mustakil-parsel-81200159"
+    "detailUrl": "/ilan/osmaniye-icradan-satilik-mustakil-parsel-81200159",
+    "address": "Dumlupınar Mahallesi, Osmaniye"
   },
   {
     "id": 81200160,
@@ -2397,7 +2556,8 @@
       "lng": 36.27187
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200160.jpg",
-    "detailUrl": "/ilan/osmaniye-icradan-satilik-sanari-i̇marli-arsa-81200160"
+    "detailUrl": "/ilan/osmaniye-icradan-satilik-sanari-i̇marli-arsa-81200160",
+    "address": "Yunus Emre, Osmaniye"
   },
   {
     "id": 81200161,
@@ -2412,7 +2572,8 @@
       "lng": 31.15288
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200161.jpg",
-    "detailUrl": "/ilan/duzce-icradan-satilik-kira-garantili-dukkan-81200161"
+    "detailUrl": "/ilan/duzce-icradan-satilik-kira-garantili-dukkan-81200161",
+    "address": "Kültür Mahallesi, Düzce"
   },
   {
     "id": 81200162,
@@ -2427,6 +2588,7 @@
       "lng": 31.13521
     },
     "thumbnailUrl": "https://cdn.adalet.com/images/81200162.jpg",
-    "detailUrl": "/ilan/duzce-icradan-satilik-mustakil-parsel-81200162"
+    "detailUrl": "/ilan/duzce-icradan-satilik-mustakil-parsel-81200162",
+    "address": "Ozanlar, Düzce"
   }
 ]
