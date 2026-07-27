@@ -25,6 +25,13 @@ vi.mock('./sprite/pinShapes', () => ({
   PIN_SIZE: { width: 56, height: 72 },
 }));
 
+/** The warm pass's cancel, so a test can assert the engine calls it. */
+const stopWarming = vi.hoisted(() => vi.fn());
+
+vi.mock('./sprite/warmDonuts', () => ({
+  warmDonutSprites: vi.fn(() => stopWarming),
+}));
+
 // donutShapes also exports the geometry the cluster layer builds itself from,
 // so the mock has to carry it or buildClusterLayers computes NaN offsets.
 vi.mock('./sprite/donutShapes', () => ({
@@ -143,10 +150,13 @@ class FakeMap {
 
 let lastMap: FakeMap;
 
+let lastOptions: Record<string, unknown>;
+
 vi.mock('maplibre-gl', () => ({
   Map: class extends FakeMap {
-    constructor() {
+    constructor(options: Record<string, unknown>) {
       super();
+      lastOptions = options;
       // Handing the instance to the test is the whole point of the subclass:
       // the engine never returns its map, so this is the only way to reach it.
       // oxlint-disable-next-line typescript/no-this-alias
@@ -156,6 +166,7 @@ vi.mock('maplibre-gl', () => ({
 }));
 
 const { createMapEngine } = await import('./createMapEngine');
+const { warmDonutSprites } = await import('./sprite/warmDonuts');
 
 const TURKEY: BBox = [25.5, 35.8, 44.9, 42.3];
 
@@ -177,6 +188,8 @@ const lastFilterOn = (layer: string) =>
 describe('createMapEngine', () => {
   beforeEach(() => {
     clusterZoom = () => Promise.resolve(9);
+    stopWarming.mockClear();
+    vi.mocked(warmDonutSprites).mockClear();
     vi.spyOn(console, 'info').mockImplementation(() => {});
     vi.spyOn(console, 'warn').mockImplementation(() => {});
     vi.spyOn(console, 'error').mockImplementation(() => {});
@@ -263,6 +276,65 @@ describe('createMapEngine', () => {
 
     expect(lastMap.minZoom).toBe(4);
     engine.destroy();
+  });
+
+  /**
+   * MapLibre charges for a symbol cross-fade three times, and all three land
+   * after a cluster click has already finished zooming: the clicked cluster's
+   * tile is held for `fadeDuration` so its icons can fade out, the replacing
+   * placement is deferred while the previous one is `stillRecent`, and then
+   * the new icons fade in. At the 300ms default that is close to a second of
+   * the old cluster sitting on top of the new view.
+   */
+  it('turns the symbol cross-fade off', () => {
+    const engine = build();
+    expect(lastOptions.fadeDuration).toBe(0);
+    engine.destroy();
+  });
+
+  /**
+   * Cluster sprites are drawn on demand, and MapLibre will not finish parsing
+   * a tile until every icon it asks for exists — so a zoom that reveals an
+   * undrawn mix stalls behind an SVG decode. The warm pass fills the set in
+   * during background time; it outlives no single frame, so an unmount has to
+   * be able to stop it.
+   */
+  describe('the background sprite warm-up', () => {
+    it('starts once the layers are registered, not before', async () => {
+      spriteGate.arm();
+      const engine = build();
+      lastMap.fire('load');
+
+      expect(warmDonutSprites).not.toHaveBeenCalled();
+
+      spriteGate.release();
+      await flush();
+
+      expect(warmDonutSprites).toHaveBeenCalledWith(lastMap);
+      engine.destroy();
+    });
+
+    it('is cancelled when the map goes away', async () => {
+      const engine = build();
+      lastMap.fire('load');
+      await flush();
+
+      expect(stopWarming).not.toHaveBeenCalled();
+      engine.destroy();
+      expect(stopWarming).toHaveBeenCalled();
+    });
+
+    it('is not cancelled by a destroy that beat it to the layers', async () => {
+      spriteGate.arm();
+      const engine = build();
+      lastMap.fire('load');
+      engine.destroy();
+      spriteGate.release();
+      await flush();
+
+      expect(warmDonutSprites).not.toHaveBeenCalled();
+      expect(stopWarming).not.toHaveBeenCalled();
+    });
   });
 
   /**

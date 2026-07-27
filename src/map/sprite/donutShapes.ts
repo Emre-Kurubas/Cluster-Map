@@ -128,13 +128,18 @@ export function donutSpriteId(gayrimenkul: number, arsa: number): string {
   return `donut-${gayrimenkul}-${arsa}`;
 }
 
+/** Every mix the layer expression can ask for, as (gayrimenkul, arsa) tenths. */
+export function donutMixes(): Array<[number, number]> {
+  const mixes: Array<[number, number]> = [];
+  for (let a = 0; a <= DONUT_STEPS; a += 1) {
+    for (let b = 0; b <= DONUT_STEPS - a; b += 1) mixes.push([a, b]);
+  }
+  return mixes;
+}
+
 /** Every mix the layer expression can ask for. */
 export function donutSpriteIds(): string[] {
-  const ids: string[] = [];
-  for (let a = 0; a <= DONUT_STEPS; a += 1) {
-    for (let b = 0; b <= DONUT_STEPS - a; b += 1) ids.push(donutSpriteId(a, b));
-  }
-  return ids;
+  return donutMixes().map(([a, b]) => donutSpriteId(a, b));
 }
 
 /**
@@ -185,6 +190,39 @@ export function buildDonutSvg(gayrimenkul: number, arsa: number): string {
 const DONUT_ID = /^donut-(\d+)-(\d+)$/;
 
 /**
+ * Rasterize one mix and register it under its sprite id.
+ *
+ * Never rejects: this is awaited by MapLibre on one path and run in background
+ * time on the other, and on both an unhandled rejection would cost far more
+ * than the icon it is about to draw.
+ *
+ * The presence check is deliberately made twice. Two callers race for the same
+ * id — the resolver, when the map asks for a mix, and the warm pass, working
+ * through the set in the background — and they can both pass the first check
+ * before either finishes decoding. A second `addImage` for an id that already
+ * exists does not throw; it fires an `error` on the style, which this map
+ * reports to the user as a basemap failure. So the check is repeated on the far
+ * side of the await, where the loser of the race can still stand down.
+ */
+export async function drawDonutSprite(
+  map: MapLibreMap,
+  gayrimenkul: number,
+  arsa: number,
+): Promise<void> {
+  const id = donutSpriteId(gayrimenkul, arsa);
+  try {
+    if (map.hasImage(id)) return;
+    const pixels = await rasterizeSvg(
+      buildDonutSvg(gayrimenkul, arsa), DONUT_SIZE.width, DONUT_SIZE.height,
+    );
+    if (map.hasImage(id)) return;
+    map.addImage(id, pixels, { pixelRatio: 2 });
+  } catch (error) {
+    console.warn(`[ListingMap] cluster icon "${id}" failed to draw`, error);
+  }
+}
+
+/**
  * Draw donut sprites as the map asks for them.
  *
  * All 66 used to be rasterized inside the `load` handler, before the source and
@@ -197,8 +235,11 @@ const DONUT_ID = /^donut-(\d+)-(\d+)$/;
  * generated here still lands in the first paint. The event only fires once the
  * resolver has already failed, which would mean a frame with no icon.
  *
- * Never rejects. MapLibre awaits this, and an unhandled rejection would cost
- * the style rather than one icon.
+ * That await is also why this cannot be the only path: MapLibre holds the whole
+ * tile's symbol data behind it, so a zoom that reveals mixes nobody has drawn
+ * yet keeps showing the tile it came from until every one of them is decoded.
+ * `warmDonutSprites` closes that window; this stays as the fallback for
+ * anything asked for before the warm pass reaches it.
  */
 export function registerDonutSpriteResolver(map: MapLibreMap): void {
   map.setMissingStyleImageResolver(async (id: string) => {
@@ -210,14 +251,6 @@ export function registerDonutSpriteResolver(map: MapLibreMap): void {
     const arsa = Number(match[2]);
     if (gayrimenkul + arsa > DONUT_STEPS) return;
 
-    try {
-      if (map.hasImage(id)) return;
-      const pixels = await rasterizeSvg(
-        buildDonutSvg(gayrimenkul, arsa), DONUT_SIZE.width, DONUT_SIZE.height,
-      );
-      map.addImage(id, pixels, { pixelRatio: 2 });
-    } catch (error) {
-      console.warn(`[ListingMap] cluster icon "${id}" failed to draw`, error);
-    }
+    await drawDonutSprite(map, gayrimenkul, arsa);
   });
 }

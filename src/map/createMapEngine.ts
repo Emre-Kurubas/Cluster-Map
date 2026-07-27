@@ -4,6 +4,7 @@ import type { ErrorEvent, GeoJSONSource } from 'maplibre-gl';
 import { idsWithinBounds, toGeoJSON } from '../lib/geo';
 import { loadPinImages } from './sprite/pinShapes';
 import { registerDonutSpriteResolver } from './sprite/donutShapes';
+import { warmDonutSprites } from './sprite/warmDonuts';
 import { createTileErrorReporter } from './tileErrorReporter';
 import { createNullEngine } from './engine/nullEngine';
 import { createHighlight } from './engine/highlight';
@@ -62,6 +63,25 @@ export function createMapEngine(
       // appear, so the host page must carry it — this component no longer
       // does. See README.
       attributionControl: false,
+      /**
+       * No symbol cross-fade.
+       *
+       * MapLibre spends this budget three times over, and all three land after
+       * a cluster is clicked and the zoom has already stopped. A tile that is
+       * no longer needed but carries symbols is *held* for `fadeDuration` so
+       * its icons can fade out, which is the clicked cluster still sitting
+       * there; the next placement cannot even begin while the previous one is
+       * `stillRecent`, another `fadeDuration`; and then the icons that replace
+       * it fade in over a third. Default 300ms — near enough the second the
+       * clusters were observed to linger for.
+       *
+       * At 0 the tile is dropped on the next update, placement is recomputed
+       * every frame, and icons swap the moment their tile is ready. The cost
+       * is that symbol placement loses its 2ms-per-frame budget and runs to
+       * completion each frame; that is the same path every map already takes
+       * before its first idle, and this style's label count is small.
+       */
+      fadeDuration: 0,
       // Pin geometry is flat; skipping the 3D pitch keeps interaction cheap.
       pitchWithRotate: false,
       dragRotate: false,
@@ -88,6 +108,8 @@ export function createMapEngine(
    * mutate is still there.
    */
   let destroyed = false;
+  /** Cancels the background sprite warm-up. Set once the layers exist. */
+  let stopWarming: (() => void) | undefined;
 
   const highlight = createHighlight(map, () => ready);
 
@@ -141,6 +163,13 @@ export function createMapEngine(
     if (destroyed) return;
 
     registerListingLayers(map, pending);
+
+    // Now that something is on screen, fill in the cluster sprites the first
+    // paint did not need. Expanding a cluster reveals mixes that have never
+    // been drawn, and MapLibre will not finish parsing the tile that contains
+    // them until each one is decoded — so without this, the zoom lands and the
+    // old cluster stays up until the decoding catches up.
+    stopWarming = warmDonutSprites(map);
 
     console.info(
       `[ListingMap] ready — ${pending.length} listing(s), ` +
@@ -207,6 +236,7 @@ export function createMapEngine(
     destroy: () => {
       destroyed = true;
       ready = false;
+      stopWarming?.();
       clearTimeout(loadWatchdog);
       map.remove();
     },
