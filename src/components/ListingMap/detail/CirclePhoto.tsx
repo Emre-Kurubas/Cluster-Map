@@ -19,11 +19,15 @@ interface CirclePhotoProps {
  * artwork draws the category pin in that same colour, which would vanish
  * against a solid field of it.
  *
- * Width and radius are staggered rather than run together, and the order flips
+ * Width and radius are offset rather than run together, and the order flips
  * with direction. Animating both at once puts a 280x200 box under a full
  * radius, which is a stadium — the shape reads as an oval on the way out and
  * again on the way back. Squaring the corners before widening, then narrowing
  * before rounding, keeps every frame either a circle or a rectangle.
+ *
+ * The two overlap rather than queue: a delay long enough to fully separate them
+ * reads as two moves, not one. Radius is well ahead by the time the box has
+ * widened enough for the difference to show, which is all it needs to be.
  */
 export function CirclePhoto({ listing, onOpen, color, innerRef }: CirclePhotoProps) {
   return (
@@ -36,22 +40,22 @@ export function CirclePhoto({ listing, onOpen, color, innerRef }: CirclePhotoPro
       onClick={onOpen}
       style={{ backgroundColor: color, outlineColor: color }}
       className="group pointer-events-auto relative grid size-[200px] shrink-0
-                 place-items-center rounded-full shadow-xl shadow-ink-900/25
-                 hover:w-[280px] hover:rounded-2xl hover:shadow-2xl
+                 self-center place-items-center rounded-full shadow-xl shadow-ink-900/25
+                 [will-change:width] hover:w-[280px] hover:rounded-2xl hover:shadow-2xl
                  focus-visible:w-[280px] focus-visible:rounded-2xl
                  focus-visible:outline-2 focus-visible:outline-offset-4
                  motion-safe:animate-[circle-in_280ms_var(--ease-spring)]
                  xl:size-[240px] xl:hover:w-[320px]
-                 [transition:width_260ms_var(--ease-spring),border-radius_180ms_var(--ease-spring)_180ms,box-shadow_320ms_var(--ease-spring)]
-                 hover:[transition:border-radius_180ms_var(--ease-spring),width_260ms_var(--ease-spring)_140ms,box-shadow_320ms_var(--ease-spring)]
-                 focus-visible:[transition:border-radius_180ms_var(--ease-spring),width_260ms_var(--ease-spring)_140ms,box-shadow_320ms_var(--ease-spring)]"
+                 [transition:width_420ms_var(--ease-smooth),border-radius_260ms_var(--ease-smooth)_200ms,box-shadow_420ms_var(--ease-smooth)]
+                 hover:[transition:border-radius_260ms_var(--ease-smooth),width_460ms_var(--ease-smooth)_60ms,box-shadow_460ms_var(--ease-smooth)]
+                 focus-visible:[transition:border-radius_260ms_var(--ease-smooth),width_460ms_var(--ease-smooth)_60ms,box-shadow_460ms_var(--ease-smooth)]"
     >
       <span
         className="absolute inset-[10px] overflow-hidden rounded-full
                    group-hover:rounded-xl group-focus-visible:rounded-xl
-                   [transition:border-radius_180ms_var(--ease-spring)_180ms]
-                   group-hover:[transition:border-radius_180ms_var(--ease-spring)]
-                   group-focus-visible:[transition:border-radius_180ms_var(--ease-spring)]"
+                   [transition:border-radius_260ms_var(--ease-smooth)_200ms]
+                   group-hover:[transition:border-radius_260ms_var(--ease-smooth)]
+                   group-focus-visible:[transition:border-radius_260ms_var(--ease-smooth)]"
       >
         <ListingImage
           listing={listing}
