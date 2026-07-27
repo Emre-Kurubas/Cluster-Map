@@ -28,7 +28,9 @@ vi.mock('./sprite/pinShapes', () => ({
 // donutShapes also exports the geometry the cluster layer builds itself from,
 // so the mock has to carry it or buildClusterLayers computes NaN offsets.
 vi.mock('./sprite/donutShapes', () => ({
-  loadDonutImages: () => spriteGate.wait(),
+  // Synchronous now: donut sprites are drawn on demand, so they no longer
+  // stand between the style loading and the source being registered.
+  registerDonutSpriteResolver: () => {},
   DONUT_STEPS: 10,
   HEAD_CENTER: { x: 48, y: 48 },
   DONUT_SIZE: { width: 96, height: 124 },
@@ -118,6 +120,7 @@ class FakeMap {
   }
 
   getCanvas() { return { width: 800, height: 600, style: {} as { cursor?: string } }; }
+  setMissingStyleImageResolver() { this.guard(); }
 
   getBounds() {
     return {
@@ -188,6 +191,27 @@ describe('createMapEngine', () => {
     expect(lastMap.sources.has(SOURCE_ID)).toBe(true);
     expect(lastMap.addLayerCalls).toContain(LAYER_CLUSTERS);
     expect(lastMap.addLayerCalls).toContain(LAYER_PINS_ACTIVE);
+    engine.destroy();
+  });
+
+  /**
+   * The 66 cluster sprites used to be awaited before any of this, so no pin
+   * drew until every mix had been rasterized. Only the three pin sprites are
+   * eager now; holding them still holds registration, and nothing else does.
+   */
+  it('waits only on the pin sprites before registering anything', async () => {
+    spriteGate.arm();
+    const engine = build();
+    lastMap.fire('load');
+    await flush();
+
+    expect(lastMap.addSourceCalls, 'registration ran before the pins were ready')
+      .toEqual([]);
+
+    spriteGate.release();
+    await flush();
+
+    expect(lastMap.addSourceCalls).toEqual([SOURCE_ID]);
     engine.destroy();
   });
 

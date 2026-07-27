@@ -181,26 +181,43 @@ export function buildDonutSvg(gayrimenkul: number, arsa: number): string {
 </svg>`;
 }
 
+/** `donut-<a>-<b>`, with both shares inside the generated set. */
+const DONUT_ID = /^donut-(\d+)-(\d+)$/;
+
 /**
- * Register every donut sprite.
+ * Draw donut sprites as the map asks for them.
  *
- * Like the pins, this never rejects: it runs inside the map's `load` handler
- * ahead of source and layer registration, and a missing icon must not cost the
- * map its layers.
+ * All 66 used to be rasterized inside the `load` handler, before the source and
+ * layers were registered — so no pin drew at all until every mix a cluster
+ * could theoretically have had been decoded, including the great majority that
+ * never occur in a given dataset. A real dataset asks for a handful.
+ *
+ * `setMissingStyleImageResolver` rather than the `styleimagemissing` event:
+ * MapLibre awaits the resolver before deciding an image is missing, so a sprite
+ * generated here still lands in the first paint. The event only fires once the
+ * resolver has already failed, which would mean a frame with no icon.
+ *
+ * Never rejects. MapLibre awaits this, and an unhandled rejection would cost
+ * the style rather than one icon.
  */
-export async function loadDonutImages(map: MapLibreMap): Promise<void> {
-  await Promise.all(
-    donutSpriteIds().map(async (id) => {
-      try {
-        if (map.hasImage(id)) return;
-        const [, a, b] = id.split('-').map(Number);
-        const pixels = await rasterizeSvg(
-          buildDonutSvg(a, b), DONUT_SIZE.width, DONUT_SIZE.height,
-        );
-        map.addImage(id, pixels, { pixelRatio: 2 });
-      } catch (error) {
-        console.warn(`[ListingMap] cluster icon "${id}" failed to load`, error);
-      }
-    }),
-  );
+export function registerDonutSpriteResolver(map: MapLibreMap): void {
+  map.setMissingStyleImageResolver(async (id: string) => {
+    const match = DONUT_ID.exec(id);
+    // Not ours. Returning quietly leaves the id for whatever else is missing.
+    if (!match) return;
+
+    const gayrimenkul = Number(match[1]);
+    const arsa = Number(match[2]);
+    if (gayrimenkul + arsa > DONUT_STEPS) return;
+
+    try {
+      if (map.hasImage(id)) return;
+      const pixels = await rasterizeSvg(
+        buildDonutSvg(gayrimenkul, arsa), DONUT_SIZE.width, DONUT_SIZE.height,
+      );
+      map.addImage(id, pixels, { pixelRatio: 2 });
+    } catch (error) {
+      console.warn(`[ListingMap] cluster icon "${id}" failed to draw`, error);
+    }
+  });
 }

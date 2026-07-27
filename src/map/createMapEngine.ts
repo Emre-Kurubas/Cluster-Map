@@ -4,7 +4,7 @@ import type { ErrorEvent, GeoJSONSource, MapLayerMouseEvent } from 'maplibre-gl'
 import type { Point } from 'geojson';
 import { idsWithinBounds, toGeoJSON } from '../lib/geo';
 import { loadPinImages } from './sprite/pinShapes';
-import { loadDonutImages } from './sprite/donutShapes';
+import { registerDonutSpriteResolver } from './sprite/donutShapes';
 import { createTileErrorReporter } from './tileErrorReporter';
 import { buildActivePinLayer, buildPinLayer } from './layers/pins';
 import { buildClusterLayers, buildClusterProperties } from './layers/clusters';
@@ -184,7 +184,15 @@ export function createMapEngine(
   map.on('load', async () => {
     clearTimeout(loadWatchdog);
     muteBaseLayers(map);
-    await Promise.all([loadPinImages(map), loadDonutImages(map)]);
+
+    // Donuts draw on demand. Installing the resolver is synchronous, so the
+    // 66 cluster mixes no longer stand between the style loading and the pins
+    // appearing — a real dataset asks for a handful of them.
+    registerDonutSpriteResolver(map);
+
+    // The three pin sprites stay eager: they are always needed, and they are
+    // what the map draws first.
+    await loadPinImages(map);
 
     // Sixty-nine SVG rasterizations happen inside that await, and React
     // StrictMode unmounts and remounts every effect — so in development an

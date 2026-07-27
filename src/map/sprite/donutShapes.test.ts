@@ -1,7 +1,16 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
+
+/**
+ * jsdom has no canvas and no image decoder, so the real rasterizer can only
+ * time out. What is under test here is the resolver's routing — which ids it
+ * claims, which it leaves alone — not the pixels.
+ */
+vi.mock('./pinShapes', () => ({
+  rasterizeSvg: vi.fn(async (svg: string) => ({ svg }) as unknown as ImageData),
+}));
 import {
   DONUT_STEPS, DONUT_SIZE, HEAD_CENTER, HEAD_RADIUS, TIP_OFFSET, HALO_BLEED,
-  buildDonutSvg, donutSpriteId, donutSpriteIds,
+  buildDonutSvg, donutSpriteId, donutSpriteIds, registerDonutSpriteResolver,
 } from './donutShapes';
 import { getCategoryConfig } from '../../config/categories';
 
@@ -195,5 +204,74 @@ describe('buildDonutSvg', () => {
       const [, a, b] = id.split('-').map(Number);
       expect(buildDonutSvg(a, b)).toContain('<svg');
     }
+  });
+});
+
+/**
+ * The 66 donut sprites used to be rasterized before the source and layers were
+ * registered, so no pin drew until every mix a cluster could theoretically have
+ * had been decoded — including the great majority that never occur in a given
+ * dataset.
+ *
+ * MapLibre awaits `setMissingStyleImageResolver`, so an icon asked for and
+ * generated on the spot still lands in the first paint. That is why this uses
+ * the resolver rather than the `styleimagemissing` event, which only fires
+ * after the resolver has already failed.
+ */
+describe('registerDonutSpriteResolver', () => {
+  const fakeMap = () => {
+    const images = new Map<string, unknown>();
+    let resolver: ((id: string) => Promise<void>) | null = null;
+    return {
+      images,
+      ask: (id: string) => resolver?.(id) ?? Promise.resolve(),
+      hasResolver: () => resolver !== null,
+      setMissingStyleImageResolver(next: (id: string) => Promise<void>) { resolver = next; },
+      hasImage: (id: string) => images.has(id),
+      addImage: (id: string, image: unknown) => { images.set(id, image); },
+    };
+  };
+
+  it('installs a resolver without rasterizing anything', async () => {
+    const map = fakeMap();
+    registerDonutSpriteResolver(map as never);
+    expect(map.hasResolver()).toBe(true);
+    expect(map.images.size).toBe(0);
+  });
+
+  it('generates exactly the sprite that was asked for', async () => {
+    const map = fakeMap();
+    registerDonutSpriteResolver(map as never);
+    await map.ask(donutSpriteId(6, 3));
+
+    expect([...map.images.keys()]).toEqual([donutSpriteId(6, 3)]);
+  });
+
+  it('ignores ids that are not donuts, so other resolvers still get a turn', async () => {
+    const map = fakeMap();
+    registerDonutSpriteResolver(map as never);
+    await map.ask('pin-arsa');
+    await map.ask('something-else');
+
+    expect(map.images.size).toBe(0);
+  });
+
+  it('does not redraw a sprite it has already registered', async () => {
+    const map = fakeMap();
+    registerDonutSpriteResolver(map as never);
+    await map.ask(donutSpriteId(2, 2));
+    const first = map.images.get(donutSpriteId(2, 2));
+    await map.ask(donutSpriteId(2, 2));
+
+    expect(map.images.get(donutSpriteId(2, 2))).toBe(first);
+  });
+
+  // A malformed id must not reject: MapLibre awaits this, and an unhandled
+  // rejection here would surface as a broken style rather than a missing icon.
+  it('survives an id shaped like a donut but carrying nonsense', async () => {
+    const map = fakeMap();
+    registerDonutSpriteResolver(map as never);
+    await expect(map.ask('donut-x-y')).resolves.toBeUndefined();
+    expect(map.images.size).toBe(0);
   });
 });
