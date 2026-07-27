@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { FocusView } from './FocusView';
 import { useListingStore } from '../store/useListingStore';
@@ -20,12 +20,17 @@ const listing: Listing = {
   detailUrl: '/ilan/1',
 };
 
-const engine = {
-  project: () => [400, 300] as [number, number],
-  onMove: () => () => {},
-} as unknown as MapEngine;
-
 const SIZE = { width: 800, height: 600 };
+
+function fakeEngine() {
+  return {
+    project: () => [400, 300] as [number, number],
+    onMove: () => () => {},
+    resetView: vi.fn(),
+  } as unknown as MapEngine;
+}
+
+let engine: MapEngine = fakeEngine();
 
 const setup = (onOpen = vi.fn()) => {
   render(
@@ -36,6 +41,7 @@ const setup = (onOpen = vi.fn()) => {
 
 describe('FocusView', () => {
   beforeEach(() => {
+    engine = fakeEngine();
     useListingStore.getState().resetAll();
     useListingStore.getState().select(1);
 
@@ -60,6 +66,41 @@ describe('FocusView', () => {
     setup();
     await userEvent.click(screen.getByRole('button', { name: t.backToList }));
     expect(useListingStore.getState().selectedId).toBeNull();
+  });
+
+  it('returns the map to the default view from the back button', async () => {
+    setup();
+    await userEvent.click(screen.getByRole('button', { name: t.backToList }));
+    expect(engine.resetView).toHaveBeenCalledTimes(1);
+  });
+
+  it('returns the map to the default view when escape leaves focus mode', async () => {
+    setup();
+    await userEvent.keyboard('{Escape}');
+    expect(engine.resetView).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not reset the map when escape only closes the lightbox', async () => {
+    setup();
+    await userEvent.click(screen.getByTestId('circle-photo'));
+    await userEvent.keyboard('{Escape}');
+    expect(engine.resetView).not.toHaveBeenCalled();
+  });
+
+  it('lists the listing fields with their labels', () => {
+    setup();
+    const list = screen.getByTestId('focus-fields');
+    for (const label of [
+      t.fieldCategory,
+      t.fieldSaleType,
+      t.fieldOffice,
+      t.fieldPrice,
+      t.fieldDescription,
+    ]) {
+      expect(within(list).getByText(label)).toBeInTheDocument();
+    }
+    expect(within(list).getByText('Arsa')).toBeInTheDocument();
+    expect(within(list).getByText('Açıklama metni')).toBeInTheDocument();
   });
 
   it('opens the lightbox from the photo', async () => {

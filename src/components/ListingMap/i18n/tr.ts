@@ -30,6 +30,12 @@ export const t = {
   closePhoto: 'Fotoğrafı kapat',
   listingPhoto: 'İlan fotoğrafı',
 
+  fieldCategory: 'Kategori',
+  fieldSaleType: 'Satış türü',
+  fieldOffice: 'İcra dairesi',
+  fieldPrice: 'Muhammen bedel',
+  fieldDescription: 'Açıklama',
+
   goToListing: 'İlana git',
   noImage: 'Görsel yok',
 
