@@ -65,6 +65,13 @@ export { ListingStoreProvider, useListingStore, useListingStoreApi } from './sto
 export { createListingStore } from './store/createListingStore';
 export type { ListingState, ListingStore } from './store/createListingStore';
 
+/**
+ * Category colours and sprite ids. Anyone building chrome of their own from
+ * these primitives needs them, or their controls will not match the pins.
+ */
+export { CATEGORIES, CATEGORY_LIST, getCategoryConfig } from './config/categories';
+export type { CategoryConfig } from './config/categories';
+
 // The types those components speak in
 export type { Listing, Category } from './types/listing';
 export type { Filters, SortMode, Chip as FilterChip } from './types/filters';

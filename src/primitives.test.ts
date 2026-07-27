@@ -22,8 +22,11 @@ const ALREADY_PURE = [
 
 const STATE = ['ListingStoreProvider', 'createListingStore', 'useListingStore'];
 
+/** Category colours, so consumer-built chrome can match the pins. */
+const CONFIG = ['CATEGORIES', 'CATEGORY_LIST', 'getCategoryConfig'];
+
 describe('the primitives entry point', () => {
-  it.each([...CONNECTED, ...PURE, ...ALREADY_PURE, ...STATE])('exports %s', (name) => {
+  it.each([...CONNECTED, ...PURE, ...ALREADY_PURE, ...STATE, ...CONFIG])('exports %s', (name) => {
     expect(primitives).toHaveProperty(name);
   });
 

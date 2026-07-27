@@ -1,5 +1,7 @@
-import { ListingMap } from '../src';
-import type { Listing } from '../src';
+// By its published name, resolved to dist/ by the alias in vite.config.ts —
+// so the demo exercises the built package, not the source.
+import { ListingMap } from '@uyap/listing-map';
+import type { Listing } from '@uyap/listing-map';
 import { withDemoPhotos } from './demoPhotos';
 import rawListings from './data/listings.json';
 

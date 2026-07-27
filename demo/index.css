@@ -1,11 +1,5 @@
-/* The component's stylesheet carries Tailwind itself, so the demo imports only
-   this. A real consumer does the same, as `@uyap/listing-map/styles.css`.
-
-   Nothing else belongs here. The build scopes every rule in this bundle under
-   `.uyap-listing-map`, which is right for the component and wrong for an app
-   shell — `html, body, #root` would become selectors that match nothing. The
-   demo's shell rules live in index.html instead. */
-@import "../src/styles.css";
-
-/* The demo's own markup lives outside src/, so it has to be named too. */
+/* The demo's own markup uses Tailwind utilities, so it needs a Tailwind build
+   of its own. A real consumer needs none of this: the package ships its
+   stylesheet precompiled, and importing the component pulls it in. */
+@import "tailwindcss";
 @source "../demo";

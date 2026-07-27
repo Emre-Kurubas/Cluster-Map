@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { defineConfig, type Plugin } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
@@ -48,6 +49,18 @@ export default defineConfig({
   root: 'demo',
   publicDir: 'public',
   build: { outDir: '../dist-demo', emptyOutDir: true },
+  /**
+   * The demo consumes the built package by its published name, so a broken
+   * build fails the demo rather than reaching a consumer. Run `npm run
+   * build:lib` before `npm run dev`.
+   */
+  resolve: {
+    alias: {
+      '@uyap/listing-map/styles.css': fileURLToPath(new URL('./dist/styles.css', import.meta.url)),
+      '@uyap/listing-map/primitives': fileURLToPath(new URL('./dist/primitives.js', import.meta.url)),
+      '@uyap/listing-map': fileURLToPath(new URL('./dist/index.js', import.meta.url)),
+    },
+  },
   plugins: [react(), tailwindcss(), maplibreWorkerAssets(), scopeComponentCss()],
   optimizeDeps: {
     // Dev counterpart to the plugin above: pre-bundling would relocate the
