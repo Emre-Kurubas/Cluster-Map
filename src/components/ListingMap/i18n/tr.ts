@@ -25,6 +25,10 @@ export const t = {
   openRail: 'Listeyi aç',
   closeRail: 'Listeyi kapat',
   closeDetail: 'Detayı kapat',
+  backToList: 'Listeye dön',
+  openPhoto: 'Fotoğrafı büyüt',
+  closePhoto: 'Fotoğrafı kapat',
+  listingPhoto: 'İlan fotoğrafı',
 
   goToListing: 'İlana git',
   noImage: 'Görsel yok',
