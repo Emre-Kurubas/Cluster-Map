@@ -37,12 +37,35 @@ export function boundedLevenshtein(a: string, b: string, maxDistance: number): n
   return distance > maxDistance ? tooFar : distance;
 }
 
+/**
+ * Character-histogram lower bound on edit distance.
+ *
+ * Every edit changes the character multiset by at most 2 (one removal plus one
+ * insertion), so `distance >= sumAbsDiff / 2`. When that bound already exceeds
+ * the cap we can reject without running the O(n·m) DP at all. This is exact —
+ * it never rejects a pair the DP would have accepted — and it screens out the
+ * overwhelming majority of candidates, which is what keeps fuzzy search inside
+ * its frame budget on large datasets.
+ */
+function exceedsHistogramBound(a: string, b: string, maxDistance: number): boolean {
+  const counts = new Map<string, number>();
+  for (const char of a) counts.set(char, (counts.get(char) ?? 0) + 1);
+  for (const char of b) counts.set(char, (counts.get(char) ?? 0) - 1);
+
+  let sumAbsDiff = 0;
+  for (const value of counts.values()) sumAbsDiff += Math.abs(value);
+
+  return sumAbsDiff > maxDistance * 2;
+}
+
 /** How well a single query token matches a single candidate token. 0..1. */
 export function tokenScore(needle: string, candidate: string): number {
   if (!needle || !candidate) return 0;
   if (needle === candidate) return 1;
   if (candidate.startsWith(needle)) return 0.8;
   if (needle.length < MIN_FUZZY_LENGTH) return 0;
+  if (Math.abs(needle.length - candidate.length) > 2) return 0;
+  if (exceedsHistogramBound(needle, candidate, 2)) return 0;
 
   const distance = boundedLevenshtein(needle, candidate, 2);
   if (distance === 1) return 0.6;
@@ -70,6 +93,14 @@ export function scoreListing(indexed: IndexedListing, queryTokens: string[]): nu
   let total = 0;
   for (const token of queryTokens) {
     const titleHit = bestScore(token, indexed.titleTokens) * TITLE_WEIGHT;
+
+    // A perfect title hit already dominates any possible body hit, so there is
+    // nothing to gain from scanning the body tokens as well.
+    if (titleHit === TITLE_WEIGHT) {
+      total += titleHit;
+      continue;
+    }
+
     const bodyHit = bestScore(token, indexed.bodyTokens) * BODY_WEIGHT;
     const best = Math.max(titleHit, bodyHit);
     if (best === 0) return 0;

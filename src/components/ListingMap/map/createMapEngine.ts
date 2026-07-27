@@ -85,7 +85,7 @@ export function createMapEngine(
 
   map.on('error', (event: ErrorEvent) => {
     // Tile 404s surface here; style/source failures should not kill the UI.
-    if (String(event?.error?.message ?? '').toLowerCase().includes('tile')) {
+    if (/tile/i.test(String(event?.error?.message ?? ''))) {
       onError('tile');
     }
   });
