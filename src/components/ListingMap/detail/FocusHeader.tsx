@@ -18,12 +18,12 @@ export function FocusHeader({ listing }: FocusHeaderProps) {
 
   return (
     <p
-      className="pointer-events-none select-none text-center text-sm font-semibold
-                 tracking-tight text-ink-900
+      className="pointer-events-none select-none text-center text-lg font-semibold
+                 tracking-tight text-ink-900 xl:text-xl
                  motion-safe:animate-[header-in_250ms_var(--ease-spring)]"
       style={{
         textShadow:
-          '0 1px 3px rgb(255 255 255 / 0.9), 0 0 12px rgb(255 255 255 / 0.7)',
+          '0 1px 4px rgb(255 255 255 / 0.95), 0 0 14px rgb(255 255 255 / 0.75)',
       }}
     >
       {address}

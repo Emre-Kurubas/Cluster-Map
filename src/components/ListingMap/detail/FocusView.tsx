@@ -139,7 +139,7 @@ export function FocusView({ listing, engine, size, onOpen }: FocusViewProps) {
 
       {/* Anchored top and bottom so the details column runs from under the photo
           to the foot of the map rather than sizing to its content. */}
-      <div className="absolute bottom-6 left-6 top-[10%] z-20 flex flex-col gap-5 xl:left-10">
+      <div className="absolute bottom-6 left-12 top-[10%] z-20 flex flex-col gap-5 xl:left-20">
         <CirclePhoto
           listing={listing}
           color={color}
@@ -147,12 +147,13 @@ export function FocusView({ listing, engine, size, onOpen }: FocusViewProps) {
           onOpen={() => setLightboxOpen(true)}
         />
 
-        {/* No surface at all: dark ink straight on the map, held legible by a
-            white text shadow the way the address header is. */}
+        {/* Frosted grey rather than white: it has to read as a surface over a
+            pale basemap without competing with the photo beside it. */}
         <div
           className="pointer-events-auto flex min-h-0 w-[28rem] max-w-[calc(100vw-3rem)]
-                     flex-1 flex-col gap-4 overflow-y-auto pb-2 pr-2 text-ink-900
-                     [text-shadow:0_1px_3px_rgb(255_255_255/0.9),0_0_10px_rgb(255_255_255/0.65)]
+                     flex-1 flex-col gap-4 overflow-y-auto rounded-2xl
+                     border border-white/40 bg-ink-300/30 p-6 text-ink-900
+                     shadow-[0_8px_32px_rgba(34,49,63,0.18)] backdrop-blur-xl
                      motion-safe:animate-[focus-body-in_300ms_var(--ease-spring)_120ms_backwards]"
         >
           <h2 className="text-lg font-semibold leading-snug">{listing.title}</h2>
@@ -180,11 +181,12 @@ export function FocusView({ listing, engine, size, onOpen }: FocusViewProps) {
             type="button"
             onClick={() => onOpen(listing)}
             style={{ backgroundColor: strongColor }}
-            // The column's white text shadow would sit under a white label.
-            className="mt-1 w-full shrink-0 rounded-xl px-4 py-3 text-sm
+            // mt-auto pins it to the foot of the column, so the fields spread
+            // out above it instead of the whole block bunching at the top.
+            className="mt-auto w-full shrink-0 rounded-xl px-4 py-3 text-sm
                        font-semibold text-white shadow-lg shadow-ink-900/25
-                       [text-shadow:none] transition-[transform,filter]
-                       duration-200 ease-[var(--ease-spring)] hover:brightness-110
+                       transition-[transform,filter] duration-200
+                       ease-[var(--ease-spring)] hover:brightness-110
                        active:scale-[0.98] focus-visible:outline-2
                        focus-visible:outline-offset-2 focus-visible:outline-white"
           >
