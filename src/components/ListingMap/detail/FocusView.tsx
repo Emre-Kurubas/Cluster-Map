@@ -28,14 +28,14 @@ interface FieldProps {
 function Field({ label, children, stacked = false }: FieldProps) {
   return (
     <div
-      className={`border-t border-white/10 py-2 text-xs first:border-t-0 first:pt-0 ${
-        stacked ? 'flex flex-col gap-1' : 'flex items-baseline justify-between gap-4'
+      className={`border-t border-white/15 py-3 text-sm first:border-t-0 first:pt-0 ${
+        stacked ? 'flex flex-col gap-1.5' : 'flex items-baseline justify-between gap-4'
       }`}
     >
-      <dt className="shrink-0 text-white/55">{label}</dt>
+      <dt className="shrink-0 text-white/65">{label}</dt>
       <dd
         className={`text-white ${
-          stacked ? 'leading-relaxed text-white/85' : 'text-right'
+          stacked ? 'leading-relaxed text-white/90' : 'text-right font-medium'
         }`}
       >
         {children}
@@ -60,7 +60,9 @@ interface FocusViewProps {
  */
 export function FocusView({ listing, engine, size, onOpen }: FocusViewProps) {
   const select = useListingStore((state) => state.select);
-  const { swatchClass } = getCategoryConfig(listing.category);
+  // The whole view takes its accent from the listing's category, so the circle,
+  // the connector and the CTA read as the same object as the pin on the map.
+  const { color, strongColor, swatchClass } = getCategoryConfig(listing.category);
 
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [circle, setCircle] = useState<Circle | null>(null);
@@ -122,6 +124,7 @@ export function FocusView({ listing, engine, size, onOpen }: FocusViewProps) {
         circle={circle}
         pin={anchor ? { x: anchor.x, y: anchor.y } : null}
         visible={anchor?.onScreen ?? false}
+        color={color}
       />
 
       <div className="pointer-events-auto absolute left-3 top-3 z-20 md:left-4 md:top-4">
@@ -137,17 +140,21 @@ export function FocusView({ listing, engine, size, onOpen }: FocusViewProps) {
       <div className="absolute left-6 top-[10%] z-20 flex flex-col gap-5 xl:left-10">
         <CirclePhoto
           listing={listing}
+          color={color}
           innerRef={photoRef}
           onOpen={() => setLightboxOpen(true)}
         />
 
+        {/* Barely tinted, so the map still reads through it. The heavy blur and
+            the text shadow — not opacity — are what keep the copy legible. */}
         <div
-          className="pointer-events-auto flex w-[22rem] max-w-[calc(100vw-3rem)]
-                     flex-col gap-2.5 rounded-2xl bg-ink-900/35 p-4 text-white
-                     backdrop-blur-md
+          className="pointer-events-auto flex w-[28rem] max-w-[calc(100vw-3rem)]
+                     flex-col gap-4 rounded-2xl border border-white/15
+                     bg-ink-900/15 p-6 text-white shadow-2xl shadow-ink-900/20
+                     backdrop-blur-xl [text-shadow:0_1px_3px_rgb(0_0_0/0.55)]
                      motion-safe:animate-[focus-body-in_300ms_var(--ease-spring)_120ms_backwards]"
         >
-          <h2 className="text-base font-semibold leading-snug">{listing.title}</h2>
+          <h2 className="text-lg font-semibold leading-snug">{listing.title}</h2>
 
           <dl data-testid="focus-fields" className="flex flex-col">
             <Field label={t.fieldCategory}>
@@ -171,11 +178,13 @@ export function FocusView({ listing, engine, size, onOpen }: FocusViewProps) {
           <button
             type="button"
             onClick={() => onOpen(listing)}
-            className="mt-1 w-full rounded-xl bg-brand-700 px-4 py-2.5 text-sm
-                       font-semibold text-white transition-transform duration-200
-                       ease-[var(--ease-spring)] hover:bg-brand-900 active:scale-[0.98]
-                       focus-visible:outline-2 focus-visible:outline-offset-2
-                       focus-visible:outline-white"
+            style={{ backgroundColor: strongColor }}
+            className="mt-1 w-full rounded-xl px-4 py-3 text-sm font-semibold
+                       text-white shadow-lg shadow-ink-900/25
+                       transition-[transform,filter] duration-200
+                       ease-[var(--ease-spring)] hover:brightness-110
+                       active:scale-[0.98] focus-visible:outline-2
+                       focus-visible:outline-offset-2 focus-visible:outline-white"
           >
             {t.goToListing}
           </button>

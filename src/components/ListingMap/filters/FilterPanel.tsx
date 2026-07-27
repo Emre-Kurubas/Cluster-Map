@@ -1,4 +1,3 @@
-import { CategoryFilter } from './CategoryFilter';
 import { PriceRangeFilter } from './PriceRangeFilter';
 import { SortControl } from './SortControl';
 import { useListingStore } from '../store/useListingStore';
@@ -13,10 +12,8 @@ export function FilterPanel({ hasActiveFilter }: { hasActiveFilter: boolean }) {
 
   return (
     <div className="flex flex-col gap-3 p-3">
-      <Section title={t.categories}>
-        <CategoryFilter />
-      </Section>
-
+      {/* Category lives in CategoryDock, bottom-right — it doubles as the map's
+          legend and is no use to anyone behind a disclosure. */}
       <Section title={t.priceRange}>
         <PriceRangeFilter />
       </Section>

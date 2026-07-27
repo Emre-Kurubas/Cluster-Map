@@ -18,15 +18,17 @@ const listing: Listing = {
   detailUrl: '/ilan/1',
 };
 
+const COLOR = '#3d9a82';
+
 describe('CirclePhoto', () => {
   it('is a button labelled for enlarging the photo', () => {
-    render(<CirclePhoto listing={listing} onOpen={() => {}} />);
+    render(<CirclePhoto listing={listing} onOpen={() => {}} color={COLOR} />);
     expect(screen.getByRole('button', { name: t.openPhoto })).toBeInTheDocument();
   });
 
   it('calls onOpen when clicked', async () => {
     const onOpen = vi.fn();
-    render(<CirclePhoto listing={listing} onOpen={onOpen} />);
+    render(<CirclePhoto listing={listing} onOpen={onOpen} color={COLOR} />);
     await userEvent.click(screen.getByRole('button', { name: t.openPhoto }));
     expect(onOpen).toHaveBeenCalledTimes(1);
   });
@@ -34,7 +36,7 @@ describe('CirclePhoto', () => {
   it('stays a button when the photo falls back to category art', async () => {
     const onOpen = vi.fn();
     render(
-      <CirclePhoto listing={{ ...listing, thumbnailUrl: '' }} onOpen={onOpen} />,
+      <CirclePhoto listing={{ ...listing, thumbnailUrl: '' }} onOpen={onOpen} color={COLOR} />,
     );
     expect(screen.getByTestId('circle-fallback')).toBeInTheDocument();
     await userEvent.click(screen.getByRole('button', { name: t.openPhoto }));
@@ -43,7 +45,7 @@ describe('CirclePhoto', () => {
 
   it('exposes its element through innerRef for measurement', () => {
     const ref = { current: null as HTMLButtonElement | null };
-    render(<CirclePhoto listing={listing} onOpen={() => {}} innerRef={ref} />);
+    render(<CirclePhoto listing={listing} onOpen={() => {}} innerRef={ref} color={COLOR} />);
     expect(ref.current).toBe(screen.getByTestId('circle-photo'));
   });
 });

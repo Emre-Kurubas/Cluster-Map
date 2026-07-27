@@ -91,12 +91,18 @@ describe('ListingMap', () => {
     expect(screen.queryAllByText(t.resultCount(0)).length).toBeLessThan(before);
   });
 
-  it('applies a category filter once the filter panel is opened', async () => {
+  it('applies a category filter from the dock without opening anything', async () => {
     render(<ListingMap listings={listings} />);
-    expect(screen.queryByRole('button', { name: 'Araç' })).toBeNull();
-
-    await userEvent.click(screen.getByTestId('filters-toggle'));
     await userEvent.click(screen.getByRole('button', { name: 'Araç' }));
     expect(useListingStore.getState().filters.categories).toEqual(['Araç']);
+  });
+
+  it('hides the category dock in focus mode but keeps the zoom controls', async () => {
+    render(<ListingMap listings={listings} />);
+    useListingStore.getState().setVisibleIds([1, 2]);
+    await userEvent.click(await firstCard('İlan 1'));
+
+    expect(screen.queryByRole('region', { name: t.categories })).toBeNull();
+    expect(screen.getByRole('button', { name: t.zoomIn })).toBeInTheDocument();
   });
 });

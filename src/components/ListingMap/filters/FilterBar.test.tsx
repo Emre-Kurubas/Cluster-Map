@@ -7,6 +7,9 @@ import { t } from '../i18n/tr';
 
 const state = () => useListingStore.getState();
 
+/** Cheapest control still inside the panel, used to prove it opened. */
+const PRICE_PRESET = '1 mn ₺ altı';
+
 /** The controls live behind the toggle now, so every control test opens it. */
 async function renderOpen() {
   render(<FilterBar />);
@@ -21,7 +24,7 @@ describe('FilterBar', () => {
       render(<FilterBar />);
       expect(screen.getByTestId('filters-toggle'))
         .toHaveAttribute('aria-expanded', 'false');
-      expect(screen.queryByRole('button', { name: 'Arsa' })).toBeNull();
+      expect(screen.queryByRole('button', { name: PRICE_PRESET })).toBeNull();
     });
 
     it('expands and collapses on click', async () => {
@@ -30,26 +33,33 @@ describe('FilterBar', () => {
 
       await userEvent.click(toggle);
       expect(toggle).toHaveAttribute('aria-expanded', 'true');
-      expect(screen.getByRole('button', { name: 'Arsa' })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: PRICE_PRESET })).toBeInTheDocument();
 
       await userEvent.click(toggle);
       expect(toggle).toHaveAttribute('aria-expanded', 'false');
-      expect(screen.queryByRole('button', { name: 'Arsa' })).toBeNull();
+      expect(screen.queryByRole('button', { name: PRICE_PRESET })).toBeNull();
     });
 
     it('reports how many filters are active while it is shut', async () => {
-      await renderOpen();
-      await userEvent.click(screen.getByRole('button', { name: 'Arsa' }));
-      await userEvent.click(screen.getByRole('button', { name: 'Araç' }));
+      // Categories are toggled from CategoryDock now, but the badge still has
+      // to account for them - it is the only filter state visible when shut.
+      state().toggleCategory('Arsa');
+      state().toggleCategory('Araç');
 
-      const toggle = screen.getByTestId('filters-toggle');
-      await userEvent.click(toggle);
-      expect(toggle).toHaveTextContent('2');
+      render(<FilterBar />);
+      expect(screen.getByTestId('filters-toggle')).toHaveTextContent('2');
+    });
+
+    it('counts categories and a price bound together', async () => {
+      state().toggleCategory('Arsa');
+      await renderOpen();
+      await userEvent.click(screen.getByRole('button', { name: PRICE_PRESET }));
+      expect(screen.getByTestId('filters-toggle')).toHaveTextContent('2');
     });
 
     it('counts a price bound as one active filter', async () => {
       await renderOpen();
-      await userEvent.click(screen.getByRole('button', { name: '1 mn ₺ altı' }));
+      await userEvent.click(screen.getByRole('button', { name: PRICE_PRESET }));
       expect(screen.getByTestId('filters-toggle')).toHaveTextContent('1');
     });
 
@@ -60,30 +70,14 @@ describe('FilterBar', () => {
   });
 
   describe('controls', () => {
-    it('renders one toggle per category', async () => {
+    it('leaves the category toggles to CategoryDock', async () => {
       await renderOpen();
-      expect(screen.getByRole('button', { name: 'Gayrimenkul' })).toBeInTheDocument();
-      expect(screen.getByRole('button', { name: 'Arsa' })).toBeInTheDocument();
-      expect(screen.getByRole('button', { name: 'Araç' })).toBeInTheDocument();
-    });
-
-    it('toggles a category into the store', async () => {
-      await renderOpen();
-      await userEvent.click(screen.getByRole('button', { name: 'Arsa' }));
-      expect(state().filters.categories).toEqual(['Arsa']);
-    });
-
-    it('reflects active state with aria-pressed', async () => {
-      await renderOpen();
-      const arsa = screen.getByRole('button', { name: 'Arsa' });
-      expect(arsa).toHaveAttribute('aria-pressed', 'false');
-      await userEvent.click(arsa);
-      expect(arsa).toHaveAttribute('aria-pressed', 'true');
+      expect(screen.queryByRole('button', { name: 'Arsa' })).toBeNull();
     });
 
     it('applies a price preset', async () => {
       await renderOpen();
-      await userEvent.click(screen.getByRole('button', { name: '1 mn ₺ altı' }));
+      await userEvent.click(screen.getByRole('button', { name: PRICE_PRESET }));
       expect(state().filters.priceMax).toBe(1_000_000);
       expect(state().filters.priceMin).toBeNull();
     });
@@ -111,10 +105,12 @@ describe('FilterBar', () => {
     });
 
     it('resets everything with the reset button', async () => {
+      state().toggleCategory('Arsa');
       await renderOpen();
-      await userEvent.click(screen.getByRole('button', { name: 'Arsa' }));
+      await userEvent.click(screen.getByRole('button', { name: PRICE_PRESET }));
       await userEvent.click(screen.getByRole('button', { name: t.clearFilters }));
       expect(state().filters.categories).toEqual([]);
+      expect(state().filters.priceMax).toBeNull();
     });
 
     it('hides the reset button when nothing is filtered', async () => {

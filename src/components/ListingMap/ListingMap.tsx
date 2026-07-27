@@ -6,6 +6,7 @@ import { ResultsRail } from './list/ResultsRail';
 import { ListingDetail } from './detail/ListingDetail';
 import { FocusView } from './detail/FocusView';
 import { MapControls } from './controls/MapControls';
+import { CategoryDock } from './controls/CategoryDock';
 import { RailToggle } from './controls/RailToggle';
 import { ErrorNotice } from './controls/ErrorNotice';
 import { useSearchIndex } from './search/useSearchIndex';
@@ -168,9 +169,15 @@ export function ListingMap({
           )}
         </div>
 
-        {/* Zoom and reset, pinned bottom right, clear of MapLibre's attribution
-            strip — which sits in that same corner and is not ours to move. */}
-        <div className="absolute bottom-8 right-3 md:bottom-10 md:right-4">
+        {/* Bottom right, clear of MapLibre's attribution strip — which sits in
+            that same corner and is not ours to move. The category legend stacks
+            above the zoom controls; only the legend is chrome, so only it goes
+            away in focus mode. */}
+        <div
+          className="pointer-events-none absolute bottom-8 right-3 flex flex-col
+                     items-end gap-2 md:bottom-10 md:right-4"
+        >
+          {!focused && <CategoryDock />}
           <MapControls engine={engine} />
         </div>
 

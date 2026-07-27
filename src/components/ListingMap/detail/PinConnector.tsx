@@ -8,6 +8,8 @@ interface PinConnectorProps {
   pin: Point | null;
   /** False once the pin has panned off screen. */
   visible: boolean;
+  /** The selected listing's category colour, matching its pin on the map. */
+  color: string;
 }
 
 /**
@@ -16,7 +18,7 @@ interface PinConnectorProps {
  * Pure presentation: FocusView measures both ends and passes numbers, so the
  * geometry is testable without a layout engine.
  */
-export function PinConnector({ circle, pin, visible }: PinConnectorProps) {
+export function PinConnector({ circle, pin, visible, color }: PinConnectorProps) {
   const segment = circle && pin ? lineEndpoints(circle, pin) : null;
   if (!segment) return null;
 
@@ -33,7 +35,7 @@ export function PinConnector({ circle, pin, visible }: PinConnectorProps) {
         y1={segment.y1}
         x2={segment.x2}
         y2={segment.y2}
-        stroke="var(--color-brand-500)"
+        stroke={color}
         strokeWidth={1.5}
         strokeLinecap="round"
         // Normalised length, so one dash pattern draws any distance.
@@ -45,7 +47,7 @@ export function PinConnector({ circle, pin, visible }: PinConnectorProps) {
         cx={segment.x2}
         cy={segment.y2}
         r={4}
-        fill="var(--color-brand-500)"
+        fill={color}
       />
     </svg>
   );
