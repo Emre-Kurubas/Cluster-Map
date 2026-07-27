@@ -9,6 +9,12 @@ export interface Listing {
   category: Category;
   saleType: string;
   location: { lat: number; lng: number };
+  /**
+   * Human-readable address. Optional: the demo dataset is back-filled by
+   * scripts/geocode-listings.mjs, and real data supplies its own. Absent means
+   * the focus header falls back to the province derived from the coordinates.
+   */
+  address?: string;
   thumbnailUrl: string;
   detailUrl: string;
 }

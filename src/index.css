@@ -44,6 +44,11 @@ body { font-family: var(--font-sans); color: var(--color-ink-500); }
   to   { opacity: 1; transform: scale(1); }
 }
 
+@keyframes header-in {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
