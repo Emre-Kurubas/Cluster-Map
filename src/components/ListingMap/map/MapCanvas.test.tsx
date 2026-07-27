@@ -1,11 +1,19 @@
-import { describe, it, expect, vi } from 'vitest';
-import { render } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { render, act } from '@testing-library/react';
 // The stylesheet MapLibre actually ships, read verbatim: the collision this
 // guards against only exists in the real file.
 import maplibreCss from 'maplibre-gl/dist/maplibre-gl.css?raw';
 import { MapCanvas } from './MapCanvas';
+import { useListingStore } from '../store/useListingStore';
 
-// The real engine needs WebGL. Only the container element is under test here.
+/** What the component subscribed to, so the tests can fire those callbacks. */
+const engineSpy = {
+  hover: null as ((id: number | null) => void) | null,
+  unsubscribed: 0,
+};
+
+// The real engine needs WebGL. Only the container element and the wiring
+// around it are under test here.
 vi.mock('./createMapEngine', () => ({
   createMapEngine: () => {
     const noop = () => {};
@@ -14,11 +22,67 @@ vi.mock('./createMapEngine', () => ({
       setData: noop, flyToBounds: noop, flyToPoint: noop,
       queryVisibleIds: () => [], setHovered: noop, setSelected: noop,
       zoomIn: noop, zoomOut: noop, resetView: noop,
-      onIdle: unsubscribe, onFeatureClick: unsubscribe, onClusterClick: unsubscribe,
+      onIdle: unsubscribe, onFeatureClick: unsubscribe,
+      onFeatureHover: (callback: (id: number | null) => void) => {
+        engineSpy.hover = callback;
+        return () => { engineSpy.unsubscribed += 1; };
+      },
+      onClusterClick: unsubscribe,
       destroy: noop,
     };
   },
 }));
+
+const renderCanvas = () =>
+  render(
+    <MapCanvas
+      listings={[]}
+      styleUrl="https://example.test/style.json"
+      onEngineReady={() => {}}
+      onError={() => {}}
+      onRecover={() => {}}
+    />,
+  );
+
+/**
+ * Hovering a pin on the map has to reach the same store field a hovered rail
+ * card writes to — that field is what swaps the enlarged-pin layer's filter,
+ * so without this the highlight only ever worked from the list side.
+ */
+describe('pin hover', () => {
+  beforeEach(() => {
+    useListingStore.getState().resetAll();
+    engineSpy.hover = null;
+    engineSpy.unsubscribed = 0;
+  });
+
+  it('subscribes to the engine', () => {
+    renderCanvas();
+    expect(engineSpy.hover).toBeTypeOf('function');
+  });
+
+  it('puts the hovered pin into the store', () => {
+    renderCanvas();
+    act(() => engineSpy.hover?.(7));
+    expect(useListingStore.getState().hoveredId).toBe(7);
+  });
+
+  it('clears it again when the pointer leaves', () => {
+    renderCanvas();
+    act(() => engineSpy.hover?.(7));
+    act(() => engineSpy.hover?.(null));
+    expect(useListingStore.getState().hoveredId).toBeNull();
+  });
+
+  it('unsubscribes and drops the hover on unmount', () => {
+    const { unmount } = renderCanvas();
+    act(() => engineSpy.hover?.(7));
+    unmount();
+    expect(engineSpy.unsubscribed).toBe(1);
+    // A stale id would keep a phantom card highlighted in the rail.
+    expect(useListingStore.getState().hoveredId).toBeNull();
+  });
+});
 
 /** Every CSS property MapLibre's own stylesheet declares on `.maplibregl-map`. */
 function maplibreContainerProperties(): Set<string> {
@@ -67,14 +131,7 @@ const UTILITY_PROPERTIES: Record<string, string[]> = {
  * the results rail reported "0 ilan" for every listing.
  */
 describe('map container sizing', () => {
-  const { container } = render(
-    <MapCanvas
-      listings={[]}
-      styleUrl="https://example.test/style.json"
-      onEngineReady={() => {}}
-      onError={() => {}}
-    />,
-  );
+  const { container } = renderCanvas();
   const element = container.firstElementChild as HTMLElement;
   const classes = element.className.split(/\s+/).filter(Boolean);
 

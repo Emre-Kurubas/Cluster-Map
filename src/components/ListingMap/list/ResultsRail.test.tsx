@@ -97,10 +97,10 @@ describe('ResultsRail', () => {
 
   it('offers a reset action from the empty state', async () => {
     state().setVisibleIds([]);
-    state().toggleCategory('Araç');
+    state().toggleCategoryVisibility('Araç');
     render(<ResultsRail listings={[]} />);
     await userEvent.click(screen.getByRole('button', { name: t.clearFilters }));
-    expect(state().filters.categories).toEqual([]);
+    expect(state().filters.hiddenCategories).toEqual([]);
   });
 
   it('marks the selected card with aria-current', async () => {

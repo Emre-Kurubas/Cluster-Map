@@ -6,7 +6,11 @@ import { useListingStore } from '../store/useListingStore';
 import { t } from '../i18n/tr';
 
 describe('SearchBar', () => {
-  beforeEach(() => useListingStore.getState().resetAll());
+  beforeEach(() => {
+    // resetAll deliberately leaves the rail as the user arranged it.
+    useListingStore.setState({ railOpen: true });
+    useListingStore.getState().resetAll();
+  });
 
   it('renders a labelled search input', () => {
     render(<SearchBar onFlyTo={vi.fn()} />);
@@ -52,6 +56,30 @@ describe('SearchBar', () => {
     await userEvent.click(screen.getByRole('button', { name: t.clearSearch }));
     expect(useListingStore.getState().query).toBe('');
     expect(useListingStore.getState().chips).toEqual([]);
+  });
+
+  /**
+   * The button says "Aramayı temizle". It used to call resetAll, so it also
+   * wiped the price range, the legend exclusions and the sort mode, and shoved
+   * the rail back open — none of which live in the field it is attached to.
+   */
+  it('clears only the search, leaving the rest of the chrome alone', async () => {
+    const store = useListingStore.getState();
+    store.toggleCategoryVisibility('Arsa');
+    store.setPriceRange(100_000, 900_000);
+    store.setSort('price-desc');
+    store.toggleRail();
+
+    render(<SearchBar onFlyTo={vi.fn()} />);
+    await userEvent.type(screen.getByRole('searchbox'), 'ankara');
+    await userEvent.click(screen.getByRole('button', { name: t.clearSearch }));
+
+    const after = useListingStore.getState();
+    expect(after.query).toBe('');
+    expect(after.filters.hiddenCategories).toEqual(['Arsa']);
+    expect(after.filters.priceMin).toBe(100_000);
+    expect(after.sort).toBe('price-desc');
+    expect(after.railOpen).toBe(false);
   });
 
   it('hides the clear button when the input is empty', () => {

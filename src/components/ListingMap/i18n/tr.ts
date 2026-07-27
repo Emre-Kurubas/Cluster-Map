@@ -11,13 +11,22 @@ export const t = {
   emptyData: 'Görüntülenecek ilan yok',
 
   categories: 'Kategoriler',
+  hideCategory: (name: string) => `${name} kategorisini haritadan gizle`,
+  showCategory: (name: string) => `${name} kategorisini haritada göster`,
   priceRange: 'Fiyat aralığı',
+  priceMinLabel: 'En düşük fiyat',
+  priceMaxLabel: 'En yüksek fiyat',
   sort: 'Sırala',
   sortRelevance: 'İlgi düzeyi',
   sortPriceAsc: 'Fiyat (artan)',
   sortPriceDesc: 'Fiyat (azalan)',
   filters: 'Filtreler',
   activeFilters: (n: number) => `${n} etkin filtre`,
+
+  /** Landmark name for the map container. */
+  mapRegion: 'İlan haritası',
+  /** Overrides MapLibre's own English label on the focusable canvas. */
+  mapCanvas: 'Harita',
 
   zoomIn: 'Yakınlaştır',
   zoomOut: 'Uzaklaştır',

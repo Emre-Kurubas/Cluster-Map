@@ -22,6 +22,7 @@ const stubEngine = (): MapEngine => ({
   onIdle: vi.fn(() => () => {}),
   onMove: vi.fn(() => () => {}),
   onFeatureClick: vi.fn(() => () => {}),
+  onFeatureHover: vi.fn(() => () => {}),
   onClusterClick: vi.fn(() => () => {}),
   destroy: vi.fn(),
 });

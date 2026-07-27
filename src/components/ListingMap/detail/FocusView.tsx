@@ -28,7 +28,7 @@ interface FieldProps {
 function Field({ label, children, stacked = false }: FieldProps) {
   return (
     <div
-      className={`border-t border-ink-900/15 py-3 text-sm first:border-t-0 first:pt-0 ${
+      className={`border-t border-ink-900/15 py-2.5 text-sm first:border-t-0 first:pt-0 ${
         stacked ? 'flex flex-col gap-1.5' : 'flex items-baseline justify-between gap-4'
       }`}
     >
@@ -137,9 +137,17 @@ export function FocusView({ listing, engine, size, onOpen }: FocusViewProps) {
         <FocusHeader listing={listing} />
       </div>
 
-      {/* Anchored top and bottom so the details column runs from under the photo
-          to the foot of the map rather than sizing to its content. */}
-      <div className="absolute bottom-6 left-12 top-[10%] z-20 flex flex-col gap-5 xl:left-20">
+      {/* Sized by its content and centred, not stretched between the top and
+          bottom of the window.
+          Stretching made the panel a different height on every monitor: tall
+          screens padded it out, and short ones squeezed it until the fields
+          scrolled. Now the column measures the same everywhere and the extra
+          room becomes margin. `max-h` is only a floor-level guard for windows
+          too short for any layout to fit. */}
+      <div
+        className="absolute left-12 top-1/2 z-20 flex max-h-[calc(100%-2rem)]
+                   -translate-y-1/2 flex-col gap-5"
+      >
         <CirclePhoto
           listing={listing}
           color={color}
@@ -151,8 +159,8 @@ export function FocusView({ listing, engine, size, onOpen }: FocusViewProps) {
             pale basemap without competing with the photo beside it. */}
         <div
           className="pointer-events-auto flex min-h-0 w-[28rem] max-w-[calc(100vw-3rem)]
-                     flex-1 flex-col gap-4 overflow-y-auto rounded-2xl
-                     border border-white/40 bg-ink-300/30 p-6 text-ink-900
+                     flex-col gap-4 overflow-y-auto rounded-2xl
+                     border border-white/40 bg-ink-300/30 p-5 text-ink-900
                      shadow-[0_8px_32px_rgba(34,49,63,0.18)] backdrop-blur-xl
                      motion-safe:animate-[focus-body-in_300ms_var(--ease-spring)_120ms_backwards]"
         >
@@ -181,9 +189,7 @@ export function FocusView({ listing, engine, size, onOpen }: FocusViewProps) {
             type="button"
             onClick={() => onOpen(listing)}
             style={{ backgroundColor: strongColor }}
-            // mt-auto pins it to the foot of the column, so the fields spread
-            // out above it instead of the whole block bunching at the top.
-            className="mt-auto w-full shrink-0 rounded-xl px-4 py-3 text-sm
+            className="w-full shrink-0 rounded-xl px-4 py-3 text-sm
                        font-semibold text-white shadow-lg shadow-ink-900/25
                        transition-[transform,filter] duration-200
                        ease-[var(--ease-spring)] hover:brightness-110

@@ -22,25 +22,47 @@ describe('CategoryDock', () => {
     expect(screen.getByRole('button', { name: 'Araç' })).toBeInTheDocument();
   });
 
-  it('toggles a category into the store', async () => {
+  it('starts with every category on, matching what the map is showing', () => {
+    render(<CategoryDock />);
+    for (const name of ['Gayrimenkul', 'Arsa', 'Araç']) {
+      expect(screen.getByRole('button', { name })).toHaveAttribute('aria-pressed', 'true');
+    }
+  });
+
+  it('crosses a category out of the map when clicked', async () => {
     render(<CategoryDock />);
     await userEvent.click(screen.getByRole('button', { name: 'Arsa' }));
-    expect(state().filters.categories).toEqual(['Arsa']);
+    expect(state().filters.hiddenCategories).toEqual(['Arsa']);
   });
 
-  it('toggles a category back off', async () => {
+  it('leaves the other categories alone', async () => {
+    render(<CategoryDock />);
+    await userEvent.click(screen.getByRole('button', { name: 'Arsa' }));
+    expect(screen.getByRole('button', { name: 'Araç' }))
+      .toHaveAttribute('aria-pressed', 'true');
+  });
+
+  it('brings a crossed-out category back on a second click', async () => {
     render(<CategoryDock />);
     const arsa = screen.getByRole('button', { name: 'Arsa' });
     await userEvent.click(arsa);
     await userEvent.click(arsa);
-    expect(state().filters.categories).toEqual([]);
+    expect(state().filters.hiddenCategories).toEqual([]);
   });
 
-  it('reflects active state with aria-pressed', async () => {
+  it('reports the visible state through aria-pressed', async () => {
     render(<CategoryDock />);
     const arsa = screen.getByRole('button', { name: 'Arsa' });
-    expect(arsa).toHaveAttribute('aria-pressed', 'false');
-    await userEvent.click(arsa);
     expect(arsa).toHaveAttribute('aria-pressed', 'true');
+    await userEvent.click(arsa);
+    expect(arsa).toHaveAttribute('aria-pressed', 'false');
+  });
+
+  it('strikes the label through once the category is off', async () => {
+    render(<CategoryDock />);
+    const arsa = screen.getByRole('button', { name: 'Arsa' });
+    expect(screen.getByText('Arsa')).not.toHaveClass('line-through');
+    await userEvent.click(arsa);
+    expect(screen.getByText('Arsa')).toHaveClass('line-through');
   });
 });

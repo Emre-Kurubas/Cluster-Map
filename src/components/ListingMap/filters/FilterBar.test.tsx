@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { FilterBar } from './FilterBar';
 import { useListingStore } from '../store/useListingStore';
@@ -7,8 +7,7 @@ import { t } from '../i18n/tr';
 
 const state = () => useListingStore.getState();
 
-/** Cheapest control still inside the panel, used to prove it opened. */
-const PRICE_PRESET = '1 mn ₺ altı';
+const DOMAIN = { min: 500_000, max: 15_000_000 };
 
 /** The controls live behind the toggle now, so every control test opens it. */
 async function renderOpen() {
@@ -16,15 +15,22 @@ async function renderOpen() {
   await userEvent.click(screen.getByTestId('filters-toggle'));
 }
 
+/** Range inputs do not respond to typing; a change event is the drag. */
+const drag = (label: string, value: number) =>
+  fireEvent.change(screen.getByLabelText(label), { target: { value: String(value) } });
+
 describe('FilterBar', () => {
-  beforeEach(() => state().resetAll());
+  beforeEach(() => {
+    state().resetAll();
+    state().setPriceDomain(DOMAIN.min, DOMAIN.max);
+  });
 
   describe('collapsed by default', () => {
     it('shows only the toggle, keeping the map clear', () => {
       render(<FilterBar />);
       expect(screen.getByTestId('filters-toggle'))
         .toHaveAttribute('aria-expanded', 'false');
-      expect(screen.queryByRole('button', { name: PRICE_PRESET })).toBeNull();
+      expect(screen.queryByLabelText(t.priceMinLabel)).toBeNull();
     });
 
     it('expands and collapses on click', async () => {
@@ -33,33 +39,33 @@ describe('FilterBar', () => {
 
       await userEvent.click(toggle);
       expect(toggle).toHaveAttribute('aria-expanded', 'true');
-      expect(screen.getByRole('button', { name: PRICE_PRESET })).toBeInTheDocument();
+      expect(screen.getByLabelText(t.priceMinLabel)).toBeInTheDocument();
 
       await userEvent.click(toggle);
       expect(toggle).toHaveAttribute('aria-expanded', 'false');
-      expect(screen.queryByRole('button', { name: PRICE_PRESET })).toBeNull();
+      expect(screen.queryByLabelText(t.priceMinLabel)).toBeNull();
     });
 
     it('reports how many filters are active while it is shut', async () => {
-      // Categories are toggled from CategoryDock now, but the badge still has
-      // to account for them - it is the only filter state visible when shut.
-      state().toggleCategory('Arsa');
-      state().toggleCategory('Araç');
+      // Categories are crossed out from CategoryDock now, but the badge still
+      // has to account for them - it is the only filter state visible when shut.
+      state().toggleCategoryVisibility('Arsa');
+      state().toggleCategoryVisibility('Araç');
 
       render(<FilterBar />);
       expect(screen.getByTestId('filters-toggle')).toHaveTextContent('2');
     });
 
     it('counts categories and a price bound together', async () => {
-      state().toggleCategory('Arsa');
+      state().toggleCategoryVisibility('Arsa');
       await renderOpen();
-      await userEvent.click(screen.getByRole('button', { name: PRICE_PRESET }));
+      drag(t.priceMaxLabel, 4_000_000);
       expect(screen.getByTestId('filters-toggle')).toHaveTextContent('2');
     });
 
     it('counts a price bound as one active filter', async () => {
       await renderOpen();
-      await userEvent.click(screen.getByRole('button', { name: PRICE_PRESET }));
+      drag(t.priceMaxLabel, 4_000_000);
       expect(screen.getByTestId('filters-toggle')).toHaveTextContent('1');
     });
 
@@ -75,42 +81,53 @@ describe('FilterBar', () => {
       expect(screen.queryByRole('button', { name: 'Arsa' })).toBeNull();
     });
 
-    it('applies a price preset', async () => {
+    it('applies a dragged upper bound', async () => {
       await renderOpen();
-      await userEvent.click(screen.getByRole('button', { name: PRICE_PRESET }));
-      expect(state().filters.priceMax).toBe(1_000_000);
+      drag(t.priceMaxLabel, 3_000_000);
+      expect(state().filters.priceMax).toBe(3_000_000);
       expect(state().filters.priceMin).toBeNull();
     });
 
-    it('applies typed price bounds', async () => {
+    it('applies a dragged lower bound', async () => {
       await renderOpen();
-      await userEvent.type(screen.getByLabelText('En az'), '500000');
-      await userEvent.type(screen.getByLabelText('En çok'), '3000000');
-      expect(state().filters.priceMin).toBe(500_000);
-      expect(state().filters.priceMax).toBe(3_000_000);
+      drag(t.priceMinLabel, 2_000_000);
+      expect(state().filters.priceMin).toBe(2_000_000);
+      expect(state().filters.priceMax).toBeNull();
     });
 
-    it('treats an emptied price field as no bound rather than zero', async () => {
+    it('treats a thumb parked on its end of the domain as no bound at all', async () => {
       await renderOpen();
-      const min = screen.getByLabelText('En az');
-      await userEvent.type(min, '500000');
-      await userEvent.clear(min);
+      drag(t.priceMinLabel, 2_000_000);
+      drag(t.priceMinLabel, DOMAIN.min);
       expect(state().filters.priceMin).toBeNull();
     });
 
     it('changes the sort mode', async () => {
       await renderOpen();
-      await userEvent.selectOptions(screen.getByLabelText(t.sort), 'price-desc');
+      await userEvent.click(screen.getByRole('radio', { name: t.sortPriceDesc }));
       expect(state().sort).toBe('price-desc');
     });
 
-    it('resets everything with the reset button', async () => {
-      state().toggleCategory('Arsa');
+    it('marks the current sort mode as checked', async () => {
       await renderOpen();
-      await userEvent.click(screen.getByRole('button', { name: PRICE_PRESET }));
+      expect(screen.getByRole('radio', { name: t.sortRelevance }))
+        .toHaveAttribute('aria-checked', 'true');
+    });
+
+    it('resets everything with the reset button', async () => {
+      state().toggleCategoryVisibility('Arsa');
+      await renderOpen();
+      drag(t.priceMaxLabel, 3_000_000);
       await userEvent.click(screen.getByRole('button', { name: t.clearFilters }));
-      expect(state().filters.categories).toEqual([]);
+      expect(state().filters.hiddenCategories).toEqual([]);
       expect(state().filters.priceMax).toBeNull();
+    });
+
+    it('keeps the price domain across a reset - it describes the data, not a choice', async () => {
+      await renderOpen();
+      drag(t.priceMaxLabel, 3_000_000);
+      await userEvent.click(screen.getByRole('button', { name: t.clearFilters }));
+      expect(state().priceDomain).toEqual(DOMAIN);
     });
 
     it('hides the reset button when nothing is filtered', async () => {

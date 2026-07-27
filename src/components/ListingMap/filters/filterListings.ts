@@ -6,7 +6,8 @@ import type { IndexedListing, Listing } from '../types/listing';
 /**
  * Apply every active filter as an intersection, then sort.
  *
- * An empty `categories` or `saleTypes` array means the filter is off. The
+ * An empty `categories` or `saleTypes` array means the filter is off, and an
+ * empty `hiddenCategories` means nothing is crossed out in the legend. The
  * residual query is scored fuzzily; listings that score 0 are excluded.
  */
 export function filterListings(
@@ -25,6 +26,7 @@ export function filterListings(
     if (filters.categories.length > 0 && !filters.categories.includes(listing.category)) {
       continue;
     }
+    if (filters.hiddenCategories.includes(listing.category)) continue;
     if (filters.saleTypes.length > 0 && !filters.saleTypes.includes(listing.saleType)) {
       continue;
     }

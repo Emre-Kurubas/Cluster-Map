@@ -14,7 +14,9 @@ interface ListingDetailProps {
 
 export function ListingDetail({ listing, onOpen }: ListingDetailProps) {
   const select = useListingStore((state) => state.select);
-  const { swatchClass } = getCategoryConfig(listing.category);
+  // `strongColor`, not `color`: the plain category colours run as low as 2.5:1
+  // against white, and this button carries a white label.
+  const { swatchClass, strongColor } = getCategoryConfig(listing.category);
 
   return (
     <GlassPanel
@@ -59,11 +61,14 @@ export function ListingDetail({ listing, onOpen }: ListingDetailProps) {
       <button
         type="button"
         onClick={() => onOpen(listing)}
-        className="mt-1 w-full rounded-xl bg-brand-700 px-4 py-2.5 text-sm
-                   font-semibold text-white transition-transform duration-200
-                   ease-[var(--ease-spring)] hover:bg-brand-900 active:scale-[0.98]
-                   focus-visible:outline-2 focus-visible:outline-offset-2
-                   focus-visible:outline-brand-500"
+        // Category-coloured, matching the pin, the swatch above it and the
+        // focus view's CTA — one listing, one colour, wherever it appears.
+        style={{ backgroundColor: strongColor }}
+        className="mt-1 w-full rounded-xl px-4 py-2.5 text-sm
+                   font-semibold text-white transition-[transform,filter]
+                   duration-200 ease-[var(--ease-spring)] hover:brightness-110
+                   active:scale-[0.98] focus-visible:outline-2
+                   focus-visible:outline-offset-2 focus-visible:outline-brand-500"
       >
         {t.goToListing}
       </button>

@@ -53,5 +53,9 @@ export default defineConfig({
     environment: 'jsdom',
     globals: true,
     setupFiles: ['./src/test-setup.ts'],
+    // Vitest stubs every CSS import to an empty string, so a `?raw` read of
+    // MapLibre's stylesheet came back blank and the cascade guard in
+    // MapCanvas.test.tsx passed against nothing. Let that one file through.
+    css: { include: [/maplibre-gl\.css/] },
   },
 });

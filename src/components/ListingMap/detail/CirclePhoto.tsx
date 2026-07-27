@@ -29,6 +29,10 @@ interface CirclePhotoProps {
  * reads as two moves, not one. Radius is well ahead by the time the box has
  * widened enough for the difference to show, which is all it needs to be.
  *
+ * One size at every viewport width. It used to grow at xl, which meant the
+ * whole focus column measured differently per monitor and the details panel
+ * below it had a different amount of room to work with on each one.
+ *
  * The circle is `rounded-[100px]` — exactly half the height — and not
  * `rounded-full`. They look the same at rest, but `rounded-full` is 9999px, and
  * every value above 100px renders identically on a 200px box. Interpolating
@@ -52,15 +56,14 @@ export function CirclePhoto({ listing, onOpen, color, innerRef }: CirclePhotoPro
                  focus-visible:w-[280px] focus-visible:rounded-2xl
                  focus-visible:outline-2 focus-visible:outline-offset-4
                  motion-safe:animate-[circle-in_280ms_var(--ease-spring)]
-                 xl:size-[240px] xl:rounded-[120px] xl:hover:w-[320px]
                  [transition:width_420ms_var(--ease-smooth),border-radius_260ms_var(--ease-smooth)_200ms,box-shadow_420ms_var(--ease-smooth)]
                  hover:[transition:border-radius_260ms_var(--ease-smooth),width_460ms_var(--ease-smooth)_60ms,box-shadow_460ms_var(--ease-smooth)]
                  focus-visible:[transition:border-radius_260ms_var(--ease-smooth),width_460ms_var(--ease-smooth)_60ms,box-shadow_460ms_var(--ease-smooth)]"
     >
       <span
         // 10px inset each side, so the inner disc is 180px and its own circle
-        // radius is 90px — 110px once the outer box is 240px at xl.
-        className="absolute inset-[10px] overflow-hidden rounded-[90px] xl:rounded-[110px]
+        // radius is 90px.
+        className="absolute inset-[10px] overflow-hidden rounded-[90px]
                    group-hover:rounded-xl group-focus-visible:rounded-xl
                    [transition:border-radius_260ms_var(--ease-smooth)_200ms]
                    group-hover:[transition:border-radius_260ms_var(--ease-smooth)]

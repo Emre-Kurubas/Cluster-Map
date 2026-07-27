@@ -2,30 +2,43 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { useListingStore } from './useListingStore';
 import type { Chip } from '../types/filters';
 
-const reset = () => useListingStore.getState().resetAll();
+// `railOpen` is deliberately outside resetAll's remit now, so the suite has to
+// put it back by hand between cases.
+const reset = () => {
+  useListingStore.setState({ railOpen: true });
+  useListingStore.getState().resetAll();
+};
 const state = () => useListingStore.getState();
 
 describe('useListingStore', () => {
   beforeEach(reset);
 
-  it('starts with no filters and the rail open', () => {
+  it('starts with no filters, every category visible, and the rail open', () => {
     expect(state().filters.categories).toEqual([]);
+    expect(state().filters.hiddenCategories).toEqual([]);
     expect(state().filters.priceMin).toBeNull();
     expect(state().railOpen).toBe(true);
     expect(state().sort).toBe('relevance');
   });
 
-  it('toggles a category on and off', () => {
-    state().toggleCategory('Arsa');
-    expect(state().filters.categories).toEqual(['Arsa']);
-    state().toggleCategory('Arsa');
-    expect(state().filters.categories).toEqual([]);
+  it('hides a category and brings it back', () => {
+    state().toggleCategoryVisibility('Arsa');
+    expect(state().filters.hiddenCategories).toEqual(['Arsa']);
+    state().toggleCategoryVisibility('Arsa');
+    expect(state().filters.hiddenCategories).toEqual([]);
   });
 
-  it('accumulates multiple categories', () => {
-    state().toggleCategory('Arsa');
-    state().toggleCategory('Araç');
-    expect(state().filters.categories).toEqual(['Arsa', 'Araç']);
+  it('accumulates multiple hidden categories', () => {
+    state().toggleCategoryVisibility('Arsa');
+    state().toggleCategoryVisibility('Araç');
+    expect(state().filters.hiddenCategories).toEqual(['Arsa', 'Araç']);
+  });
+
+  it('lets every category be hidden at once, leaving nothing to show', () => {
+    state().toggleCategoryVisibility('Arsa');
+    state().toggleCategoryVisibility('Araç');
+    state().toggleCategoryVisibility('Gayrimenkul');
+    expect(state().filters.hiddenCategories).toHaveLength(3);
   });
 
   it('folds parsed chips into filters', () => {
@@ -69,30 +82,32 @@ describe('useListingStore', () => {
 
   // Regression: the debounced query parse fires on mount and on every
   // keystroke. Rebuilding filters from chips alone silently discarded whatever
-  // the user had toggled in the FilterBar.
-  it('preserves manually toggled categories when a query is parsed', () => {
-    state().toggleCategory('Arsa');
+  // the user had set by hand outside the search field.
+  it('preserves hidden categories when a query is parsed', () => {
+    state().toggleCategoryVisibility('Arsa');
     state().applyParsed([], '');
-    expect(state().filters.categories).toEqual(['Arsa']);
+    expect(state().filters.hiddenCategories).toEqual(['Arsa']);
   });
 
-  it('unions manual categories with categories the query contributed', () => {
-    state().toggleCategory('Arsa');
+  it('keeps legend exclusions alongside the categories a query included', () => {
+    state().toggleCategoryVisibility('Arsa');
     state().applyParsed(
       [{ id: 'category:Araç', kind: 'category', label: 'Araç', category: 'Araç' }],
       '',
     );
-    expect(state().filters.categories).toEqual(['Arsa', 'Araç']);
+    expect(state().filters.categories).toEqual(['Araç']);
+    expect(state().filters.hiddenCategories).toEqual(['Arsa']);
   });
 
-  it('keeps the manual category after its chip counterpart is removed', () => {
-    state().toggleCategory('Arsa');
+  it('keeps the hidden category after an unrelated chip is removed', () => {
+    state().toggleCategoryVisibility('Arsa');
     state().applyParsed(
       [{ id: 'category:Araç', kind: 'category', label: 'Araç', category: 'Araç' }],
       '',
     );
     state().removeChip('category:Araç');
-    expect(state().filters.categories).toEqual(['Arsa']);
+    expect(state().filters.categories).toEqual([]);
+    expect(state().filters.hiddenCategories).toEqual(['Arsa']);
   });
 
   it('lets a price chip override a hand-typed range, then restores it on removal', () => {
@@ -132,12 +147,77 @@ describe('useListingStore', () => {
   });
 
   it('resetAll returns to the initial state', () => {
-    state().toggleCategory('Arsa');
+    state().toggleCategoryVisibility('Arsa');
     state().select(4);
     state().setSort('price-desc');
     state().resetAll();
-    expect(state().filters.categories).toEqual([]);
+    expect(state().filters.hiddenCategories).toEqual([]);
     expect(state().selectedId).toBeNull();
     expect(state().sort).toBe('relevance');
+  });
+
+  /**
+   * Whether the rail is open describes how the user has arranged the window,
+   * not what they are filtering by — exactly like priceDomain, which already
+   * survives. Folding it into the reset meant the search field's × and the
+   * empty state's "Filtreleri temizle" both shoved the rail back open under a
+   * user who had deliberately closed it.
+   */
+  it('resetAll leaves the rail as the user arranged it', () => {
+    state().toggleRail();
+    expect(state().railOpen).toBe(false);
+    state().resetAll();
+    expect(state().railOpen).toBe(false);
+  });
+
+  /**
+   * The search field's × is labelled "Aramayı temizle" — clear the *search*.
+   * It called resetAll, which also dropped the price range, the legend
+   * exclusions and the sort mode, none of which the user typed.
+   */
+  describe('clearSearch', () => {
+    it('clears the query, its chips and the province it resolved', () => {
+      state().setQuery('ankara arsa');
+      state().applyParsed(
+        [
+          { id: 'province:ankara', kind: 'province', label: 'Ankara', province: 'Ankara' },
+          { id: 'category:Arsa', kind: 'category', label: 'Arsa', category: 'Arsa' },
+        ],
+        'dubleks',
+      );
+      state().clearSearch();
+
+      expect(state().query).toBe('');
+      expect(state().chips).toEqual([]);
+      expect(state().residualQuery).toBe('');
+      expect(state().activeProvince).toBeNull();
+      expect(state().filters.categories).toEqual([]);
+    });
+
+    it('leaves hand-set filters and the sort mode alone', () => {
+      state().toggleCategoryVisibility('Arsa');
+      state().setPriceRange(100_000, 900_000);
+      state().setSort('price-desc');
+      state().setQuery('ankara');
+      state().clearSearch();
+
+      expect(state().filters.hiddenCategories).toEqual(['Arsa']);
+      expect(state().filters.priceMin).toBe(100_000);
+      expect(state().filters.priceMax).toBe(900_000);
+      expect(state().sort).toBe('price-desc');
+    });
+
+    it('restores a hand-typed range that a price chip had overridden', () => {
+      state().setPriceRange(100_000, 900_000);
+      state().applyParsed(
+        [{
+          id: 'price:0:2000000', kind: 'price', label: '≤ 2.000.000 ₺',
+          priceMin: null, priceMax: 2_000_000,
+        }],
+        '',
+      );
+      state().clearSearch();
+      expect(state().filters.priceMax).toBe(900_000);
+    });
   });
 });

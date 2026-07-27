@@ -55,6 +55,21 @@ export function ListingMap({
   const hoveredId = useListingStore((state) => state.hoveredId);
   const railOpen = useListingStore((state) => state.railOpen);
 
+  // The range slider spans the whole dataset, so this is derived from the
+  // incoming listings and not from `filtered` — a domain that shrank as the
+  // user dragged would pull the thumb out from under them.
+  const setPriceDomain = useListingStore((state) => state.setPriceDomain);
+  useEffect(() => {
+    if (listings.length === 0) return;
+    let min = Infinity;
+    let max = -Infinity;
+    for (const listing of listings) {
+      if (listing.price < min) min = listing.price;
+      if (listing.price > max) max = listing.price;
+    }
+    setPriceDomain(min, max);
+  }, [listings, setPriceDomain]);
+
   const filtered = useMemo(
     () => filterListings(index, filters, residualQuery, activeProvince, sort),
     [index, filters, residualQuery, activeProvince, sort],
@@ -66,10 +81,50 @@ export function ListingMap({
   );
 
   /**
+   * The same listings as `filtered`, restored to the dataset's own order.
+   *
+   * Sort is a property of the list, not of the map, but MapLibre's clustering
+   * is order-dependent: it walks the source features in order and lets the
+   * first unclaimed point seed a cluster and take its neighbours. Handing it a
+   * price-sorted array therefore redrew the clusters — different groupings,
+   * counts and donut colours — for a control that adds and removes nothing.
+   *
+   * Individual pins were never affected: they set `icon-allow-overlap`, so
+   * none are dropped by collision, and their draw order is by viewport-y.
+   */
+  const datasetRank = useMemo(
+    () => new Map(listings.map((listing, position) => [listing.id, position])),
+    [listings],
+  );
+
+  const mapListings = useMemo(
+    () =>
+      [...filtered].sort(
+        (a, b) => (datasetRank.get(a.id) ?? 0) - (datasetRank.get(b.id) ?? 0),
+      ),
+    [filtered, datasetRank],
+  );
+
+  /**
    * Focus mode. Derived rather than stored, and it never touches `railOpen` —
    * closing the view must restore the rail to whatever the user left it as.
    */
   const focused = selected !== null;
+
+  /**
+   * Release a selection the filters have dropped.
+   *
+   * Because focus mode is derived, filtering the selected listing away closed
+   * the view but left `selectedId` set behind it. Lifting the filter then
+   * reopened focus mode on its own, unasked — and pointing at wherever the
+   * camera had drifted to, because the fly-to effect is keyed on the id, which
+   * never changed. A selection that is no longer on the map is not a selection.
+   */
+  const select = useListingStore((state) => state.select);
+  useEffect(() => {
+    if (selectedId === null || selected !== null) return;
+    select(null);
+  }, [selectedId, selected, select]);
 
   // The focus view's connector needs the container's pixel size to decide
   // whether the pin is still on screen.
@@ -121,6 +176,11 @@ export function ListingMap({
 
   const handleEngineReady = useCallback((next: MapEngine) => setEngine(next), []);
   const handleError = useCallback((kind: 'tile' | 'webgl') => setErrorKind(kind), []);
+  // WebGL never comes back within a session; only the tile notice is retractable.
+  const handleRecover = useCallback(
+    () => setErrorKind((kind) => (kind === 'tile' ? null : kind)),
+    [],
+  );
 
   return (
     <ImageBaseUrlProvider value={imageBaseUrl}>
@@ -129,10 +189,11 @@ export function ListingMap({
         className={`relative h-full w-full overflow-hidden bg-surface ${className}`}
       >
         <MapCanvas
-          listings={filtered}
+          listings={mapListings}
           styleUrl={styleUrl}
           onEngineReady={handleEngineReady}
           onError={handleError}
+          onRecover={handleRecover}
         />
 
         {/* Overlay grid. pointer-events-none so the map stays draggable between panels. */}
@@ -148,16 +209,25 @@ export function ListingMap({
                 <FilterBar />
               </div>
 
-              <div className="flex min-h-0 flex-1 items-start gap-3">
-                {railOpen && (
-                  <div className="hidden h-full min-h-0 md:block motion-safe:animate-[rail-in_240ms_var(--ease-spring)]">
-                    <ResultsRail listings={filtered} />
-                  </div>
-                )}
-
-                <div className="flex flex-1 items-start justify-start">
-                  <RailToggle />
+              {/* The rail collapses by width rather than unmounting, so the
+                  handle beside it slides with the edge instead of teleporting
+                  across the map. It keeps its 320px content width while the
+                  wrapper clips it — nothing reflows mid-transition — and goes
+                  inert when shut so no card is tabbable behind the fold. */}
+              <div className="flex min-h-0 flex-1 items-stretch">
+                <div
+                  id="listing-rail"
+                  inert={!railOpen}
+                  className={[
+                    'hidden h-full min-h-0 overflow-hidden md:block',
+                    'transition-[width,opacity] duration-300 ease-[var(--ease-spring)]',
+                    railOpen ? 'md:w-80 opacity-100' : 'md:w-0 opacity-0',
+                  ].join(' ')}
+                >
+                  <ResultsRail listings={filtered} />
                 </div>
+
+                <RailToggle />
               </div>
             </>
           )}
@@ -169,13 +239,17 @@ export function ListingMap({
           )}
         </div>
 
-        {/* Bottom right, clear of MapLibre's attribution strip — which sits in
-            that same corner and is not ours to move. The category legend stacks
-            above the zoom controls; only the legend is chrome, so only it goes
-            away in focus mode. */}
+        {/* Insets match the overlay grid's own padding, so the foot of these
+            controls lands on the same line as the foot of the rail. They used
+            to sit higher to clear MapLibre's attribution strip; that control is
+            gone, and the corner is ours again.
+
+            The legend sits to the left of the zoom stack on a shared baseline,
+            so neither one adds height to the corner. Only the legend is chrome,
+            so only it goes away in focus mode. */}
         <div
-          className="pointer-events-none absolute bottom-8 right-3 flex flex-col
-                     items-end gap-2 md:bottom-10 md:right-4"
+          className="pointer-events-none absolute bottom-3 right-3 flex items-end
+                     gap-2 md:bottom-4 md:right-4"
         >
           {!focused && <CategoryDock />}
           <MapControls engine={engine} />

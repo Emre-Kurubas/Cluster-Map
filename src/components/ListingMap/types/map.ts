@@ -26,6 +26,12 @@ export interface MapEngine {
    */
   onMove(cb: () => void): () => void;
   onFeatureClick(cb: (id: number) => void): () => void;
+  /**
+   * Fires with the pin under the pointer, and with `null` when it leaves. The
+   * same channel the rail's card hover feeds, so a pin lights up identically
+   * whichever side the pointer is on.
+   */
+  onFeatureHover(cb: (id: number | null) => void): () => void;
   onClusterClick(cb: (clusterId: number, center: LngLat) => void): () => void;
   destroy(): void;
 }

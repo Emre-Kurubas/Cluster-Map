@@ -16,11 +16,16 @@ export function SearchBar({ onFlyTo }: SearchBarProps) {
   const chips = useListingStore((state) => state.chips);
   const setQuery = useListingStore((state) => state.setQuery);
   const removeChip = useListingStore((state) => state.removeChip);
-  const resetAll = useListingStore((state) => state.resetAll);
+  // Not resetAll: this button says "Aramayı temizle", and the price range,
+  // legend exclusions and sort mode are not part of the search.
+  const clearSearch = useListingStore((state) => state.clearSearch);
 
   return (
     <div className="pointer-events-auto min-w-0 flex-1">
-      <GlassPanel className="flex items-center gap-2 px-4 py-2.5">
+      {/* h-12 rather than vertical padding: the filters button carries the same
+          fixed height, so the two align exactly instead of drifting apart by
+          whatever their type happens to measure. */}
+      <GlassPanel className="flex h-12 items-center gap-2 px-4">
         <span aria-hidden className="text-ink-300">⌕</span>
         <input
           type="search"
@@ -35,7 +40,7 @@ export function SearchBar({ onFlyTo }: SearchBarProps) {
         {query && (
           <button
             type="button"
-            onClick={resetAll}
+            onClick={clearSearch}
             aria-label={t.clearSearch}
             className="grid size-6 place-items-center rounded-full text-ink-300
                        transition-transform duration-200 ease-[var(--ease-spring)]

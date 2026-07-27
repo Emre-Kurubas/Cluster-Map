@@ -47,6 +47,30 @@ describe('filterListings', () => {
     expect(ids(filterListings(index, filters, '', null, 'relevance'))).toEqual([1, 2]);
   });
 
+  it('drops a category the legend crossed out', () => {
+    const filters = { ...EMPTY_FILTERS, hiddenCategories: ['Araç' as const] };
+    expect(ids(filterListings(index, filters, '', null, 'relevance'))).toEqual([1, 3]);
+  });
+
+  it('returns nothing once every category is crossed out', () => {
+    const filters = {
+      ...EMPTY_FILTERS,
+      hiddenCategories: ['Arsa' as const, 'Araç' as const, 'Gayrimenkul' as const],
+    };
+    expect(ids(filterListings(index, filters, '', null, 'relevance'))).toEqual([]);
+  });
+
+  // The query narrows, the legend takes away. They must intersect, so hiding
+  // the very category a search asked for leaves an honest empty result.
+  it('lets a crossed-out category override the query that included it', () => {
+    const filters = {
+      ...EMPTY_FILTERS,
+      categories: ['Araç' as const],
+      hiddenCategories: ['Araç' as const],
+    };
+    expect(ids(filterListings(index, filters, '', null, 'relevance'))).toEqual([]);
+  });
+
   it('applies an inclusive price ceiling', () => {
     const filters = { ...EMPTY_FILTERS, priceMax: 1_000_000 };
     expect(ids(filterListings(index, filters, '', null, 'relevance'))).toEqual([1, 3]);

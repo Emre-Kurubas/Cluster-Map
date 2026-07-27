@@ -19,7 +19,7 @@ export function FocusHeader({ listing }: FocusHeaderProps) {
   return (
     <p
       className="pointer-events-none select-none text-center text-lg font-semibold
-                 tracking-tight text-ink-900 xl:text-xl
+                 tracking-tight text-ink-900
                  motion-safe:animate-[header-in_250ms_var(--ease-spring)]"
       style={{
         textShadow:

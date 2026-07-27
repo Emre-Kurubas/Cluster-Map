@@ -2,8 +2,18 @@ import type { Category } from './listing';
 import type { BBox } from './map';
 
 export interface Filters {
-  /** Empty array means "no category filter" — everything passes. */
+  /**
+   * Inclusion, contributed only by the search query ("araç ankara"). Empty
+   * array means "no category filter" — everything passes.
+   */
   categories: Category[];
+  /**
+   * Exclusion, driven by the legend, where every category starts visible and a
+   * click crosses one out. Kept separate from `categories` so the two compose
+   * as an intersection: a query can narrow to Araç and the legend can still
+   * hide it. Empty array means nothing is hidden.
+   */
+  hiddenCategories: Category[];
   priceMin: number | null;
   priceMax: number | null;
   /** Empty array means "no saleType filter". */
@@ -36,6 +46,7 @@ export type SortMode = 'relevance' | 'price-asc' | 'price-desc';
 
 export const EMPTY_FILTERS: Filters = {
   categories: [],
+  hiddenCategories: [],
   priceMin: null,
   priceMax: null,
   saleTypes: [],

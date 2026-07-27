@@ -2,23 +2,52 @@ import { useListingStore } from '../store/useListingStore';
 import { t } from '../i18n/tr';
 import type { SortMode } from '../types/filters';
 
+const MODES: Array<{ mode: SortMode; label: string }> = [
+  { mode: 'relevance', label: t.sortRelevance },
+  { mode: 'price-asc', label: t.sortPriceAsc },
+  { mode: 'price-desc', label: t.sortPriceDesc },
+];
+
+/**
+ * A segmented control rather than a `<select>`.
+ *
+ * There are exactly three modes and they never grow, so a dropdown hid two of
+ * them behind a click and dropped an OS-chrome rectangle into a glass panel.
+ * Laid out flat, the choice and its alternatives are both readable at a glance.
+ */
 export function SortControl() {
   const sort = useListingStore((state) => state.sort);
   const setSort = useListingStore((state) => state.setSort);
 
   return (
-    <select
+    <div
+      role="radiogroup"
       aria-label={t.sort}
-      value={sort}
-      onChange={(event) => setSort(event.target.value as SortMode)}
-      className="rounded-lg border border-line bg-white/70 px-2.5 py-1.5 text-sm
-                 text-ink-500 outline-none transition-colors duration-200
-                 focus:border-brand-500 focus-visible:outline-2
-                 focus-visible:outline-brand-500"
+      className="flex w-full gap-0.5 rounded-xl bg-ink-900/[0.06] p-0.5"
     >
-      <option value="relevance">{t.sortRelevance}</option>
-      <option value="price-asc">{t.sortPriceAsc}</option>
-      <option value="price-desc">{t.sortPriceDesc}</option>
-    </select>
+      {MODES.map(({ mode, label }) => {
+        const active = sort === mode;
+        return (
+          <button
+            key={mode}
+            type="button"
+            role="radio"
+            aria-checked={active}
+            onClick={() => setSort(mode)}
+            className={[
+              'flex-1 rounded-[0.625rem] px-2 py-1.5 text-xs font-medium',
+              'transition-[background-color,color,box-shadow] duration-200',
+              'focus-visible:outline-2 focus-visible:outline-offset-1',
+              'focus-visible:outline-brand-500',
+              active
+                ? 'bg-white text-ink-900 shadow-sm'
+                : 'text-ink-500 hover:text-ink-900',
+            ].join(' ')}
+          >
+            {label}
+          </button>
+        );
+      })}
+    </div>
   );
 }

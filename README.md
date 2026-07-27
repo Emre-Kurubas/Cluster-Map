@@ -30,6 +30,24 @@ import type { Listing } from './components/ListingMap';
 
 The root element fills its container, so give the parent a definite height.
 
+### Attribution — the host page must carry it
+
+The component renders **no** attribution control. MapLibre's collapsed "i"
+button was removed because it landed in the bottom-right corner already occupied
+by the category legend and the zoom stack.
+
+The default basemap is OpenFreeMap positron, built from OpenStreetMap data under
+the ODbL, and both require the credit to appear. Since this component no longer
+shows it, the embedding page must — for example:
+
+```html
+<p>© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>
+   katkıda bulunanlar · <a href="https://openfreemap.org">OpenFreeMap</a></p>
+```
+
+Self-hosted tiles passed via `styleUrl` carry whatever obligations their source
+data does; the same applies.
+
 ### Peer requirements
 
 React 18+ (developed against 19), Tailwind CSS v4. The `@theme` token block in

@@ -2,8 +2,8 @@ import { describe, it, expect } from 'vitest';
 import { createExpression, validateStyleMin } from '@maplibre/maplibre-gl-style-spec';
 import { buildActivePinLayer, buildPinLayer } from './pins';
 import { buildClusterLayers, buildClusterProperties } from './clusters';
-import { donutSpriteIds } from '../sprite/donutShapes';
-import { LAYER_PINS_ACTIVE, SOURCE_ID } from '../../config/mapStyle';
+import { DONUT_SIZE, HEAD_CENTER, donutSpriteIds } from '../sprite/donutShapes';
+import { LAYER_CLUSTERS_ACTIVE, LAYER_PINS_ACTIVE, SOURCE_ID } from '../../config/mapStyle';
 
 /**
  * MapLibre rejects `feature-state` expressions in layout properties at
@@ -115,8 +115,7 @@ describe('buildClusterLayers', () => {
   const layers = buildClusterLayers();
   const layout = layers[0].layout as Record<string, unknown>;
 
-  it('draws the donut and its count as one symbol placement', () => {
-    expect(layers).toHaveLength(1);
+  it('draws the pin and its count as one symbol placement', () => {
     expect(layers[0].type).toBe('symbol');
     expect(layout['icon-image']).toBeDefined();
     expect(layout['text-field']).toEqual(['get', 'point_count_abbreviated']);
@@ -124,7 +123,8 @@ describe('buildClusterLayers', () => {
 
   it('draws only clustered features', () => {
     for (const layer of layers) {
-      expect((layer as { filter?: unknown }).filter).toEqual(['has', 'point_count']);
+      expect(JSON.stringify((layer as { filter?: unknown }).filter))
+        .toContain('point_count');
     }
   });
 
@@ -137,6 +137,133 @@ describe('buildClusterLayers', () => {
   it('lets clusters overlap so none is silently dropped', () => {
     expect(layout['icon-allow-overlap']).toBe(true);
     expect(layout['text-allow-overlap']).toBe(true);
+  });
+
+  it('anchors the pin by its tip, so it points at the place it stands for', () => {
+    expect(layout['icon-anchor']).toBe('bottom');
+  });
+});
+
+/**
+ * Growing a symbol on hover needs a second layer: `icon-size` is a layout
+ * property, and MapLibre rejects feature-state expressions there — the same
+ * constraint that gave the pins their own highlight layer.
+ */
+describe('the hovered cluster layer', () => {
+  const [base, active] = buildClusterLayers();
+  const baseLayout = base.layout as Record<string, unknown>;
+  const activeLayout = active.layout as Record<string, unknown>;
+
+  const sizes = (layout: Record<string, unknown>, property: string) =>
+    (layout[property] as unknown[]).filter((part) => typeof part === 'number');
+
+  // Layers draw in the order addLayer receives them, so the enlarged copy has
+  // to come second or it would be painted under the pin it is enlarging.
+  it('is a distinct layer, returned after the base one', () => {
+    const ids = buildClusterLayers().map((layer) => layer.id);
+    expect(active.id).toBe(LAYER_CLUSTERS_ACTIVE);
+    expect(ids.indexOf(active.id)).toBeGreaterThan(ids.indexOf(base.id));
+  });
+
+  it('starts matching no cluster, so nothing is enlarged before interaction', () => {
+    expect(JSON.stringify((active as { filter?: unknown }).filter))
+      .toContain('"literal",[]');
+  });
+
+  it('draws every cluster larger than the base layer does', () => {
+    // Stops alternate count/value, so compare the pairs positionally.
+    const baseSizes = sizes(baseLayout, 'icon-size');
+    const activeSizes = sizes(activeLayout, 'icon-size');
+    expect(activeSizes).toHaveLength(baseSizes.length);
+    for (const [i, value] of activeSizes.entries()) {
+      if (i % 2 === 1) expect(value).toBeGreaterThan(baseSizes[i]);
+    }
+  });
+
+  /**
+   * The offset that lifts the count into the head is a ratio of icon-size to
+   * text-size, so scaling both by the same factor must leave it untouched.
+   * Scaling only the icon would slide the number out of the enlarged head.
+   */
+  it('reuses the base text-offset, because it scales both sizes together', () => {
+    expect(activeLayout['text-offset']).toEqual(baseLayout['text-offset']);
+  });
+
+  it('scales the count with the pin', () => {
+    const baseText = sizes(baseLayout, 'text-size');
+    const activeText = sizes(activeLayout, 'text-size');
+    for (const [i, value] of activeText.entries()) {
+      if (i % 2 === 1) expect(value).toBeGreaterThan(baseText[i]);
+    }
+  });
+});
+
+/**
+ * The count has to sit in the hole of the ring, and the pin is anchored by its
+ * tip — so the offset that lifts the number into the head is a pixel distance
+ * that scales with icon-size, expressed in ems that scale with text-size.
+ * Those two grow at different rates across point_count. A constant offset would
+ * be correct at one cluster size and wrong at the others, which is the kind of
+ * thing that looks fine in the one screenshot anybody checks.
+ */
+describe('the cluster count lands in the head at every cluster size', () => {
+  const layout = buildClusterLayers()[0].layout as Record<string, unknown>;
+
+  const compile = (expression: unknown, type: 'number' | 'array') =>
+    createExpression(expression, {
+      type,
+      value: type === 'array' ? 'number' : undefined,
+      length: type === 'array' ? 2 : undefined,
+      'property-type': 'data-driven',
+      expression: { parameters: ['zoom', 'feature'], interpolated: true },
+    } as never);
+
+  const iconSize = compile(layout['icon-size'], 'number');
+  const textSize = compile(layout['text-size'], 'number');
+  const textOffset = compile(layout['text-offset'], 'array');
+
+  /** Re-derived from the sprite rather than copied, so a resize is caught. */
+  const headRisePx = (DONUT_SIZE.height - HEAD_CENTER.y) / 2;
+
+  it('all three expressions compile', () => {
+    expect(iconSize.result).toBe('success');
+    expect(textSize.result).toBe('success');
+    expect(textOffset.result).toBe('success');
+  });
+
+  it('never misses the head centre by as much as a pixel', () => {
+    if (
+      iconSize.result !== 'success'
+      || textSize.result !== 'success'
+      || textOffset.result !== 'success'
+    ) throw new Error('an expression did not compile');
+
+    const worst: string[] = [];
+    for (let count = 2; count <= 200; count += 1) {
+      const feature = { properties: { point_count: count } } as never;
+      const globals = { zoom: 8 } as never;
+
+      const icon = iconSize.value.evaluate(globals, feature) as number;
+      const text = textSize.value.evaluate(globals, feature) as number;
+      const offset = textOffset.value.evaluate(globals, feature) as number[];
+
+      // Where the number actually lands, against where the head centre is.
+      const placedPx = -offset[1] * text;
+      const wantedPx = headRisePx * icon;
+      if (Math.abs(placedPx - wantedPx) >= 1) {
+        worst.push(`${count}: off by ${(placedPx - wantedPx).toFixed(2)}px`);
+      }
+    }
+    expect(worst).toEqual([]);
+  });
+
+  it('lifts the count above the anchor rather than below it', () => {
+    if (textOffset.result !== 'success') throw new Error('did not compile');
+    const offset = textOffset.value.evaluate(
+      { zoom: 8 } as never, { properties: { point_count: 9 } } as never,
+    ) as number[];
+    expect(offset[0]).toBe(0);
+    expect(offset[1]).toBeLessThan(0);
   });
 });
 
