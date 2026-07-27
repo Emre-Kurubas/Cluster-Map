@@ -1,7 +1,7 @@
-import { ListingMap } from '../components/ListingMap';
-import type { Listing } from '../components/ListingMap';
+import { ListingMap } from '../src';
+import type { Listing } from '../src';
 import { withDemoPhotos } from './demoPhotos';
-import rawListings from '../data/listings.json';
+import rawListings from './data/listings.json';
 
 // The dataset's own photo host does not resolve, so the demo substitutes
 // stand-ins. A real deployment drops this and passes `imageBaseUrl` instead:

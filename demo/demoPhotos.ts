@@ -1,5 +1,5 @@
-import { getCategoryConfig } from '../components/ListingMap/config/categories';
-import type { Listing } from '../components/ListingMap';
+import { getCategoryConfig } from '../src/config/categories';
+import type { Listing } from '../src';
 
 /**
  * Photos per category, so the same listing always shows the same picture and

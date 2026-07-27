@@ -11,7 +11,7 @@
     "preview": "vite preview",
     "test": "vitest run --exclude '**/perf.test.ts'",
     "test:watch": "vitest",
-    "test:perf": "vitest run --no-file-parallelism src/components/ListingMap/lib/perf.test.ts",
+    "test:perf": "vitest run --no-file-parallelism src/lib/perf.test.ts",
     "verify": "npm run test && npm run test:perf && npm run build"
   },
   "dependencies": {

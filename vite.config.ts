@@ -42,6 +42,11 @@ function maplibreWorkerAssets(): Plugin {
 }
 
 export default defineConfig({
+  // The demo is the app this config builds; the library it consumes lives in
+  // src/ and gets its own config in vite.lib.config.ts.
+  root: 'demo',
+  publicDir: 'public',
+  build: { outDir: '../dist-demo', emptyOutDir: true },
   plugins: [react(), tailwindcss(), maplibreWorkerAssets()],
   optimizeDeps: {
     // Dev counterpart to the plugin above: pre-bundling would relocate the
@@ -50,9 +55,12 @@ export default defineConfig({
     exclude: ['maplibre-gl'],
   },
   test: {
+    // The demo is the Vite root, but the tests live beside the library they
+    // exercise, so the test runner keeps the repo root.
+    root: '.',
     environment: 'jsdom',
     globals: true,
-    setupFiles: ['./src/test-setup.ts'],
+    setupFiles: ['./test-setup.ts'],
     // Vitest stubs every CSS import to an empty string, so a `?raw` read of
     // MapLibre's stylesheet came back blank and the cascade guard in
     // MapCanvas.test.tsx passed against nothing. Let that one file through.
