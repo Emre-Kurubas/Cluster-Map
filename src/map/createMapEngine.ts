@@ -90,6 +90,31 @@ export function createMapEngine(
 
   const highlight = createHighlight(map, () => ready);
 
+  /**
+   * Stop the user zooming out past the point where the basemap still says
+   * anything.
+   *
+   * positron drops province names below z5, and motorways and town labels
+   * below z6, so from a Türkiye-wide view — which lands around z5.4 to z6.1 on
+   * a desktop — a fixed floor of 4 allowed two levels of zooming into a map
+   * that had stopped being one.
+   *
+   * Derived rather than fixed, because no single number works: framing Türkiye
+   * needs about z3.4 on a phone and z6.1 on a wide monitor. Tying the floor to
+   * the bounds means "as far out as useful" is the same thing as "all of
+   * Türkiye visible" on every screen, and the detail never falls below what
+   * the opening view already showed.
+   */
+  const tightenZoomFloor = () => {
+    try {
+      const camera = map.cameraForBounds(initialBounds, { padding: 48 });
+      if (typeof camera?.zoom === 'number') map.setMinZoom(camera.zoom);
+    } catch (error) {
+      // A floor is a nicety; failing to compute one must not cost the map.
+      console.warn('[ListingMap] could not derive the zoom floor', error);
+    }
+  };
+
   // Every MapLibre error reaches the console — filtering to tile failures alone
   // once hid a style that never loaded. What the user is told is a narrower
   // judgement, and it lives in tileErrorReporter.
@@ -101,6 +126,10 @@ export function createMapEngine(
   });
 
   map.on('idle', () => tileErrors.settle());
+
+  // The bounds frame at a different zoom in a different sized window, so the
+  // floor is re-derived rather than fixed at load.
+  map.on('resize', () => { if (ready) tightenZoomFloor(); });
 
   // If the style never loads, `load` never fires and the source and layers are
   // never registered — the map stays blank with an empty listing count. Say so
@@ -143,6 +172,8 @@ export function createMapEngine(
     bindPointerAffordances(map, highlight.setHoveredCluster);
 
     ready = true;
+
+    tightenZoomFloor();
 
     // A highlight asked for while the style was still coming up could only be
     // recorded — there were no layers to filter. Now there are, so apply it.
