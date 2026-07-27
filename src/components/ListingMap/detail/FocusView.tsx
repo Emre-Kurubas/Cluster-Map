@@ -28,14 +28,14 @@ interface FieldProps {
 function Field({ label, children, stacked = false }: FieldProps) {
   return (
     <div
-      className={`border-t border-white/15 py-3 text-sm first:border-t-0 first:pt-0 ${
+      className={`border-t border-ink-900/15 py-3 text-sm first:border-t-0 first:pt-0 ${
         stacked ? 'flex flex-col gap-1.5' : 'flex items-baseline justify-between gap-4'
       }`}
     >
-      <dt className="shrink-0 text-white/65">{label}</dt>
+      <dt className="shrink-0 text-ink-500">{label}</dt>
       <dd
-        className={`text-white ${
-          stacked ? 'leading-relaxed text-white/90' : 'text-right font-medium'
+        className={`text-ink-900 ${
+          stacked ? 'leading-relaxed' : 'text-right font-semibold'
         }`}
       >
         {children}
@@ -137,7 +137,9 @@ export function FocusView({ listing, engine, size, onOpen }: FocusViewProps) {
         <FocusHeader listing={listing} />
       </div>
 
-      <div className="absolute left-6 top-[10%] z-20 flex flex-col gap-5 xl:left-10">
+      {/* Anchored top and bottom so the details column runs from under the photo
+          to the foot of the map rather than sizing to its content. */}
+      <div className="absolute bottom-6 left-6 top-[10%] z-20 flex flex-col gap-5 xl:left-10">
         <CirclePhoto
           listing={listing}
           color={color}
@@ -145,13 +147,12 @@ export function FocusView({ listing, engine, size, onOpen }: FocusViewProps) {
           onOpen={() => setLightboxOpen(true)}
         />
 
-        {/* Barely tinted, so the map still reads through it. The heavy blur and
-            the text shadow — not opacity — are what keep the copy legible. */}
+        {/* No surface at all: dark ink straight on the map, held legible by a
+            white text shadow the way the address header is. */}
         <div
-          className="pointer-events-auto flex w-[28rem] max-w-[calc(100vw-3rem)]
-                     flex-col gap-4 rounded-2xl border border-white/15
-                     bg-ink-900/15 p-6 text-white shadow-2xl shadow-ink-900/20
-                     backdrop-blur-xl [text-shadow:0_1px_3px_rgb(0_0_0/0.55)]
+          className="pointer-events-auto flex min-h-0 w-[28rem] max-w-[calc(100vw-3rem)]
+                     flex-1 flex-col gap-4 overflow-y-auto pb-2 pr-2 text-ink-900
+                     [text-shadow:0_1px_3px_rgb(255_255_255/0.9),0_0_10px_rgb(255_255_255/0.65)]
                      motion-safe:animate-[focus-body-in_300ms_var(--ease-spring)_120ms_backwards]"
         >
           <h2 className="text-lg font-semibold leading-snug">{listing.title}</h2>
@@ -179,10 +180,11 @@ export function FocusView({ listing, engine, size, onOpen }: FocusViewProps) {
             type="button"
             onClick={() => onOpen(listing)}
             style={{ backgroundColor: strongColor }}
-            className="mt-1 w-full rounded-xl px-4 py-3 text-sm font-semibold
-                       text-white shadow-lg shadow-ink-900/25
-                       transition-[transform,filter] duration-200
-                       ease-[var(--ease-spring)] hover:brightness-110
+            // The column's white text shadow would sit under a white label.
+            className="mt-1 w-full shrink-0 rounded-xl px-4 py-3 text-sm
+                       font-semibold text-white shadow-lg shadow-ink-900/25
+                       [text-shadow:none] transition-[transform,filter]
+                       duration-200 ease-[var(--ease-spring)] hover:brightness-110
                        active:scale-[0.98] focus-visible:outline-2
                        focus-visible:outline-offset-2 focus-visible:outline-white"
           >

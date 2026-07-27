@@ -4,8 +4,8 @@ interface IconButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   label: string;
   children: ReactNode;
   /**
-   * `solid` is the default chrome button. `ghost` is a near-transparent grey
-   * wash for controls that sit directly on the map with nothing behind them.
+   * `solid` is the default chrome button. `ghost` has no surface at all — dark
+   * ink straight on the map, legible through a text shadow rather than a plate.
    */
   tone?: 'solid' | 'ghost';
 }
@@ -14,8 +14,9 @@ const TONES = {
   solid:
     'bg-white/80 text-ink-500 border-white/60 shadow-sm hover:bg-white hover:text-ink-900',
   ghost:
-    'bg-ink-900/10 text-ink-900/70 border-ink-900/5 backdrop-blur-sm ' +
-    'hover:bg-ink-900/20 hover:text-ink-900',
+    'border-transparent bg-transparent text-lg font-semibold text-ink-900 ' +
+    '[text-shadow:0_1px_3px_rgb(255_255_255/0.9),0_0_10px_rgb(255_255_255/0.7)] ' +
+    'hover:bg-ink-900/10',
 } as const;
 
 export function IconButton({
