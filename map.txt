@@ -1,0 +1,7 @@
+We are gonna build a map for "Uyap E-satış" that will display listings, and they will be filtered while zooming in or out. There shall be extra filters as well. Build a minimalistic, glassomorphistic, 2d map component like this. When this component is fully built and running, it will be used in "Uyap E-Satış" website, for that reason the modularization, file/folder structure always nneds to be top notch, since its going to be a real component. It should not be laggy at all so mind the performance. the data format is in the json file in this repository.
+
+the listings will be displayed on the map as pins, depending on the category of the listings, the pin will change. There will be a search bar, filters bar and a place to display the listings in detail. And there will be buttons. Search will be smart search. The overall color theme will match Uyap E-Satış website.
+
+I want smooth animations.
+
+React + tailwind should be used. the rest of it is all in your hands.
