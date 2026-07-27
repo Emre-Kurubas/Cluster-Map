@@ -124,8 +124,7 @@ class FakeMap {
 
   minZoom = 4;
   setMinZoom(zoom: number) { this.guard(); this.minZoom = zoom; }
-  /** Stands in for the zoom at which the given bounds fill this viewport. */
-  cameraForBounds() { return { center: [35, 39], zoom: 5.42 }; }
+  setLayerZoomRange() { this.guard(); }
 
   getBounds() {
     return {
@@ -253,46 +252,17 @@ describe('createMapEngine', () => {
   });
 
   /**
-   * The basemap thins out below the zoom that frames Türkiye: positron drops
-   * province names under z5 and motorways and town labels under z6, so a fixed
-   * floor of 4 let the user zoom two levels past the point where the map still
-   * says anything. A fixed floor cannot be raised to fix it either — fitting
-   * Türkiye needs z3.4 on a phone and z6.1 on a wide desktop, so any single
-   * number is wrong for most viewports.
+   * The zoom floor stays where the caller put it. Detail surviving a zoomed-out
+   * view is `engine/detailZoom`'s job — taking the range away instead would fix
+   * the symptom by forbidding the thing the user wanted to do.
    */
-  describe('the zoom floor', () => {
-    it('tightens to the zoom that frames the initial bounds', async () => {
-      const engine = build();
-      lastMap.fire('load');
-      await flush();
+  it('leaves the zoom range alone', async () => {
+    const engine = build();
+    lastMap.fire('load');
+    await flush();
 
-      expect(lastMap.minZoom).toBe(5.42);
-      engine.destroy();
-    });
-
-    it('re-derives it when the viewport changes', async () => {
-      const engine = build();
-      lastMap.fire('load');
-      await flush();
-
-      lastMap.cameraForBounds = () => ({ center: [35, 39], zoom: 4.71 });
-      lastMap.fire('resize');
-
-      expect(lastMap.minZoom).toBe(4.71);
-      engine.destroy();
-    });
-
-    // A viewport too small to frame the country must still frame what it can,
-    // rather than being clamped to a floor it cannot reach.
-    it('never floors above what the viewport can show', async () => {
-      const engine = build();
-      lastMap.cameraForBounds = () => ({ center: [35, 39], zoom: 3.41 });
-      lastMap.fire('load');
-      await flush();
-
-      expect(lastMap.minZoom).toBe(3.41);
-      engine.destroy();
-    });
+    expect(lastMap.minZoom).toBe(4);
+    engine.destroy();
   });
 
   /**
