@@ -16,8 +16,19 @@ export interface ListingState {
   query: string;
   residualQuery: string;
   chips: Chip[];
-  manual: ManualFilters;
-  /** Derived: manual filters merged with whatever the query's chips contribute. */
+  /**
+   * Hand-set filters merged with whatever the query's chips contribute.
+   *
+   * Stored rather than derived through a selector on purpose: a selector that
+   * built a fresh object would return a new identity on every store update, so
+   * `Object.is` would fail and every subscriber would re-render on changes that
+   * had nothing to do with filtering — hover, viewport, the rail toggle.
+   *
+   * Note the two category fields carry opposite polarity. `categories` is
+   * inclusion, contributed only by the query; `hiddenCategories` is exclusion,
+   * driven by the legend. `categories: []` means "no inclusion filter", not
+   * "nothing is shown".
+   */
   filters: Filters;
   activeProvince: string | null;
   /**
@@ -27,6 +38,10 @@ export interface ListingState {
    */
   priceDomain: { min: number; max: number };
   sort: SortMode;
+  /**
+   * Listings inside the current viewport, rewritten on every map `idle`.
+   * High-churn: subscribe to it deliberately, not incidentally.
+   */
   visibleIds: number[];
   selectedId: number | null;
   hoveredId: number | null;
@@ -55,12 +70,20 @@ export interface ListingState {
 /**
  * The store as this module builds it.
  *
- * Identical to `ListingState` today. It exists so the two can diverge: `manual`
- * is bookkeeping — it records how a value arrived rather than what it is, and
- * it duplicates `filters`, which is the composed answer — so it belongs on the
- * internal type once the public one is frozen by publication.
+ * `manual` lives here rather than on `ListingState` because `ListingState` is
+ * published and therefore frozen by semver. It is bookkeeping — it records how
+ * a value arrived rather than what it is — and it duplicates `filters`:
+ * `manual.priceMax` can read 900.000 while `filters.priceMax` reads 2.000.000,
+ * because a price chip overrides a hand-typed range. Two authoritative-looking
+ * fields that legitimately disagree are fine as an implementation and wrong as
+ * a contract.
+ *
+ * Nothing changes at runtime; the field is simply not something consumers are
+ * owed forever.
  */
-export type InternalListingState = ListingState;
+export interface InternalListingState extends ListingState {
+  manual: ManualFilters;
+}
 
 /** Internal escape hatch: the context needs the real api to drive `useStore`. */
 export type InternalStoreApi = StoreApi<InternalListingState>;

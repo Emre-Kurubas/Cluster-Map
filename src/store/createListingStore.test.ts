@@ -218,4 +218,29 @@ describe('createListingStore', () => {
       expect(state().filters.priceMax).toBe(900_000);
     });
   });
+
+  /**
+   * `ListingState` is published, so its shape is frozen by semver. `manual` is
+   * bookkeeping — it records how a value arrived rather than what it is — and it
+   * duplicates `filters`: `manual.priceMax` can read 900.000 while
+   * `filters.priceMax` reads 2.000.000, because a price chip overrides a
+   * hand-typed range. Two readable, authoritative-looking fields that
+   * legitimately disagree is fine internally and wrong as a contract.
+   *
+   * It stays at runtime — the composition is built on it — and comes off the
+   * exported type only.
+   */
+  describe('the published shape', () => {
+    it('still composes hand-set filters with query chips', () => {
+      state().toggleCategoryVisibility('Arsa');
+      state().setPriceRange(100_000, 900_000);
+      expect(state().filters.hiddenCategories).toEqual(['Arsa']);
+      expect(state().filters.priceMin).toBe(100_000);
+    });
+
+    it('does not advertise the bookkeeping field', () => {
+      // @ts-expect-error `manual` is not part of ListingState
+      expect(state().manual).toBeDefined();
+    });
+  });
 });
