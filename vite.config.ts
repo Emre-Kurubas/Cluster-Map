@@ -4,6 +4,7 @@ import { dirname, join } from 'node:path';
 import { defineConfig, type Plugin } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
+import { scopeComponentCss } from './build/scopeCss.ts';
 
 const require = createRequire(import.meta.url);
 
@@ -47,7 +48,7 @@ export default defineConfig({
   root: 'demo',
   publicDir: 'public',
   build: { outDir: '../dist-demo', emptyOutDir: true },
-  plugins: [react(), tailwindcss(), maplibreWorkerAssets()],
+  plugins: [react(), tailwindcss(), maplibreWorkerAssets(), scopeComponentCss()],
   optimizeDeps: {
     // Dev counterpart to the plugin above: pre-bundling would relocate the
     // MapLibre entry into .vite/deps/ without its worker sibling, so the same
@@ -63,7 +64,8 @@ export default defineConfig({
     setupFiles: ['./test-setup.ts'],
     // Vitest stubs every CSS import to an empty string, so a `?raw` read of
     // MapLibre's stylesheet came back blank and the cascade guard in
-    // MapCanvas.test.tsx passed against nothing. Let that one file through.
-    css: { include: [/maplibre-gl\.css/] },
+    // MapCanvas.test.tsx passed against nothing. Let that one through, plus our
+    // own published stylesheet, which styles.test.ts reads the same way.
+    css: { include: [/maplibre-gl\.css/, /src[\\/]styles\.css/] },
   },
 });

@@ -1,0 +1,221 @@
+/**
+ * Everything the component cannot render without, and nothing else.
+ *
+ * Published as one file the consumer imports:
+ *
+ *   import '@uyap/listing-map/styles.css';
+ *
+ * Every rule is scoped under `.uyap-listing-map`, the class ListingMapView puts
+ * on its root. Two of the rules below were global in the app stylesheet this
+ * was extracted from — the button cursor and the reduced-motion override — and
+ * a package that restyles every button on its host's site, or silences the
+ * host's own animations, is one nobody can adopt. Scoping also means our
+ * utilities cannot collide with a consumer's own `.flex` or `.absolute`.
+ */
+
+@import "tailwindcss";
+
+/**
+ * Tailwind's automatic source detection starts from this file's directory, and
+ * the Vite root is `demo/` — so without naming it explicitly, `src/` was never
+ * scanned and the build emitted a stylesheet with no utilities in it at all.
+ * The map rendered unstyled and nothing failed, because no test reads generated
+ * CSS. This is also what makes the file self-sufficient: the library build
+ * compiles it alone, with no help from the app that used to own Tailwind.
+ */
+@source "./";
+
+/**
+ * Internal Tailwind tokens, each resolving through an overridable public one.
+ * Only the `--uyap-lm-` names below are contract; these are what the generated
+ * utilities reference and may be renamed whenever Tailwind changes.
+ */
+@theme {
+  --color-brand-100: var(--uyap-lm-brand-100);
+  --color-brand-500: var(--uyap-lm-brand-500);
+  --color-brand-700: var(--uyap-lm-brand-700);
+  --color-brand-900: var(--uyap-lm-brand-900);
+  --color-ink-300:   var(--uyap-lm-ink-300);
+  --color-ink-500:   var(--uyap-lm-ink-500);
+  --color-ink-900:   var(--uyap-lm-ink-900);
+  --color-surface:   var(--uyap-lm-surface);
+  --color-line:      var(--uyap-lm-line);
+  --color-danger:    var(--uyap-lm-danger);
+
+  --color-cat-gayrimenkul: var(--uyap-lm-cat-gayrimenkul);
+  --color-cat-arsa:        var(--uyap-lm-cat-arsa);
+  --color-cat-arac:        var(--uyap-lm-cat-arac);
+
+  --font-sans: var(--uyap-lm-font-sans);
+
+  --ease-spring: var(--uyap-lm-ease-spring);
+  --ease-smooth: var(--uyap-lm-ease-smooth);
+}
+
+/**
+ * The public, overridable layer. A consumer rebrands by redeclaring any of
+ * these in their own stylesheet — no rebuild, no fork, no exported Tailwind
+ * config:
+ *
+ *   .uyap-listing-map { --uyap-lm-brand-500: #0a5ed7; }
+ */
+.uyap-listing-map {
+  --uyap-lm-brand-100: #fdf1e5;
+  --uyap-lm-brand-500: #f5821f;
+  --uyap-lm-brand-700: #b4560a;
+  --uyap-lm-brand-900: #8f4408;
+  --uyap-lm-ink-300:   #8ea0ad;
+  --uyap-lm-ink-500:   #485a6a;
+  --uyap-lm-ink-900:   #22313f;
+  --uyap-lm-surface:   #f2f6f9;
+  --uyap-lm-line:      #e9ecf3;
+  --uyap-lm-danger:    #ef4836;
+
+  --uyap-lm-cat-gayrimenkul: #4f6bd1;
+  --uyap-lm-cat-arsa:        #3d9a82;
+  --uyap-lm-cat-arac:        #e0912f;
+
+  --uyap-lm-font-sans: Inter, ui-sans-serif, system-ui, sans-serif;
+
+  --uyap-lm-ease-spring: cubic-bezier(0.22, 1, 0.36, 1);
+  /**
+   * Gentler than --uyap-lm-ease-spring, which lands hard by design. Used where
+   * a shape changes size over a longer distance and the arrival should not be
+   * felt.
+   */
+  --uyap-lm-ease-smooth: cubic-bezier(0.32, 0.08, 0.24, 1);
+
+  font-family: var(--uyap-lm-font-sans);
+  color: var(--uyap-lm-ink-500);
+}
+
+/**
+ * Tailwind v4's preflight dropped the `button { cursor: pointer }` that v3
+ * shipped, and no browser's UA stylesheet supplies one — so every control here
+ * showed an arrow. Most obvious on the focus view's photo, which morphs into a
+ * rectangle under the pointer and still looked inert.
+ *
+ * Scoped, so it fixes our controls and leaves the host's alone. Disabled
+ * controls keep the arrow: a hand over something that will not respond is worse
+ * than no hand at all.
+ */
+.uyap-listing-map button:not(:disabled),
+.uyap-listing-map [role="button"]:not([aria-disabled="true"]) {
+  cursor: pointer;
+}
+
+/**
+ * The two overlaid tracks of the price range control.
+ *
+ * Native range inputs cannot express a range, so two of them share one box.
+ * Both tracks are invisible and untouchable — the coloured bar underneath is a
+ * plain div — and only the thumbs take the pointer, which is what lets the
+ * lower input sit on top of the upper one without swallowing its drags.
+ */
+.uyap-listing-map .range-thumb {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  top: 50%;
+  height: 1.5rem;
+  margin: 0;
+  translate: 0 -50%;
+  appearance: none;
+  background: transparent;
+  pointer-events: none;
+}
+
+.uyap-listing-map .range-thumb::-webkit-slider-thumb {
+  appearance: none;
+  pointer-events: auto;
+  width: 1.125rem;
+  height: 1.125rem;
+  border-radius: 9999px;
+  border: 2px solid var(--uyap-lm-brand-500);
+  background: #fff;
+  box-shadow: 0 1px 4px rgb(34 49 63 / 0.28);
+  cursor: grab;
+  transition: transform 150ms var(--uyap-lm-ease-spring),
+              box-shadow 150ms var(--uyap-lm-ease-spring);
+}
+
+.uyap-listing-map .range-thumb::-moz-range-thumb {
+  pointer-events: auto;
+  width: 1.125rem;
+  height: 1.125rem;
+  border-radius: 9999px;
+  border: 2px solid var(--uyap-lm-brand-500);
+  background: #fff;
+  box-shadow: 0 1px 4px rgb(34 49 63 / 0.28);
+  cursor: grab;
+  transition: transform 150ms var(--uyap-lm-ease-spring),
+              box-shadow 150ms var(--uyap-lm-ease-spring);
+}
+
+.uyap-listing-map .range-thumb:active::-webkit-slider-thumb { cursor: grabbing; transform: scale(1.15); }
+.uyap-listing-map .range-thumb:active::-moz-range-thumb     { cursor: grabbing; transform: scale(1.15); }
+
+.uyap-listing-map .range-thumb:focus { outline: none; }
+.uyap-listing-map .range-thumb:focus-visible::-webkit-slider-thumb {
+  box-shadow: 0 0 0 3px var(--uyap-lm-brand-100), 0 1px 4px rgb(34 49 63 / 0.28);
+}
+.uyap-listing-map .range-thumb:focus-visible::-moz-range-thumb {
+  box-shadow: 0 0 0 3px var(--uyap-lm-brand-100), 0 1px 4px rgb(34 49 63 / 0.28);
+}
+
+.uyap-listing-map .range-thumb:disabled::-webkit-slider-thumb { cursor: default; border-color: var(--uyap-lm-ink-300); }
+.uyap-listing-map .range-thumb:disabled::-moz-range-thumb     { cursor: default; border-color: var(--uyap-lm-ink-300); }
+
+/* Keyframes are global by nature — they are referenced by name from scoped
+   rules, so they cannot themselves be nested. Names are distinctive enough not
+   to collide, and `rail-in` was dropped as dead. */
+
+@keyframes detail-in {
+  from { opacity: 0; transform: translateY(12px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0)    scale(1); }
+}
+
+@keyframes lightbox-in {
+  from { opacity: 0; transform: scale(0.96); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes circle-in {
+  from { opacity: 0; transform: scale(0.85); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes header-in {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes connector-draw {
+  from { stroke-dasharray: 1; stroke-dashoffset: 1; }
+  to   { stroke-dasharray: 1; stroke-dashoffset: 0; }
+}
+
+@keyframes focus-body-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes chrome-in {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/**
+ * Scoped to our subtree. Unscoped, this would silence every animation and
+ * transition on the consumer's page whenever the user prefers reduced motion —
+ * a setting about our component becoming a setting about their whole site.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .uyap-listing-map,
+  .uyap-listing-map *,
+  .uyap-listing-map *::before,
+  .uyap-listing-map *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
