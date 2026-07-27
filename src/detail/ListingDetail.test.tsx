@@ -1,8 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { screen, fireEvent } from '@testing-library/react';
+import type { ReactElement } from 'react';
 import userEvent from '@testing-library/user-event';
 import { ListingDetail } from './ListingDetail';
-import { useListingStore } from '../store/useListingStore';
+import { createListingStore } from '../store/createListingStore';
+import type { ListingStore } from '../store/createListingStore';
+import { renderWithStore } from '../test/renderWithStore';
 import { t } from '../i18n/tr';
 import type { Listing } from '../types/listing';
 
@@ -19,8 +22,13 @@ const listing: Listing = {
   detailUrl: '/ilan/adiyaman-81200004',
 };
 
+// A fresh store per test, so nothing needs resetting and no test can leak into
+// the next by forgetting to.
+let store: ListingStore = createListingStore();
+const render = (ui: ReactElement) => renderWithStore(ui, { store });
+
 describe('ListingDetail', () => {
-  beforeEach(() => useListingStore.getState().resetAll());
+  beforeEach(() => { store = createListingStore(); });
 
   it('renders the listing title, subtitle and description', () => {
     render(<ListingDetail listing={listing} onOpen={vi.fn()} />);
@@ -57,9 +65,9 @@ describe('ListingDetail', () => {
   });
 
   it('clears the selection when closed', async () => {
-    useListingStore.getState().select(listing.id);
+    store.getState().select(listing.id);
     render(<ListingDetail listing={listing} onOpen={vi.fn()} />);
     await userEvent.click(screen.getByRole('button', { name: t.closeDetail }));
-    expect(useListingStore.getState().selectedId).toBeNull();
+    expect(store.getState().selectedId).toBeNull();
   });
 });

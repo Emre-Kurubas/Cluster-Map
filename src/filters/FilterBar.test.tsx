@@ -1,11 +1,18 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { screen, fireEvent } from '@testing-library/react';
+import type { ReactElement } from 'react';
 import userEvent from '@testing-library/user-event';
 import { FilterBar } from './FilterBar';
-import { useListingStore } from '../store/useListingStore';
+import { createListingStore } from '../store/createListingStore';
+import type { ListingStore } from '../store/createListingStore';
+import { renderWithStore } from '../test/renderWithStore';
 import { t } from '../i18n/tr';
 
-const state = () => useListingStore.getState();
+// A fresh store per test, so nothing needs resetting and no test can leak into
+// the next by forgetting to.
+let store: ListingStore = createListingStore();
+const state = () => store.getState();
+const render = (ui: ReactElement) => renderWithStore(ui, { store });
 
 const DOMAIN = { min: 500_000, max: 15_000_000 };
 
@@ -21,7 +28,7 @@ const drag = (label: string, value: number) =>
 
 describe('FilterBar', () => {
   beforeEach(() => {
-    state().resetAll();
+    store = createListingStore();
     state().setPriceDomain(DOMAIN.min, DOMAIN.max);
   });
 

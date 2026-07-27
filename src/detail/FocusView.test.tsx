@@ -1,8 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, within } from '@testing-library/react';
+import { screen, within } from '@testing-library/react';
+import type { ReactElement } from 'react';
 import userEvent from '@testing-library/user-event';
 import { FocusView } from './FocusView';
-import { useListingStore } from '../store/useListingStore';
+import { createListingStore } from '../store/createListingStore';
+import type { ListingStore } from '../store/createListingStore';
+import { renderWithStore } from '../test/renderWithStore';
 import { t } from '../i18n/tr';
 import type { Listing } from '../types/listing';
 import type { MapEngine } from '../types/map';
@@ -32,6 +35,11 @@ function fakeEngine() {
 
 let engine: MapEngine = fakeEngine();
 
+// A fresh store per test, so nothing needs resetting and no test can leak into
+// the next by forgetting to.
+let store: ListingStore = createListingStore();
+const render = (ui: ReactElement) => renderWithStore(ui, { store });
+
 const setup = (onOpen = vi.fn()) => {
   render(
     <FocusView listing={listing} engine={engine} size={SIZE} onOpen={onOpen} />,
@@ -42,8 +50,8 @@ const setup = (onOpen = vi.fn()) => {
 describe('FocusView', () => {
   beforeEach(() => {
     engine = fakeEngine();
-    useListingStore.getState().resetAll();
-    useListingStore.getState().select(1);
+    store = createListingStore();
+    store.getState().select(1);
 
     // jsdom reports every rect as zero, which would leave the circle radius at
     // 0 and suppress the connector. 200x200 at the origin gives the geometry
@@ -65,7 +73,7 @@ describe('FocusView', () => {
   it('clears the selection from the back button', async () => {
     setup();
     await userEvent.click(screen.getByRole('button', { name: t.backToList }));
-    expect(useListingStore.getState().selectedId).toBeNull();
+    expect(store.getState().selectedId).toBeNull();
   });
 
   it('returns the map to the default view from the back button', async () => {
@@ -129,13 +137,13 @@ describe('FocusView', () => {
     await userEvent.keyboard('{Escape}');
 
     expect(screen.queryByRole('dialog', { name: t.listingPhoto })).toBeNull();
-    expect(useListingStore.getState().selectedId).toBe(1);
+    expect(store.getState().selectedId).toBe(1);
   });
 
   it('escape leaves focus mode once the lightbox is closed', async () => {
     setup();
     await userEvent.keyboard('{Escape}');
-    expect(useListingStore.getState().selectedId).toBeNull();
+    expect(store.getState().selectedId).toBeNull();
   });
 
   it('calls onOpen from the CTA', async () => {

@@ -1,10 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, act } from '@testing-library/react';
+import { act } from '@testing-library/react';
 // The stylesheet MapLibre actually ships, read verbatim: the collision this
 // guards against only exists in the real file.
 import maplibreCss from 'maplibre-gl/dist/maplibre-gl.css?raw';
 import { MapCanvas } from './MapCanvas';
-import { useListingStore } from '../store/useListingStore';
+import { createListingStore } from '../store/createListingStore';
+import type { ListingStore } from '../store/createListingStore';
+import { renderWithStore } from '../test/renderWithStore';
 
 /** What the component subscribed to, so the tests can fire those callbacks. */
 const engineSpy = {
@@ -33,8 +35,12 @@ vi.mock('./createMapEngine', () => ({
   },
 }));
 
+// A fresh store per test, so nothing needs resetting and no test can leak into
+// the next by forgetting to.
+let store: ListingStore = createListingStore();
+
 const renderCanvas = () =>
-  render(
+  renderWithStore(
     <MapCanvas
       listings={[]}
       styleUrl="https://example.test/style.json"
@@ -42,6 +48,7 @@ const renderCanvas = () =>
       onError={() => {}}
       onRecover={() => {}}
     />,
+    { store },
   );
 
 /**
@@ -51,7 +58,7 @@ const renderCanvas = () =>
  */
 describe('pin hover', () => {
   beforeEach(() => {
-    useListingStore.getState().resetAll();
+    store = createListingStore();
     engineSpy.hover = null;
     engineSpy.unsubscribed = 0;
   });
@@ -64,14 +71,14 @@ describe('pin hover', () => {
   it('puts the hovered pin into the store', () => {
     renderCanvas();
     act(() => engineSpy.hover?.(7));
-    expect(useListingStore.getState().hoveredId).toBe(7);
+    expect(store.getState().hoveredId).toBe(7);
   });
 
   it('clears it again when the pointer leaves', () => {
     renderCanvas();
     act(() => engineSpy.hover?.(7));
     act(() => engineSpy.hover?.(null));
-    expect(useListingStore.getState().hoveredId).toBeNull();
+    expect(store.getState().hoveredId).toBeNull();
   });
 
   it('unsubscribes and drops the hover on unmount', () => {
@@ -80,7 +87,7 @@ describe('pin hover', () => {
     unmount();
     expect(engineSpy.unsubscribed).toBe(1);
     // A stale id would keep a phantom card highlighted in the rail.
-    expect(useListingStore.getState().hoveredId).toBeNull();
+    expect(store.getState().hoveredId).toBeNull();
   });
 });
 

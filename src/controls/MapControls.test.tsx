@@ -1,10 +1,13 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
+import type { ReactElement } from 'react';
 import userEvent from '@testing-library/user-event';
 import { MapControls } from './MapControls';
 import { RailToggle } from './RailToggle';
 import { ErrorNotice } from './ErrorNotice';
-import { useListingStore } from '../store/useListingStore';
+import { createListingStore } from '../store/createListingStore';
+import type { ListingStore } from '../store/createListingStore';
+import { renderWithStore } from '../test/renderWithStore';
 import { t } from '../i18n/tr';
 import type { MapEngine } from '../types/map';
 
@@ -27,8 +30,14 @@ const stubEngine = (): MapEngine => ({
   destroy: vi.fn(),
 });
 
+// A fresh store per test, so nothing needs resetting and no test can leak into
+// the next by forgetting to. MapControls and ErrorNotice never read it, but
+// they still render inside the provider the package always supplies.
+let store: ListingStore = createListingStore();
+const render = (ui: ReactElement) => renderWithStore(ui, { store });
+
 describe('MapControls', () => {
-  beforeEach(() => useListingStore.getState().resetAll());
+  beforeEach(() => { store = createListingStore(); });
 
   it('drives zoom in, zoom out and reset on the engine', async () => {
     const engine = stubEngine();
@@ -48,12 +57,12 @@ describe('MapControls', () => {
 });
 
 describe('RailToggle', () => {
-  beforeEach(() => useListingStore.getState().resetAll());
+  beforeEach(() => { store = createListingStore(); });
 
   it('closes the rail and flips its label', async () => {
     render(<RailToggle />);
     await userEvent.click(screen.getByRole('button', { name: t.closeRail }));
-    expect(useListingStore.getState().railOpen).toBe(false);
+    expect(store.getState().railOpen).toBe(false);
     expect(screen.getByRole('button', { name: t.openRail })).toBeInTheDocument();
   });
 });

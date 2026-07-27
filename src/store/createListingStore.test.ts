@@ -1,17 +1,15 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { useListingStore } from './useListingStore';
+import { createListingStore } from './createListingStore';
+import type { ListingStore } from './createListingStore';
 import type { Chip } from '../types/filters';
 
-// `railOpen` is deliberately outside resetAll's remit now, so the suite has to
-// put it back by hand between cases.
-const reset = () => {
-  useListingStore.setState({ railOpen: true });
-  useListingStore.getState().resetAll();
-};
-const state = () => useListingStore.getState();
+// A fresh store per test. `railOpen` is deliberately outside resetAll's remit,
+// so building a new store is the only honest way to get back to the start.
+let store: ListingStore = createListingStore();
+const state = () => store.getState();
 
-describe('useListingStore', () => {
-  beforeEach(reset);
+describe('createListingStore', () => {
+  beforeEach(() => { store = createListingStore(); });
 
   it('starts with no filters, every category visible, and the rail open', () => {
     expect(state().filters.categories).toEqual([]);

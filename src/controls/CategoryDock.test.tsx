@@ -1,14 +1,21 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
+import type { ReactElement } from 'react';
 import userEvent from '@testing-library/user-event';
 import { CategoryDock } from './CategoryDock';
-import { useListingStore } from '../store/useListingStore';
+import { createListingStore } from '../store/createListingStore';
+import type { ListingStore } from '../store/createListingStore';
+import { renderWithStore } from '../test/renderWithStore';
 import { t } from '../i18n/tr';
 
-const state = () => useListingStore.getState();
+// A fresh store per test, so nothing needs resetting and no test can leak into
+// the next by forgetting to.
+let store: ListingStore;
+const state = () => store.getState();
+const render = (ui: ReactElement) => renderWithStore(ui, { store });
 
 describe('CategoryDock', () => {
-  beforeEach(() => state().resetAll());
+  beforeEach(() => { store = createListingStore(); });
 
   it('is a labelled region so it reads as the map legend', () => {
     render(<CategoryDock />);

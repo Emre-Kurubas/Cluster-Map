@@ -1,16 +1,20 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
+import type { ReactElement } from 'react';
 import userEvent from '@testing-library/user-event';
 import { SearchBar } from './SearchBar';
-import { useListingStore } from '../store/useListingStore';
+import { createListingStore } from '../store/createListingStore';
+import type { ListingStore } from '../store/createListingStore';
+import { renderWithStore } from '../test/renderWithStore';
 import { t } from '../i18n/tr';
 
+// A fresh store per test, so nothing needs resetting — including the rail,
+// which resetAll deliberately leaves as the user arranged it.
+let store: ListingStore = createListingStore();
+const render = (ui: ReactElement) => renderWithStore(ui, { store });
+
 describe('SearchBar', () => {
-  beforeEach(() => {
-    // resetAll deliberately leaves the rail as the user arranged it.
-    useListingStore.setState({ railOpen: true });
-    useListingStore.getState().resetAll();
-  });
+  beforeEach(() => { store = createListingStore(); });
 
   it('renders a labelled search input', () => {
     render(<SearchBar onFlyTo={vi.fn()} />);
@@ -20,7 +24,7 @@ describe('SearchBar', () => {
   it('writes what the user types into the store', async () => {
     render(<SearchBar onFlyTo={vi.fn()} />);
     await userEvent.type(screen.getByRole('searchbox'), 'ankara');
-    expect(useListingStore.getState().query).toBe('ankara');
+    expect(store.getState().query).toBe('ankara');
   });
 
   it('turns a parsed query into visible chips', async () => {
@@ -47,15 +51,15 @@ describe('SearchBar', () => {
     await waitFor(() => expect(screen.getByText('Arsa')).toBeInTheDocument());
     await userEvent.click(screen.getByRole('button', { name: /Arsa/ }));
     await waitFor(() =>
-      expect(useListingStore.getState().filters.categories).toEqual([]));
+      expect(store.getState().filters.categories).toEqual([]));
   });
 
   it('clears the query with the clear button', async () => {
     render(<SearchBar onFlyTo={vi.fn()} />);
     await userEvent.type(screen.getByRole('searchbox'), 'ankara');
     await userEvent.click(screen.getByRole('button', { name: t.clearSearch }));
-    expect(useListingStore.getState().query).toBe('');
-    expect(useListingStore.getState().chips).toEqual([]);
+    expect(store.getState().query).toBe('');
+    expect(store.getState().chips).toEqual([]);
   });
 
   /**
@@ -64,17 +68,17 @@ describe('SearchBar', () => {
    * the rail back open — none of which live in the field it is attached to.
    */
   it('clears only the search, leaving the rest of the chrome alone', async () => {
-    const store = useListingStore.getState();
-    store.toggleCategoryVisibility('Arsa');
-    store.setPriceRange(100_000, 900_000);
-    store.setSort('price-desc');
-    store.toggleRail();
+    const before = store.getState();
+    before.toggleCategoryVisibility('Arsa');
+    before.setPriceRange(100_000, 900_000);
+    before.setSort('price-desc');
+    before.toggleRail();
 
     render(<SearchBar onFlyTo={vi.fn()} />);
     await userEvent.type(screen.getByRole('searchbox'), 'ankara');
     await userEvent.click(screen.getByRole('button', { name: t.clearSearch }));
 
-    const after = useListingStore.getState();
+    const after = store.getState();
     expect(after.query).toBe('');
     expect(after.filters.hiddenCategories).toEqual(['Arsa']);
     expect(after.filters.priceMin).toBe(100_000);

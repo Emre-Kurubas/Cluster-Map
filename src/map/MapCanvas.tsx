@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { createMapEngine } from './createMapEngine';
 import { rafThrottle } from '../lib/throttle';
-import { useListingStore } from '../store/useListingStore';
+import { useListingStoreApi } from '../store/ListingStoreContext';
 import { TURKEY_BBOX } from '../config/constants';
 import { t } from '../i18n/tr';
 import type { Listing } from '../types/listing';
@@ -28,6 +28,11 @@ export function MapCanvas({
 }: MapCanvasProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const engineRef = useRef<MapEngine | null>(null);
+  // The store itself, not a slice of it: the actions below are pulled once
+  // inside the effect, so panning the map costs no React render at all. The api
+  // is stable for this component's life, so listing it as a dependency below
+  // does not re-run the effect.
+  const storeApi = useListingStoreApi();
 
   // Create once. styleUrl changes are rare enough to warrant a full rebuild.
   useEffect(() => {
@@ -42,7 +47,7 @@ export function MapCanvas({
     engineRef.current = engine;
     onEngineReady(engine);
 
-    const { setVisibleIds, select, hover } = useListingStore.getState();
+    const { setVisibleIds, select, hover } = storeApi.getState();
 
     const syncViewport = rafThrottle(() => setVisibleIds(engine.queryVisibleIds()));
     const offIdle = engine.onIdle(syncViewport);
@@ -62,7 +67,7 @@ export function MapCanvas({
       engine.destroy();
       engineRef.current = null;
     };
-  }, [styleUrl, onEngineReady, onError, onRecover]);
+  }, [styleUrl, onEngineReady, onError, onRecover, storeApi]);
 
   // Push filtered data into the existing source; never recreate the map.
   useEffect(() => {
