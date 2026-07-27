@@ -59,11 +59,20 @@ describe('ListingMap', () => {
     mapRenders.length = 0;
   });
 
-  it('renders the search bar, filter bar, rail and map', () => {
+  it('renders the search bar, filter bar and rail immediately', () => {
     render(<ListingMapView listings={listings} />);
     expect(screen.getByRole('searchbox')).toBeInTheDocument();
     expect(screen.getByRole('region', { name: t.filters })).toBeInTheDocument();
-    expect(screen.getByTestId('map-canvas')).toBeInTheDocument();
+  });
+
+  /**
+   * The chrome is on screen before MapLibre has been fetched — that is the
+   * point of the code-split boundary, and the reason this one has to be
+   * awaited where the others are not.
+   */
+  it('resolves the map canvas behind its suspense boundary', async () => {
+    render(<ListingMapView listings={listings} />);
+    expect(await screen.findByTestId('map-canvas')).toBeInTheDocument();
   });
 
   it('shows the empty state when given no listings', () => {

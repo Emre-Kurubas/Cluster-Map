@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { MapCanvas } from './map/MapCanvas';
+import { MapCanvasLazy } from './map/MapCanvasLazy';
 import { SearchBar } from './search/SearchBar';
 import { FilterBar } from './filters/FilterBar';
 import { ResultsRail } from './list/ResultsRail';
@@ -181,7 +181,7 @@ export function ListingMapView({
       ref={rootRef}
       className={`uyap-listing-map relative h-full w-full overflow-hidden bg-surface ${className}`}
     >
-      <MapCanvas
+      <MapCanvasLazy
         listings={mapListings}
         styleUrl={styleUrl}
         onEngineReady={handleEngineReady}

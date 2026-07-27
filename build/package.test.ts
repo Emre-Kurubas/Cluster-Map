@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import postcss from 'postcss';
 import type { Container } from 'postcss';
@@ -58,6 +58,43 @@ describe('the built package', () => {
     const bundle = readFileSync(root('dist/index.js'), 'utf8');
     expect(bundle).not.toContain('maplibregl');
     expect(bundle.length).toBeLessThan(400_000);
+  });
+
+  /**
+   * MapLibre must stay behind the code-split boundary on the main entry. A
+   * stray static import anywhere on the path from `index.js` welds it back into
+   * the chunk a consumer downloads before anything is on screen — which is what
+   * the boundary exists to prevent, and which nothing else would notice.
+   *
+   * `primitives.js` is deliberately exempt: it exports the eager `MapCanvas`,
+   * because a consumer assembling their own layout picks their own loading
+   * strategy and taking that decision away would be making it for them.
+   */
+  it.skipIf(!built)('keeps maplibre-gl out of the main entry graph', () => {
+    const chunks = readdirSync(root('dist'))
+      .filter((name) => name.endsWith('.js'))
+      .map((name) => ({ name, source: readFileSync(root(`dist/${name}`), 'utf8') }));
+
+    const importsMaplibre = (source: string) => /from\s*["']maplibre-gl["']/.test(source);
+
+    // Walk the static graph out from each entry point.
+    const byName = new Map(chunks.map((chunk) => [chunk.name, chunk.source]));
+    const eager = new Set<string>();
+    const visit = (name: string) => {
+      if (eager.has(name) || !byName.has(name)) return;
+      eager.add(name);
+      for (const [, target] of byName.get(name)!.matchAll(/from\s*["']\.\/([^"']+)["']/g)) {
+        visit(target);
+      }
+    };
+    visit('index.js');
+
+    const offenders = [...eager].filter((name) => importsMaplibre(byName.get(name)!));
+    expect(offenders, `reachable statically from index.js and importing maplibre: ${offenders.join(', ')}`)
+      .toEqual([]);
+
+    // And it must still be in the bundle somewhere, behind the dynamic import.
+    expect(chunks.some((chunk) => importsMaplibre(chunk.source))).toBe(true);
   });
 
   /**
