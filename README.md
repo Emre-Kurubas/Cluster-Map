@@ -40,10 +40,18 @@ ink, surface and category colors every component reads.
 
 ```bash
 npm install
-npm run dev     # harness at http://localhost:5173
-npm run test    # 169 unit tests
-npm run build   # production build
+npm run dev        # harness at http://localhost:5173
+npm run test       # 165 correctness tests
+npm run test:perf  # 4 benchmarks, run without file parallelism
+npm run verify     # test + test:perf + build
+npm run build      # production build
 ```
+
+Benchmarks are deliberately excluded from `npm run test` and run single-threaded.
+A wall-clock assertion competing with 22 other test files measures the OS
+scheduler, not the code — indexing 50k listings takes ~790ms on an idle CPU but
+exceeded a 2000ms budget under that contention. Separating them keeps the
+budgets meaningful and the correctness suite trustworthy.
 
 ## Architecture notes
 
