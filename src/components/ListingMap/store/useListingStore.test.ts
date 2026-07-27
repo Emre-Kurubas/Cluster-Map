@@ -67,10 +67,47 @@ describe('useListingStore', () => {
     expect(state().filters.categories).toEqual(['Araç']);
   });
 
-  it('keeps manually toggled categories out of chip-driven resets', () => {
+  // Regression: the debounced query parse fires on mount and on every
+  // keystroke. Rebuilding filters from chips alone silently discarded whatever
+  // the user had toggled in the FilterBar.
+  it('preserves manually toggled categories when a query is parsed', () => {
     state().toggleCategory('Arsa');
     state().applyParsed([], '');
-    expect(state().filters.categories).toEqual([]);
+    expect(state().filters.categories).toEqual(['Arsa']);
+  });
+
+  it('unions manual categories with categories the query contributed', () => {
+    state().toggleCategory('Arsa');
+    state().applyParsed(
+      [{ id: 'category:Araç', kind: 'category', label: 'Araç', category: 'Araç' }],
+      '',
+    );
+    expect(state().filters.categories).toEqual(['Arsa', 'Araç']);
+  });
+
+  it('keeps the manual category after its chip counterpart is removed', () => {
+    state().toggleCategory('Arsa');
+    state().applyParsed(
+      [{ id: 'category:Araç', kind: 'category', label: 'Araç', category: 'Araç' }],
+      '',
+    );
+    state().removeChip('category:Araç');
+    expect(state().filters.categories).toEqual(['Arsa']);
+  });
+
+  it('lets a price chip override a hand-typed range, then restores it on removal', () => {
+    state().setPriceRange(100_000, 900_000);
+    state().applyParsed(
+      [{
+        id: 'price:0:2000000', kind: 'price', label: '≤ 2.000.000 ₺',
+        priceMin: null, priceMax: 2_000_000,
+      }],
+      '',
+    );
+    expect(state().filters.priceMax).toBe(2_000_000);
+    state().removeChip('price:0:2000000');
+    expect(state().filters.priceMin).toBe(100_000);
+    expect(state().filters.priceMax).toBe(900_000);
   });
 
   it('stores viewport ids without touching other state', () => {

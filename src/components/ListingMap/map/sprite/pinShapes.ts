@@ -40,20 +40,79 @@ export function buildPinSvg(category: Category): string {
 }
 
 /**
+ * Rasterize an SVG string to pixels.
+ *
+ * Deliberately goes through HTMLImageElement + canvas rather than
+ * `createImageBitmap(svgBlob)`. Chrome cannot decode SVG through
+ * createImageBitmap at all — it throws "The source image could not be decoded"
+ * — and only Firefox supports it. Drawing via an Image element works
+ * everywhere, which is why the extra hop is here.
+ */
+/**
+ * Upper bound on decoding one pin. An image element that neither loads nor
+ * errors would otherwise leave the promise pending forever, and because this
+ * is awaited inside the map's `load` handler that would stall source and layer
+ * registration permanently. Failing beats hanging.
+ */
+export const SPRITE_LOAD_TIMEOUT_MS = 3000;
+
+async function rasterizeSvg(
+  svg: string,
+  width: number,
+  height: number,
+): Promise<ImageData> {
+  const blob = new Blob([svg], { type: 'image/svg+xml;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+
+  try {
+    const image = new Image(width, height);
+    let timer: ReturnType<typeof setTimeout> | undefined;
+
+    await new Promise<void>((resolve, reject) => {
+      timer = setTimeout(
+        () => reject(new Error('SVG decode timed out')),
+        SPRITE_LOAD_TIMEOUT_MS,
+      );
+      image.onload = () => resolve();
+      image.onerror = () => reject(new Error('SVG could not be decoded'));
+      image.src = url;
+    }).finally(() => clearTimeout(timer));
+
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+
+    const context = canvas.getContext('2d');
+    if (!context) throw new Error('2D canvas context unavailable');
+
+    context.drawImage(image, 0, 0, width, height);
+    return context.getImageData(0, 0, width, height);
+  } finally {
+    URL.revokeObjectURL(url);
+  }
+}
+
+/**
  * Rasterize each pin SVG and register it under its ASCII sprite id.
- * Called once on map load, before the pin layer is added, so icon-image
- * always resolves.
+ *
+ * Never rejects. This runs inside the map's `load` handler, ahead of source and
+ * layer registration — an unhandled rejection here previously aborted that
+ * whole sequence, leaving the map with no source, no layers and a permanently
+ * empty listing count. A missing icon should cost an icon, not the map.
  */
 export async function loadPinImages(map: MapLibreMap): Promise<void> {
   await Promise.all(
     CATEGORY_LIST.map(async (category) => {
       const { iconId } = getCategoryConfig(category);
-      if (map.hasImage(iconId)) return;
-
-      const svg = buildPinSvg(category);
-      const blob = new Blob([svg], { type: 'image/svg+xml' });
-      const bitmap = await createImageBitmap(blob);
-      map.addImage(iconId, bitmap, { pixelRatio: 2 });
+      try {
+        if (map.hasImage(iconId)) return;
+        const pixels = await rasterizeSvg(
+          buildPinSvg(category), PIN_SIZE.width, PIN_SIZE.height,
+        );
+        map.addImage(iconId, pixels, { pixelRatio: 2 });
+      } catch (error) {
+        console.warn(`[ListingMap] pin icon "${iconId}" failed to load`, error);
+      }
     }),
   );
 }
