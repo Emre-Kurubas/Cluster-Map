@@ -35,6 +35,7 @@ function createNullEngine(): MapEngine {
     setData: noop,
     flyToBounds: noop,
     flyToPoint: noop,
+    project: () => [0, 0] as [number, number],
     queryVisibleIds: () => [],
     setHovered: noop,
     setSelected: noop,
@@ -42,6 +43,7 @@ function createNullEngine(): MapEngine {
     zoomOut: noop,
     resetView: noop,
     onIdle: unsubscribe,
+    onMove: unsubscribe,
     onFeatureClick: unsubscribe,
     onClusterClick: unsubscribe,
     destroy: noop,
@@ -165,8 +167,13 @@ export function createMapEngine(
       map.fitBounds(bbox, { padding: 64, duration: EASE.duration, essential: true });
     },
 
-    flyToPoint(center, zoom = PROVINCE_FLY_ZOOM) {
-      map.flyTo({ center, zoom, ...EASE });
+    flyToPoint(center, zoom = PROVINCE_FLY_ZOOM, offset) {
+      map.flyTo({ center, zoom, offset, ...EASE });
+    },
+
+    project(lngLat) {
+      const point = map.project(lngLat);
+      return [point.x, point.y];
     },
 
     queryVisibleIds() {
@@ -198,6 +205,15 @@ export function createMapEngine(
     onIdle(callback) {
       map.on('idle', callback);
       return () => map.off('idle', callback);
+    },
+
+    onMove(callback) {
+      map.on('move', callback);
+      map.on('resize', callback);
+      return () => {
+        map.off('move', callback);
+        map.off('resize', callback);
+      };
     },
 
     onFeatureClick(callback) {
