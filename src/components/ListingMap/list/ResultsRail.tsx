@@ -1,4 +1,4 @@
-import { useMemo, useRef } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { GlassPanel } from '../ui/GlassPanel';
 import { ListingCard } from './ListingCard';
@@ -10,6 +10,12 @@ const ROW_HEIGHT = 96;
 
 interface ResultsRailProps {
   listings: Listing[];
+  /**
+   * Called with the listing behind a clicked card, in addition to selecting it.
+   * The map uses this to fly there; a pin clicked on the map goes through
+   * `select` alone and so never moves the view out from under the pointer.
+   */
+  onFocus?(listing: Listing): void;
 }
 
 /**
@@ -19,7 +25,7 @@ interface ResultsRailProps {
  * with the viewport ids from the store and preserves the incoming order, so
  * the sort control stays authoritative.
  */
-export function ResultsRail({ listings }: ResultsRailProps) {
+export function ResultsRail({ listings, onFocus }: ResultsRailProps) {
   const visibleIds = useListingStore((state) => state.visibleIds);
   const selectedId = useListingStore((state) => state.selectedId);
   const select = useListingStore((state) => state.select);
@@ -30,6 +36,16 @@ export function ResultsRail({ listings }: ResultsRailProps) {
     const allowed = new Set(visibleIds);
     return listings.filter((listing) => allowed.has(listing.id));
   }, [listings, visibleIds]);
+
+  // Stable so ListingCard's memoization survives every viewport change.
+  const handleSelect = useCallback(
+    (id: number) => {
+      select(id);
+      const listing = listings.find((candidate) => candidate.id === id);
+      if (listing) onFocus?.(listing);
+    },
+    [listings, onFocus, select],
+  );
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const virtualizer = useVirtualizer({
@@ -54,9 +70,9 @@ export function ResultsRail({ listings }: ResultsRailProps) {
           <button
             type="button"
             onClick={resetAll}
-            className="mt-1 rounded-lg bg-brand-500 px-3 py-1.5 text-sm font-medium
+            className="mt-1 rounded-lg bg-brand-700 px-3 py-1.5 text-sm font-medium
                        text-white transition-transform duration-200
-                       ease-[var(--ease-spring)] active:scale-95
+                       ease-[var(--ease-spring)] hover:bg-brand-900 active:scale-95
                        focus-visible:outline-2 focus-visible:outline-offset-2
                        focus-visible:outline-brand-500"
           >
@@ -83,7 +99,7 @@ export function ResultsRail({ listings }: ResultsRailProps) {
                   <ListingCard
                     listing={listing}
                     selected={listing.id === selectedId}
-                    onSelect={select}
+                    onSelect={handleSelect}
                     onHover={hover}
                   />
                 </div>

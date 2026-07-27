@@ -16,7 +16,7 @@ export function Chip({ label, active, swatchClass, onClick, onRemove }: ChipProp
     'focus-visible:outline-offset-2 focus-visible:outline-brand-500';
 
   const tone = active
-    ? 'bg-brand-500 text-white'
+    ? 'bg-brand-700 text-white'
     : 'bg-white/70 text-ink-500 hover:bg-white';
 
   const content = (

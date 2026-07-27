@@ -1,6 +1,6 @@
 import { GlassPanel } from '../ui/GlassPanel';
 import { IconButton } from '../ui/IconButton';
-import { DetailImage } from './DetailImage';
+import { ListingImage } from '../ui/ListingImage';
 import { formatPrice } from '../lib/formatPrice';
 import { getCategoryConfig } from '../config/categories';
 import { useListingStore } from '../store/useListingStore';
@@ -32,7 +32,11 @@ export function ListingDetail({ listing, onOpen }: ListingDetailProps) {
         </IconButton>
       </div>
 
-      <DetailImage listing={listing} />
+      <ListingImage
+        listing={listing}
+        testId="detail-image"
+        fallbackTestId="image-fallback"
+      />
 
       <div className="flex flex-wrap items-center gap-1.5">
         <span className="inline-flex items-center gap-1.5 rounded-full bg-white/70
@@ -55,9 +59,9 @@ export function ListingDetail({ listing, onOpen }: ListingDetailProps) {
       <button
         type="button"
         onClick={() => onOpen(listing)}
-        className="mt-1 w-full rounded-xl bg-brand-500 px-4 py-2.5 text-sm
+        className="mt-1 w-full rounded-xl bg-brand-700 px-4 py-2.5 text-sm
                    font-semibold text-white transition-transform duration-200
-                   ease-[var(--ease-spring)] hover:bg-brand-700 active:scale-[0.98]
+                   ease-[var(--ease-spring)] hover:bg-brand-900 active:scale-[0.98]
                    focus-visible:outline-2 focus-visible:outline-offset-2
                    focus-visible:outline-brand-500"
       >

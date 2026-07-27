@@ -56,7 +56,7 @@ export function buildPinSvg(category: Category): string {
  */
 export const SPRITE_LOAD_TIMEOUT_MS = 3000;
 
-async function rasterizeSvg(
+export async function rasterizeSvg(
   svg: string,
   width: number,
   height: number,

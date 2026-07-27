@@ -17,6 +17,7 @@ export const t = {
   sortPriceAsc: 'Fiyat (artan)',
   sortPriceDesc: 'Fiyat (azalan)',
   filters: 'Filtreler',
+  activeFilters: (n: number) => `${n} etkin filtre`,
 
   zoomIn: 'Yakınlaştır',
   zoomOut: 'Uzaklaştır',

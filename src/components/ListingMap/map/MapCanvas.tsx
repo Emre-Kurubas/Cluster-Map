@@ -55,5 +55,11 @@ export function MapCanvas({ listings, styleUrl, onEngineReady, onError }: MapCan
     engineRef.current?.setData(listings);
   }, [listings]);
 
-  return <div ref={containerRef} className="absolute inset-0" aria-hidden />;
+  // Sized with h-full/w-full rather than `absolute inset-0`: MapLibre adds
+  // `.maplibregl-map` to this element, and its unlayered stylesheet outranks
+  // Tailwind's `@layer utilities` whatever the import order. `position:
+  // relative` therefore won, `inset-0` stopped stretching anything, and the
+  // container collapsed to 0px tall — a blank map and an empty results rail.
+  // MapLibre declares no width or height, so these two are uncontested.
+  return <div ref={containerRef} className="h-full w-full" aria-hidden />;
 }

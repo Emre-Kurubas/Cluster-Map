@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ResultsRail } from './ResultsRail';
@@ -54,6 +54,35 @@ describe('ResultsRail', () => {
   });
 
   it('selects a listing when its card is clicked', async () => {
+    state().setVisibleIds([1]);
+    render(<ResultsRail listings={listings} />);
+    await userEvent.click(screen.getByText('İlan 1'));
+    expect(state().selectedId).toBe(1);
+  });
+
+  /**
+   * The card being described is often outside the viewport that produced the
+   * list, so choosing one asks the map to go there. Clicking a pin does not —
+   * that selection came from the map and must not move it.
+   */
+  it('asks to focus the listing whose card was clicked', async () => {
+    const onFocus = vi.fn();
+    state().setVisibleIds([1, 2]);
+    render(<ResultsRail listings={listings} onFocus={onFocus} />);
+    await userEvent.click(screen.getByText('İlan 2'));
+    expect(onFocus).toHaveBeenCalledWith(listings[1]);
+  });
+
+  it('focuses again when the same card is clicked after panning away', async () => {
+    const onFocus = vi.fn();
+    state().setVisibleIds([1]);
+    render(<ResultsRail listings={listings} onFocus={onFocus} />);
+    await userEvent.click(screen.getByText('İlan 1'));
+    await userEvent.click(screen.getByText('İlan 1'));
+    expect(onFocus).toHaveBeenCalledTimes(2);
+  });
+
+  it('still selects when no focus handler is given', async () => {
     state().setVisibleIds([1]);
     render(<ResultsRail listings={listings} />);
     await userEvent.click(screen.getByText('İlan 1'));

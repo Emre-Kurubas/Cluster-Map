@@ -2,10 +2,11 @@ import { Map as MapLibreMap } from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import type { ErrorEvent, GeoJSONSource, MapLayerMouseEvent } from 'maplibre-gl';
 import type { Point } from 'geojson';
-import { toGeoJSON } from '../lib/geo';
+import { idsWithinBounds, toGeoJSON } from '../lib/geo';
 import { loadPinImages } from './sprite/pinShapes';
+import { loadDonutImages } from './sprite/donutShapes';
 import { buildActivePinLayer, buildPinLayer } from './layers/pins';
-import { buildClusterLayers } from './layers/clusters';
+import { buildClusterLayers, buildClusterProperties } from './layers/clusters';
 import {
   LAYER_CLUSTERS, LAYER_PINS, LAYER_PINS_ACTIVE, SOURCE_ID,
 } from '../config/mapStyle';
@@ -120,7 +121,7 @@ export function createMapEngine(
 
   map.on('load', async () => {
     clearTimeout(loadWatchdog);
-    await loadPinImages(map);
+    await Promise.all([loadPinImages(map), loadDonutImages(map)]);
 
     map.addSource(SOURCE_ID, {
       type: 'geojson',
@@ -128,6 +129,9 @@ export function createMapEngine(
       cluster: true,
       clusterRadius: CLUSTER_RADIUS,
       clusterMaxZoom: CLUSTER_MAX_ZOOM,
+      // Aggregated as MapLibre clusters, so the donut layer can read a
+      // cluster's category mix without ever expanding its leaves.
+      clusterProperties: buildClusterProperties(),
     });
 
     for (const layer of buildClusterLayers()) map.addLayer(layer);
@@ -166,16 +170,14 @@ export function createMapEngine(
     },
 
     queryVisibleIds() {
-      // Querying a layer that failed to register throws on every map idle,
-      // which previously buried the one error that actually mattered.
-      if (!ready || !map.getLayer(LAYER_PINS)) return [];
-      const features = map.queryRenderedFeatures({ layers: [LAYER_PINS] });
-      const ids = new Set<number>();
-      for (const feature of features) {
-        const id = feature.properties?.id;
-        if (typeof id === 'number') ids.add(id);
-      }
-      return [...ids];
+      // Answered from the viewport rectangle, not from rendered pins: the pin
+      // layer excludes clustered points, so a Türkiye-wide view — where every
+      // listing is inside a cluster — reported nothing visible at all.
+      if (!ready) return [];
+      const bounds = map.getBounds();
+      return idsWithinBounds(pending, [
+        bounds.getWest(), bounds.getSouth(), bounds.getEast(), bounds.getNorth(),
+      ]);
     },
 
     setHovered(id) {

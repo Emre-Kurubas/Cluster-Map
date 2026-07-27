@@ -1,4 +1,5 @@
 import { memo } from 'react';
+import { ListingImage } from '../ui/ListingImage';
 import { formatPrice } from '../lib/formatPrice';
 import { getCategoryConfig } from '../config/categories';
 import type { Listing } from '../types/listing';
@@ -40,7 +41,14 @@ export const ListingCard = memo(function ListingCard({
           : 'border-transparent bg-white/70 hover:bg-white',
       ].join(' ')}
     >
-      <div className="flex items-start gap-2">
+      <div className="flex items-start gap-2.5">
+        <ListingImage
+          listing={listing}
+          className="size-14"
+          iconClassName="size-7"
+          testId="card-image"
+          fallbackTestId="card-image-fallback"
+        />
         <span className={`mt-1.5 size-2 shrink-0 rounded-full ${swatchClass}`} aria-hidden />
         <div className="min-w-0 flex-1">
           <p

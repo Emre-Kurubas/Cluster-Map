@@ -76,8 +76,11 @@ describe('ListingMap', () => {
     expect(screen.queryAllByText(t.resultCount(0)).length).toBeLessThan(before);
   });
 
-  it('applies a category filter through the filter bar', async () => {
+  it('applies a category filter once the filter panel is opened', async () => {
     render(<ListingMap listings={listings} />);
+    expect(screen.queryByRole('button', { name: 'Araç' })).toBeNull();
+
+    await userEvent.click(screen.getByTestId('filters-toggle'));
     await userEvent.click(screen.getByRole('button', { name: 'Araç' }));
     expect(useListingStore.getState().filters.categories).toEqual(['Araç']);
   });

@@ -19,7 +19,7 @@ export function SearchBar({ onFlyTo }: SearchBarProps) {
   const resetAll = useListingStore((state) => state.resetAll);
 
   return (
-    <div className="pointer-events-auto w-full max-w-xl">
+    <div className="pointer-events-auto min-w-0 flex-1">
       <GlassPanel className="flex items-center gap-2 px-4 py-2.5">
         <span aria-hidden className="text-ink-300">⌕</span>
         <input

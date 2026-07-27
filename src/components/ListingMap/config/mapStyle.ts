@@ -6,8 +6,8 @@
 export const DEFAULT_STYLE_URL = 'https://tiles.openfreemap.org/styles/positron';
 
 export const SOURCE_ID = 'listings';
+/** Donut ring and its count — one symbol layer, so they place together. */
 export const LAYER_CLUSTERS = 'listing-clusters';
-export const LAYER_CLUSTER_COUNT = 'listing-cluster-count';
 export const LAYER_PINS = 'listing-pins';
 /**
  * Draws the hovered/selected pins enlarged, on top of the base pin layer.

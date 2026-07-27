@@ -8,6 +8,8 @@ export const CLUSTER_MAX_ZOOM = 12;
 
 export const SEARCH_DEBOUNCE_MS = 120;
 export const PROVINCE_FLY_ZOOM = 9;
+/** Street level: close enough to see the parcel, wide enough to keep context. */
+export const LISTING_FLY_ZOOM = 15;
 
 export const MIN_ZOOM = 4;
 export const MAX_ZOOM = 17;

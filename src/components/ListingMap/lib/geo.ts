@@ -50,6 +50,35 @@ export function toGeoJSON(
   return { type: 'FeatureCollection', features };
 }
 
+/**
+ * Ids of the listings whose coordinates fall inside `bbox`, in input order.
+ *
+ * Deliberately geometric rather than a `queryRenderedFeatures` call on the pin
+ * layer: that layer hides clustered points, so at the opening Türkiye-wide view
+ * — where everything is clustered — it reports nothing visible. What the rail
+ * needs is "which listings are in the viewport", which the coordinates answer
+ * regardless of whether the renderer drew a pin or folded it into a bubble.
+ */
+export function idsWithinBounds(listings: Listing[], bbox: BBox): number[] {
+  const [west, south, east, north] = bbox;
+  // A viewport can span more than the world when zoomed out, and can wrap past
+  // the antimeridian, in which case west is numerically greater than east.
+  const wrapsWorld = east - west >= 360;
+  const crossesAntimeridian = west > east;
+
+  const ids: number[] = [];
+  for (const listing of listings) {
+    if (!hasValidLocation(listing)) continue;
+    const { lat, lng } = listing.location;
+    if (lat < south || lat > north) continue;
+
+    const lngInside = wrapsWorld
+      || (crossesAntimeridian ? lng >= west || lng <= east : lng >= west && lng <= east);
+    if (lngInside) ids.push(listing.id);
+  }
+  return ids;
+}
+
 export function boundsAround(center: LngLat, paddingDeg: number): BBox {
   return [
     center[0] - paddingDeg,
