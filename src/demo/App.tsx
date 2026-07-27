@@ -9,6 +9,10 @@ export default function App() {
     <div className="h-full w-full">
       <ListingMap
         listings={listings}
+        // The dataset's photo host does not resolve. Point this at the CDN that
+        // actually serves the files and every card and detail panel picks them
+        // up; without it they fall back to category artwork.
+        // imageBaseUrl="https://cdn.uyap.gov.tr/ilan"
         onListingOpen={(listing) => window.open(listing.detailUrl, '_blank')}
       />
     </div>

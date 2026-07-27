@@ -13,3 +13,9 @@ export const LISTING_FLY_ZOOM = 15;
 
 export const MIN_ZOOM = 4;
 export const MAX_ZOOM = 17;
+
+/**
+ * Pixels to push the selected listing right of centre, so its pin clears the
+ * focus view's circle and details column.
+ */
+export const FOCUS_FLY_OFFSET: [number, number] = [180, 0];

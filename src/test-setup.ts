@@ -24,3 +24,16 @@ Object.defineProperty(HTMLElement.prototype, 'offsetWidth', {
   configurable: true,
   get: () => RECT.width,
 });
+
+/**
+ * jsdom ships no ResizeObserver. ListingMap uses one to size the focus view's
+ * connector overlay, so without a stub every test that renders it throws.
+ * Observing is a no-op: nothing here ever resizes.
+ */
+if (!('ResizeObserver' in globalThis)) {
+  globalThis.ResizeObserver = class {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  } as unknown as typeof ResizeObserver;
+}

@@ -45,11 +45,25 @@ describe('ListingMap', () => {
     expect(screen.getAllByText(t.noResults).length).toBeGreaterThan(0);
   });
 
-  it('opens the detail card for the selected listing', async () => {
+  it('enters focus mode and hides the chrome when a listing is selected', async () => {
     render(<ListingMap listings={listings} />);
     useListingStore.getState().setVisibleIds([1, 2]);
     await userEvent.click(await firstCard('İlan 1'));
-    expect(screen.getByRole('dialog', { name: 'İlan 1' })).toBeInTheDocument();
+
+    expect(screen.getByTestId('circle-photo')).toBeInTheDocument();
+    expect(screen.queryByRole('searchbox')).toBeNull();
+    expect(screen.queryByRole('region', { name: t.filters })).toBeNull();
+  });
+
+  it('restores the chrome and the rail state when focus mode is closed', async () => {
+    render(<ListingMap listings={listings} />);
+    useListingStore.getState().setVisibleIds([1, 2]);
+    await userEvent.click(await firstCard('İlan 1'));
+    await userEvent.click(screen.getByRole('button', { name: t.backToList }));
+
+    expect(screen.getByRole('searchbox')).toBeInTheDocument();
+    expect(useListingStore.getState().railOpen).toBe(true);
+    expect(useListingStore.getState().selectedId).toBeNull();
   });
 
   it('calls onListingSelect when a listing is chosen', async () => {
@@ -60,12 +74,13 @@ describe('ListingMap', () => {
     expect(onListingSelect).toHaveBeenCalledWith(listings[0]);
   });
 
-  it('calls onListingOpen from the detail CTA and never navigates itself', async () => {
+  it('calls onListingOpen from the focus view CTA and never navigates itself', async () => {
     const onListingOpen = vi.fn();
     render(<ListingMap listings={listings} onListingOpen={onListingOpen} />);
     useListingStore.getState().setVisibleIds([1]);
     await userEvent.click(await firstCard('İlan 1'));
-    await userEvent.click(screen.getByRole('button', { name: t.goToListing }));
+    // Focus view and the sub-md panel both carry the CTA; the first is desktop.
+    await userEvent.click(screen.getAllByRole('button', { name: t.goToListing })[0]);
     expect(onListingOpen).toHaveBeenCalledWith(listings[0]);
   });
 
