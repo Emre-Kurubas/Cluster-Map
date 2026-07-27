@@ -11,7 +11,7 @@ import { RailToggle } from './controls/RailToggle';
 import { ErrorNotice } from './controls/ErrorNotice';
 import { useSearchIndex } from './search/useSearchIndex';
 import { filterListings } from './filters/filterListings';
-import { useListingStore } from './store/useListingStore';
+import { useListingStore, useListingStoreApi } from './store/useListingStore';
 import { DEFAULT_STYLE_URL } from './config/mapStyle';
 import { FOCUS_FLY_OFFSET, LISTING_FLY_ZOOM } from './config/constants';
 import type { ListingMapProps } from './ListingMap';
@@ -43,7 +43,8 @@ export function ListingMapView({
   const activeProvince = useListingStore((state) => state.activeProvince);
   const sort = useListingStore((state) => state.sort);
   const selectedId = useListingStore((state) => state.selectedId);
-  const hoveredId = useListingStore((state) => state.hoveredId);
+  // Not a subscription. See the effect that pushes hover to the engine.
+  const storeApi = useListingStoreApi();
   const railOpen = useListingStore((state) => state.railOpen);
 
   // The range slider spans the whole dataset, so this is derived from the
@@ -136,7 +137,31 @@ export function ListingMapView({
 
   // Push highlight state down to the GPU rather than re-rendering anything.
   useEffect(() => { engine?.setSelected(selectedId); }, [engine, selectedId]);
-  useEffect(() => { engine?.setHovered(hoveredId); }, [engine, hoveredId]);
+
+  /**
+   * Hover goes straight from the store to the engine, around React entirely.
+   *
+   * It used to be a subscribed slice, so every pin-to-pin transition re-rendered
+   * this whole subtree — the rail, the filters, the focus view — purely to hand
+   * an id back to the engine that had raised it a moment earlier. Nothing here
+   * renders differently for a hovered pin; the highlight is a layer filter.
+   *
+   * Selection keeps its subscription above, because focus mode genuinely
+   * depends on which listing is selected.
+   */
+  useEffect(() => {
+    if (!engine) return undefined;
+
+    engine.setHovered(storeApi.getState().hoveredId);
+
+    let previous = storeApi.getState().hoveredId;
+    return storeApi.subscribe(() => {
+      const next = storeApi.getState().hoveredId;
+      if (next === previous) return;
+      previous = next;
+      engine.setHovered(next);
+    });
+  }, [engine, storeApi]);
 
   useEffect(() => {
     if (selected && onListingSelect) onListingSelect(selected);
