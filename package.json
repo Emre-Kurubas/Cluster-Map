@@ -1,24 +1,45 @@
 {
-  "name": "uyap-esatis-listing-map",
-  "private": true,
-  "version": "0.0.0",
+  "name": "@uyap/listing-map",
+  "version": "0.1.0",
   "type": "module",
+  "license": "UNLICENSED",
+  "description": "İcra auction listings on an interactive MapLibre map, as a drop-in React component.",
+  "sideEffects": [
+    "*.css"
+  ],
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./primitives": {
+      "types": "./dist/primitives.d.ts",
+      "import": "./dist/primitives.js"
+    },
+    "./styles.css": "./dist/styles.css"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build:lib": "vite build --config vite.lib.config.ts && tsc -p tsconfig.build.json",
     "lint": "oxlint",
     "geocode": "node scripts/geocode-listings.mjs",
     "preview": "vite preview",
     "test": "vitest run --exclude '**/perf.test.ts'",
     "test:watch": "vitest",
     "test:perf": "vitest run --no-file-parallelism src/lib/perf.test.ts",
-    "verify": "npm run test && npm run test:perf && npm run build"
+    "verify": "npm run test && npm run test:perf && npm run build:lib && npm run build"
+  },
+  "peerDependencies": {
+    "maplibre-gl": "^6.0.0",
+    "react": ">=18",
+    "react-dom": ">=18"
   },
   "dependencies": {
     "@tanstack/react-virtual": "^3.14.8",
-    "maplibre-gl": "^6.0.0",
-    "react": "^19.2.7",
-    "react-dom": "^19.2.7",
     "zustand": "^5.0.14"
   },
   "devDependencies": {
@@ -32,7 +53,11 @@
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.3",
     "jsdom": "^29.1.1",
+    "maplibre-gl": "^6.0.0",
     "oxlint": "^1.71.0",
+    "postcss": "^8.4.47",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
     "tailwindcss": "^4.3.3",
     "typescript": "~6.0.2",
     "vite": "^8.1.1",

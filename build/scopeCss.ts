@@ -1,3 +1,5 @@
+import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
 import postcss from 'postcss';
 import type { Container } from 'postcss';
 import type { Plugin } from 'vite';
@@ -69,10 +71,20 @@ export function scopeComponentCss(): Plugin {
   return {
     name: 'scope-listing-map-css',
     apply: 'build',
-    generateBundle(_options, bundle) {
-      for (const file of Object.values(bundle)) {
-        if (file.type !== 'asset' || !file.fileName.endsWith('.css')) continue;
-        file.source = scopeCss(String(file.source));
+    /**
+     * `writeBundle`, not `generateBundle`: Vite emits the stylesheet after
+     * generateBundle runs, so the bundle it hands you has no CSS asset in it at
+     * all. The library build sailed through with an entirely unscoped
+     * stylesheet until the output was checked on disk.
+     */
+    writeBundle(options) {
+      const dir = options.dir ?? (options.file ? dirname(options.file) : undefined);
+      if (!dir) return;
+
+      for (const file of readdirSync(dir, { recursive: true, encoding: 'utf8' })) {
+        if (!file.endsWith('.css')) continue;
+        const path = join(dir, file);
+        writeFileSync(path, scopeCss(readFileSync(path, 'utf8')));
       }
     },
   };
