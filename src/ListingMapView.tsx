@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { MapCanvasLazy } from './map/MapCanvasLazy';
 import { SearchBar } from './search/SearchBar';
 import { FilterBar } from './filters/FilterBar';
@@ -9,11 +9,11 @@ import { MapControls } from './controls/MapControls';
 import { CategoryDock } from './controls/CategoryDock';
 import { RailToggle } from './controls/RailToggle';
 import { ErrorNotice } from './controls/ErrorNotice';
-import { useSearchIndex } from './search/useSearchIndex';
-import { filterListings } from './filters/filterListings';
-import { useListingStore, useListingStoreApi } from './store/useListingStore';
+import { useFilteredListings } from './hooks/useFilteredListings';
+import { useContainerSize } from './hooks/useContainerSize';
+import { useMapSelection } from './hooks/useMapSelection';
+import { useListingStore } from './store/useListingStore';
 import { DEFAULT_STYLE_URL } from './config/mapStyle';
-import { FOCUS_FLY_OFFSET, LISTING_FLY_ZOOM } from './config/constants';
 import type { ListingMapProps } from './ListingMap';
 import type { BBox, MapEngine } from './types/map';
 
@@ -37,65 +37,8 @@ export function ListingMapView({
   const [engine, setEngine] = useState<MapEngine | null>(null);
   const [errorKind, setErrorKind] = useState<'tile' | 'webgl' | null>(null);
 
-  const index = useSearchIndex(listings);
-  const filters = useListingStore((state) => state.filters);
-  const residualQuery = useListingStore((state) => state.residualQuery);
-  const activeProvince = useListingStore((state) => state.activeProvince);
-  const sort = useListingStore((state) => state.sort);
-  const selectedId = useListingStore((state) => state.selectedId);
-  // Not a subscription. See the effect that pushes hover to the engine.
-  const storeApi = useListingStoreApi();
   const railOpen = useListingStore((state) => state.railOpen);
-
-  // The range slider spans the whole dataset, so this is derived from the
-  // incoming listings and not from `filtered` — a domain that shrank as the
-  // user dragged would pull the thumb out from under them.
-  const setPriceDomain = useListingStore((state) => state.setPriceDomain);
-  useEffect(() => {
-    if (listings.length === 0) return;
-    let min = Infinity;
-    let max = -Infinity;
-    for (const listing of listings) {
-      if (listing.price < min) min = listing.price;
-      if (listing.price > max) max = listing.price;
-    }
-    setPriceDomain(min, max);
-  }, [listings, setPriceDomain]);
-
-  const filtered = useMemo(
-    () => filterListings(index, filters, residualQuery, activeProvince, sort),
-    [index, filters, residualQuery, activeProvince, sort],
-  );
-
-  const selected = useMemo(
-    () => filtered.find((listing) => listing.id === selectedId) ?? null,
-    [filtered, selectedId],
-  );
-
-  /**
-   * The same listings as `filtered`, restored to the dataset's own order.
-   *
-   * Sort is a property of the list, not of the map, but MapLibre's clustering
-   * is order-dependent: it walks the source features in order and lets the
-   * first unclaimed point seed a cluster and take its neighbours. Handing it a
-   * price-sorted array therefore redrew the clusters — different groupings,
-   * counts and donut colours — for a control that adds and removes nothing.
-   *
-   * Individual pins were never affected: they set `icon-allow-overlap`, so
-   * none are dropped by collision, and their draw order is by viewport-y.
-   */
-  const datasetRank = useMemo(
-    () => new Map(listings.map((listing, position) => [listing.id, position])),
-    [listings],
-  );
-
-  const mapListings = useMemo(
-    () =>
-      [...filtered].sort(
-        (a, b) => (datasetRank.get(a.id) ?? 0) - (datasetRank.get(b.id) ?? 0),
-      ),
-    [filtered, datasetRank],
-  );
+  const { filtered, mapListings, selected } = useFilteredListings(listings);
 
   /**
    * Focus mode. Derived rather than stored, and it never touches `railOpen` —
@@ -103,87 +46,12 @@ export function ListingMapView({
    */
   const focused = selected !== null;
 
-  /**
-   * Release a selection the filters have dropped.
-   *
-   * Because focus mode is derived, filtering the selected listing away closed
-   * the view but left `selectedId` set behind it. Lifting the filter then
-   * reopened focus mode on its own, unasked — and pointing at wherever the
-   * camera had drifted to, because the fly-to effect is keyed on the id, which
-   * never changed. A selection that is no longer on the map is not a selection.
-   */
-  const select = useListingStore((state) => state.select);
-  useEffect(() => {
-    if (selectedId === null || selected !== null) return;
-    select(null);
-  }, [selectedId, selected, select]);
-
   // The focus view's connector needs the container's pixel size to decide
   // whether the pin is still on screen.
   const rootRef = useRef<HTMLDivElement>(null);
-  const [size, setSize] = useState({ width: 0, height: 0 });
+  const size = useContainerSize(rootRef);
 
-  useEffect(() => {
-    const element = rootRef.current;
-    if (!element) return undefined;
-
-    const observer = new ResizeObserver(([entry]) => {
-      const { width, height } = entry.contentRect;
-      setSize({ width, height });
-    });
-    observer.observe(element);
-    return () => observer.disconnect();
-  }, []);
-
-  // Push highlight state down to the GPU rather than re-rendering anything.
-  useEffect(() => { engine?.setSelected(selectedId); }, [engine, selectedId]);
-
-  /**
-   * Hover goes straight from the store to the engine, around React entirely.
-   *
-   * It used to be a subscribed slice, so every pin-to-pin transition re-rendered
-   * this whole subtree — the rail, the filters, the focus view — purely to hand
-   * an id back to the engine that had raised it a moment earlier. Nothing here
-   * renders differently for a hovered pin; the highlight is a layer filter.
-   *
-   * Selection keeps its subscription above, because focus mode genuinely
-   * depends on which listing is selected.
-   */
-  useEffect(() => {
-    if (!engine) return undefined;
-
-    engine.setHovered(storeApi.getState().hoveredId);
-
-    let previous = storeApi.getState().hoveredId;
-    return storeApi.subscribe(() => {
-      const next = storeApi.getState().hoveredId;
-      if (next === previous) return;
-      previous = next;
-      engine.setHovered(next);
-    });
-  }, [engine, storeApi]);
-
-  useEffect(() => {
-    if (selected && onListingSelect) onListingSelect(selected);
-  }, [selected, onListingSelect]);
-
-  /**
-   * Fly to whatever becomes selected, wherever the selection came from, so a
-   * pin click on the map behaves exactly like a rail card click. The offset
-   * lands the pin right of centre, clear of the circle and the details column.
-   *
-   * Keyed on the id alone: re-renders of the same listing must not re-fly.
-   */
-  const selectedLocation = selected?.location;
-  useEffect(() => {
-    if (!engine || !selectedLocation) return;
-    engine.flyToPoint(
-      [selectedLocation.lng, selectedLocation.lat],
-      LISTING_FLY_ZOOM,
-      FOCUS_FLY_OFFSET,
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [engine, selectedId]);
+  useMapSelection(engine, selected, onListingSelect);
 
   const handleFlyTo = useCallback(
     (bbox: BBox) => engine?.flyToBounds(bbox),
