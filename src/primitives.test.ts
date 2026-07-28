@@ -35,8 +35,11 @@ const HOOKS = [
   'useFilteredListings', 'useContainerSize', 'useMapSelection', 'useSmartSearch',
 ];
 
+/** The slot machinery, for consumers composing a layout of their own. */
+const SLOTS = ['resolveSlot'];
+
 describe('the primitives entry point', () => {
-  it.each([...CONNECTED, ...PURE, ...ALREADY_PURE, ...STATE, ...CONFIG, ...HOOKS])('exports %s', (name) => {
+  it.each([...CONNECTED, ...PURE, ...ALREADY_PURE, ...STATE, ...CONFIG, ...HOOKS, ...SLOTS])('exports %s', (name) => {
     expect(primitives).toHaveProperty(name);
   });
 

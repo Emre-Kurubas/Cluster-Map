@@ -88,6 +88,22 @@ export type { ListingState, ListingStore } from './store/createListingStore';
 export { CATEGORIES, CATEGORY_LIST, getCategoryConfig } from './config/categories';
 export type { CategoryConfig } from './config/categories';
 
+/**
+ * Slots, for anyone who wants `<ListingMap>`'s layout with different contents.
+ *
+ * The prop types come with them: a replacement is a drop-in for the connected
+ * component it stands in for, so it should be typed against that component's
+ * props rather than restating them.
+ */
+export { resolveSlot } from './slots';
+export type { Slot, ListingMapSlots } from './slots';
+export type { SearchBarProps } from './search/SearchBar';
+export type { ResultsRailProps } from './list/ResultsRail';
+export type { MapControlsProps } from './controls/MapControls';
+export type { ErrorNoticeProps } from './controls/ErrorNotice';
+export type { FocusViewProps } from './detail/FocusView';
+export type { ListingDetailProps } from './detail/ListingDetail';
+
 // The types those components speak in
 export type { Listing, Category } from './types/listing';
 export type { Filters, SortMode, Chip as FilterChip } from './types/filters';

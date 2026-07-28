@@ -67,6 +67,86 @@ stylesheet, so you do not need to import that separately either.
 
 The root element fills its container, so give the parent a definite height.
 
+## Choosing what renders
+
+Every piece of chrome is a slot. `false` removes it, a component replaces it,
+and an omitted key keeps the default — so the common case stays `<ListingMap
+listings={listings} />` with nothing to configure.
+
+```tsx
+import { ListingMap } from 'cluster-map';
+
+// A map with no results rail.
+<ListingMap listings={listings} slots={{ rail: false }} />
+```
+
+A replacement is rendered exactly where the default was, and is handed exactly
+what the default would have been handed:
+
+```tsx
+import { useListingStore } from 'cluster-map/primitives';
+import type { ResultsRailProps } from 'cluster-map/primitives';
+
+function CompactRail({ listings }: ResultsRailProps) {
+  const select = useListingStore((state) => state.select);
+  return (
+    <ul>
+      {listings.map((listing) => (
+        <li key={listing.id}>
+          <button onClick={() => select(listing.id)}>{listing.title}</button>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+<ListingMap listings={listings} slots={{ rail: CompactRail }} />
+```
+
+| Slot | Default | Receives |
+|---|---|---|
+| `searchBar` | `SearchBar` | `onFlyTo(bbox)` |
+| `filterBar` | `FilterBar` | — |
+| `rail` | `ResultsRail` | `listings`, `onFocus?` |
+| `railToggle` | `RailToggle` | — |
+| `categoryDock` | `CategoryDock` | — |
+| `mapControls` | `MapControls` | `engine` |
+| `errorNotice` | `ErrorNotice` | `kind`, `onDismiss` |
+| `focusView` | `FocusView` | `listing`, `engine`, `size`, `onOpen` |
+| `detail` | `ListingDetail` | `listing`, `onOpen` |
+
+Each slot's prop type is exported from `cluster-map/primitives` under the
+default's name — `SearchBarProps`, `ResultsRailProps`, and so on. Note these are
+the *connected* component's props, not its `View` twin's: a slot is a drop-in
+for the whole piece, and anything else it needs it reads with `useListingStore`.
+
+Two things worth knowing:
+
+- **`rail` covers both places the list appears** — the desktop rail and the
+  bottom sheet below `md`. One component in two positions, not two slots.
+  Switching it off also removes `railToggle`, because a handle that expands a
+  rail which is not there toggles nothing.
+- **Hold your components still across renders.** An arrow function written
+  inline in the `slots` object is a new component type on every render, so React
+  unmounts and remounts the slot each time and any state inside it is lost.
+  Define them at module scope, or memoize.
+
+### What slots do not do
+
+They change what renders at a position, not where the positions are. The
+overlay grid, the rail's width collapse, focus mode clearing the chrome, the
+`md` breakpoint — all of that stays with `<ListingMap>`, which is the point: a
+replacement inherits the whole arrangement for free.
+
+If you want a genuinely different arrangement, use
+[`cluster-map/primitives`](#composing-your-own-layout) instead and build the
+layout yourself.
+
+For restyling rather than replacing, reach for the [theming
+tokens](#theming) first — they cover colour, type and easing without any of
+this. Slots are for when you need to change a piece's structure, and wrapping
+the default in your own element inside a slot handles per-piece layout tweaks.
+
 ### Attribution — the host page must carry it
 
 The component renders **no** attribution control. MapLibre's collapsed "i"
@@ -215,6 +295,20 @@ const [store] = useState(createListingStore);
 `createListingStore` returns one store per map. Using a `useState` initialiser
 rather than calling it inline matters: called inline it rebuilds on every render
 and throws the user's filters away.
+
+**The derivation is exported too**, which is what makes `filtered` above
+something you can get rather than something you have to build.
+`useFilteredListings(listings)` returns `{ filtered, mapListings, selected }` —
+the same three the assembled component runs on, so a hand-built layout gets the
+Turkish search index, the intent parsing, the fuzzy matching and the sort
+without reimplementing any of it. `mapListings` is `filtered` restored to
+dataset order, and handing the map anything else redraws the clusters, since
+MapLibre's clustering walks the source features in order.
+
+`useMapSelection(engine, selected, onListingSelect)` keeps selection, hover and
+the camera in step; `useSmartSearch(onFlyTo)` drives the query-to-chips
+pipeline a custom search field needs; `useContainerSize(ref)` is what
+`FocusView` measures against.
 
 `useListingStore(selector)` reads a slice, and throws a message naming the fix
 if used outside a provider. `ListingState` is public and semver-bound. Two
