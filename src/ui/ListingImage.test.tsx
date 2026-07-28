@@ -13,7 +13,7 @@ const listing: Listing = {
   category: 'Gayrimenkul',
   saleType: 'İcra',
   location: { lat: 37.77194, lng: 38.30335 },
-  thumbnailUrl: 'https://cdn.adalet.com/images/81200004.jpg',
+  thumbnailUrl: 'https://cdn.example.com/listings/81200004.jpg',
   detailUrl: '/ilan/adiyaman-81200004',
 };
 
@@ -25,12 +25,12 @@ describe('ListingImage', () => {
 
   it('requests the configured host when one is provided', () => {
     render(
-      <ImageBaseUrlProvider value="https://cdn.uyap.gov.tr/ilan">
+      <ImageBaseUrlProvider value="https://cdn.example.com/listings">
         <ListingImage listing={listing} testId="img" fallbackTestId="fb" />
       </ImageBaseUrlProvider>,
     );
     expect(screen.getByTestId('img'))
-      .toHaveAttribute('src', 'https://cdn.uyap.gov.tr/ilan/81200004.jpg');
+      .toHaveAttribute('src', 'https://cdn.example.com/listings/81200004.jpg');
   });
 
   it('falls back to category art when the image fails', () => {
@@ -60,11 +60,11 @@ describe('ListingImage', () => {
     expect(screen.getByTestId('fb')).toBeInTheDocument();
 
     rerender(
-      <ImageBaseUrlProvider value="https://cdn.uyap.gov.tr/ilan">
+      <ImageBaseUrlProvider value="https://cdn.example.com/listings">
         <ListingImage listing={listing} testId="img" fallbackTestId="fb" />
       </ImageBaseUrlProvider>,
     );
     expect(screen.getByTestId('img'))
-      .toHaveAttribute('src', 'https://cdn.uyap.gov.tr/ilan/81200004.jpg');
+      .toHaveAttribute('src', 'https://cdn.example.com/listings/81200004.jpg');
   });
 });

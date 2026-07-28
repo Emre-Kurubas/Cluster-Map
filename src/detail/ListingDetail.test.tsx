@@ -18,7 +18,7 @@ const listing: Listing = {
   category: 'Gayrimenkul',
   saleType: 'İcra',
   location: { lat: 37.77194, lng: 38.30335 },
-  thumbnailUrl: 'https://cdn.adalet.com/images/81200004.jpg',
+  thumbnailUrl: 'https://cdn.example.com/listings/81200004.jpg',
   detailUrl: '/ilan/adiyaman-81200004',
 };
 

@@ -294,9 +294,9 @@ Measured on 50,000 synthetic listings (`lib/perf.test.ts`):
 
 ## Known data gaps
 
-- `thumbnailUrl` points at `cdn.adalet.com`, which does not resolve. Every image
-  falls back to a category illustration by design. Supply a working CDN to see
-  real thumbnails.
+- `thumbnailUrl` points at a placeholder host that does not resolve. Every image
+  falls back to a category illustration by design. Supply a working CDN through
+  `imageBaseUrl` to see real thumbnails.
 - Listings carry no province field. Province is derived from coordinates via the
   bundled 81-province gazetteer, which also powers "fly to Ankara" in search.
 - `saleType` is `İcra` for all 162 records, so that filter would show a single

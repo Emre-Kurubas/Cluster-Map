@@ -10,10 +10,10 @@ const POOL_SIZE = 12;
 /**
  * Points every listing at a stand-in photo.
  *
- * Demo-only. The dataset's own host (`cdn.adalet.com`) does not resolve, so
- * without this every card and the focus view fall back to category artwork and
- * the layout cannot be judged. Real deployments pass `imageBaseUrl` instead and
- * never call this.
+ * Demo-only. The dataset's `thumbnailUrl` host is a placeholder and does not
+ * resolve, so without this every card and the focus view fall back to category
+ * artwork and the layout cannot be judged. Real deployments pass `imageBaseUrl`
+ * instead and never call this.
  *
  * Picsum serves a stable image per seed but has no notion of subject, so these
  * are arbitrary photographs, not pictures of land, buildings or vehicles. They

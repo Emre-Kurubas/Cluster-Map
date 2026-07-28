@@ -11,7 +11,7 @@ const listing = (over: Partial<Listing> = {}): Listing => ({
   category: 'Arsa',
   saleType: 'İcra',
   location: { lat: 36.962, lng: 35.3033 },
-  thumbnailUrl: 'https://cdn.adalet.com/images/81200001.jpg',
+  thumbnailUrl: 'https://cdn.example.com/listings/81200001.jpg',
   detailUrl: '/ilan/1',
   ...over,
 });
@@ -19,22 +19,22 @@ const listing = (over: Partial<Listing> = {}): Listing => ({
 describe('resolveImageUrl', () => {
   it('returns the listing url untouched when no base is configured', () => {
     expect(resolveImageUrl(listing(), undefined))
-      .toBe('https://cdn.adalet.com/images/81200001.jpg');
+      .toBe('https://cdn.example.com/listings/81200001.jpg');
   });
 
   it('keeps the filename and swaps in the configured host', () => {
-    expect(resolveImageUrl(listing(), 'https://cdn.uyap.gov.tr/ilan'))
-      .toBe('https://cdn.uyap.gov.tr/ilan/81200001.jpg');
+    expect(resolveImageUrl(listing(), 'https://cdn.example.com/listings'))
+      .toBe('https://cdn.example.com/listings/81200001.jpg');
   });
 
   it('does not double the separator when the base ends in a slash', () => {
-    expect(resolveImageUrl(listing(), 'https://cdn.uyap.gov.tr/ilan/'))
-      .toBe('https://cdn.uyap.gov.tr/ilan/81200001.jpg');
+    expect(resolveImageUrl(listing(), 'https://cdn.example.com/listings/'))
+      .toBe('https://cdn.example.com/listings/81200001.jpg');
   });
 
   it('derives a filename from the id when the listing has no thumbnail', () => {
-    expect(resolveImageUrl(listing({ thumbnailUrl: '' }), 'https://cdn.uyap.gov.tr/ilan'))
-      .toBe('https://cdn.uyap.gov.tr/ilan/81200001.jpg');
+    expect(resolveImageUrl(listing({ thumbnailUrl: '' }), 'https://cdn.example.com/listings'))
+      .toBe('https://cdn.example.com/listings/81200001.jpg');
   });
 
   it('treats a bare filename as a filename', () => {
@@ -53,6 +53,6 @@ describe('resolveImageUrl', () => {
 
   it('ignores a blank base so whitespace config cannot break every image', () => {
     expect(resolveImageUrl(listing(), '   '))
-      .toBe('https://cdn.adalet.com/images/81200001.jpg');
+      .toBe('https://cdn.example.com/listings/81200001.jpg');
   });
 });

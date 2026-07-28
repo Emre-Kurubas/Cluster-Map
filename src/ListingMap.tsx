@@ -10,7 +10,7 @@ export interface ListingMapProps {
   /** Override to point at self-hosted vector tiles. */
   styleUrl?: string;
   /**
-   * CDN root that serves listing photos, e.g. `https://cdn.uyap.gov.tr/ilan`.
+   * CDN root that serves listing photos, e.g. `https://cdn.example.com/listings`.
    * Each listing's own filename is requested from there. Without it the
    * dataset's URLs are used as-is — they resolve to nothing, so cards and the
    * detail panel fall back to category artwork.

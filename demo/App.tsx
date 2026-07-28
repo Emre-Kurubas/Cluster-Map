@@ -7,7 +7,7 @@ import rawListings from './data/listings.json';
 
 // The dataset's own photo host does not resolve, so the demo substitutes
 // stand-ins. A real deployment drops this and passes `imageBaseUrl` instead:
-//   <ListingMap listings={listings} imageBaseUrl="https://cdn.uyap.gov.tr/ilan" />
+//   <ListingMap listings={listings} imageBaseUrl="https://cdn.example.com/listings" />
 const listings = withDemoPhotos(rawListings as Listing[]);
 
 export default function App() {
