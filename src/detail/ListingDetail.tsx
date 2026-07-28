@@ -2,7 +2,7 @@ import { useListingStore } from '../store/useListingStore';
 import { ListingDetailView } from './ListingDetailView';
 import type { Listing } from '../types/listing';
 
-interface ListingDetailProps {
+export interface ListingDetailProps {
   listing: Listing;
   onOpen(listing: Listing): void;
 }

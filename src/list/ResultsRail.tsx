@@ -3,7 +3,7 @@ import { useListingStore } from '../store/useListingStore';
 import { ResultsRailView } from './ResultsRailView';
 import type { Listing } from '../types/listing';
 
-interface ResultsRailProps {
+export interface ResultsRailProps {
   listings: Listing[];
   /**
    * Called with the listing behind a clicked card, in addition to selecting it.
