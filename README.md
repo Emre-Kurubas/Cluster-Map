@@ -147,6 +147,18 @@ tokens](#theming) first — they cover colour, type and easing without any of
 this. Slots are for when you need to change a piece's structure, and wrapping
 the default in your own element inside a slot handles per-piece layout tweaks.
 
+The table above is the complete list, and two things people expect to find on
+it are deliberately absent:
+
+- **The pins and clusters are not slots.** They are MapLibre GL symbol layers
+  drawing sprites rasterized at runtime, not React components, so nothing in
+  this section reaches them. Their colours come from `getCategoryConfig` rather
+  than from CSS, which is why the `--cluster-map-cat-*` tokens restyle the
+  legend but leave the pins alone — see [Theming](#theming).
+- **A slot is a whole panel.** The parts inside one — the focus view's circular
+  photo, its header, the connector line to the pin — are internal and are not
+  exported. Changing one of them means replacing the entire `focusView`.
+
 ### Attribution — the host page must carry it
 
 The component renders **no** attribution control. MapLibre's collapsed "i"
