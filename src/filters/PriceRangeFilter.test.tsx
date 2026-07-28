@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { screen, fireEvent } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import type { ReactElement } from 'react';
 import { PriceRangeFilter, niceStep } from './PriceRangeFilter';
 import { createListingStore } from '../store/createListingStore';
@@ -18,6 +19,14 @@ const MAX = 15_000_000;
 
 const drag = (label: string, value: number) =>
   fireEvent.change(screen.getByLabelText(label), { target: { value: String(value) } });
+
+/** Types into one of the two fields and blurs it, which is what commits. */
+const type = async (label: string, text: string) => {
+  const field = screen.getByLabelText(label);
+  await userEvent.clear(field);
+  if (text) await userEvent.type(field, text);
+  await userEvent.tab();
+};
 
 describe('niceStep', () => {
   it('gives the track about a hundred stops', () => {
@@ -70,6 +79,73 @@ describe('PriceRangeFilter', () => {
     drag(t.priceMaxLabel, 9_000_000);
     drag(t.priceMaxLabel, MAX);
     expect(state().filters.priceMax).toBeNull();
+  });
+
+  /**
+   * The track only stops on the step grid, so a figure someone already has in
+   * mind is often not on it at all. The fields are typed against the domain
+   * rather than the grid, and land exactly where they are told.
+   */
+  describe('the typed fields', () => {
+    it('shows each bound as grouped digits', () => {
+      render(<PriceRangeFilter />);
+      expect(screen.getByLabelText(t.priceMinInput)).toHaveValue('500.000');
+      expect(screen.getByLabelText(t.priceMaxInput)).toHaveValue('15.000.000');
+    });
+
+    it('stores a hand-typed lower bound off the step grid', async () => {
+      render(<PriceRangeFilter />);
+      await type(t.priceMinInput, '3333333');
+      expect(state().filters.priceMin).toBe(3_333_333);
+    });
+
+    it('reads back the grouping it prints', async () => {
+      render(<PriceRangeFilter />);
+      await type(t.priceMaxInput, '4.250.000');
+      expect(state().filters.priceMax).toBe(4_250_000);
+    });
+
+    it('commits on Enter without waiting for a blur', async () => {
+      render(<PriceRangeFilter />);
+      await userEvent.clear(screen.getByLabelText(t.priceMinInput));
+      await userEvent.type(screen.getByLabelText(t.priceMinInput), '2000000{Enter}');
+      expect(state().filters.priceMin).toBe(2_000_000);
+    });
+
+    it('puts the stored bound back when the edit is abandoned', async () => {
+      render(<PriceRangeFilter />);
+      await userEvent.clear(screen.getByLabelText(t.priceMinInput));
+      await userEvent.type(screen.getByLabelText(t.priceMinInput), '77{Escape}');
+      expect(screen.getByLabelText(t.priceMinInput)).toHaveValue('500.000');
+      expect(state().filters.priceMin).toBeNull();
+    });
+
+    it('reads an emptied field as no bound at all', async () => {
+      render(<PriceRangeFilter />);
+      drag(t.priceMaxLabel, 9_000_000);
+      await type(t.priceMaxInput, '');
+      expect(state().filters.priceMax).toBeNull();
+    });
+
+    it('releases the bound when the figure typed is past the end of the data', async () => {
+      render(<PriceRangeFilter />);
+      drag(t.priceMaxLabel, 9_000_000);
+      await type(t.priceMaxInput, '99000000');
+      expect(state().filters.priceMax).toBeNull();
+    });
+
+    it('holds a typed bound at the other thumb rather than crossing it', async () => {
+      render(<PriceRangeFilter />);
+      drag(t.priceMaxLabel, 5_000_000);
+      await type(t.priceMinInput, '12000000');
+      expect(state().filters.priceMin).toBe(5_000_000);
+    });
+
+    it('follows a dragged thumb, since only a live edit outranks the store', () => {
+      render(<PriceRangeFilter />);
+      drag(t.priceMaxLabel, 9_000_000);
+      expect(screen.getByLabelText(t.priceMaxInput)).toHaveValue('9.000.000');
+    });
   });
 
   describe('the thumbs cannot cross', () => {
@@ -128,6 +204,29 @@ describe('PriceRangeFilter', () => {
       expect(state().filters.priceMin).toBe(4_000_000);
       drag(t.priceMinLabel, ODD_MIN);
       expect(state().filters.priceMin).toBeNull();
+    });
+
+    /**
+     * The upper thumb used to stop at TOP_STOP, one stop short of a track that
+     * ran all the way to ODD_MAX — about four pixels of leftover track sitting
+     * to the right of a thumb that was meant to be parked on the end. Raising
+     * the input's own maximum to the next stop puts a reachable stop at 100%.
+     */
+    it('ends the track on a stop the thumb can actually reach', () => {
+      render(<PriceRangeFilter />);
+      const upper = screen.getByLabelText(t.priceMaxLabel);
+      const trackMax = Number(upper.getAttribute('max'));
+      expect(trackMax).toBeGreaterThanOrEqual(ODD_MAX);
+      expect((trackMax - ODD_MIN) % niceStep(ODD_MAX - ODD_MIN)).toBe(0);
+      expect(upper).toHaveValue(String(trackMax));
+      expect(screen.getByTestId('price-range-fill')).toHaveStyle({ right: '0%' });
+    });
+
+    // The track may now end above the data, but the figure on show is the
+    // dearest listing there is, not the stop past it.
+    it('still prints the dataset maximum rather than the stop past it', () => {
+      render(<PriceRangeFilter />);
+      expect(screen.getByLabelText(t.priceMaxInput)).toHaveValue('14.968.000');
     });
   });
 
