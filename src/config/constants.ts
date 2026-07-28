@@ -36,12 +36,21 @@ export const MAX_ZOOM = 17;
  *   `Style._updatePlacement`, not measured here — take it as a reason to stay
  *   near the low end rather than as a budget to spend.
  *
- * 300ms is MapLibre's own default and sits inside both. It was 0 here for a
- * while, after a cluster click was measured taking about a second to resolve —
- * but the bulk of that was an SVG decode stalling tile parse, fixed separately
- * by `warmDonutSprites`. Zeroing the fade was treating the wrong half.
+ * 240ms sits inside both. It is down from MapLibre's own 300ms default, which
+ * held the pins being replaced on screen longer than they were wanted there —
+ * and there is only the one knob, so the arrival was shortened by the same
+ * amount to buy that. MapLibre spends this budget symmetrically: the tile
+ * carrying the outgoing symbols is held for it, and the incoming ones ramp up
+ * over it. Anyone wanting to shorten only the departure should know there is no
+ * option for it; it would mean owning the opacity, and the first paragraph is
+ * why that trade is a bad one.
+ *
+ * It was 0 here for a while, after a cluster click was measured taking about a
+ * second to resolve — but the bulk of that was an SVG decode stalling tile
+ * parse, fixed separately by `warmDonutSprites`. Zeroing the fade was treating
+ * the wrong half.
  */
-export const SYMBOL_FADE_MS = 300;
+export const SYMBOL_FADE_MS = 240;
 
 /**
  * Pixels to push the selected listing right of centre, so its pin clears the
