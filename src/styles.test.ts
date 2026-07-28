@@ -44,6 +44,15 @@ describe('the package stylesheet', () => {
   });
 
   /**
+   * jsdom never draws WebKit's own clear button, so no render test can catch it
+   * coming back and standing beside ours. The stylesheet is the only place the
+   * second cross is ruled out.
+   */
+  it('suppresses the browser\'s clear button in the search field', () => {
+    expect(css).toMatch(/input\[type=['"]?search['"]?\]::-webkit-search-cancel-button/);
+  });
+
+  /**
    * Only the prefixed names are contract. The Tailwind tokens are internal and
    * must resolve through them, or a consumer overriding `--cluster-map-brand-500`
    * would change nothing.

@@ -166,6 +166,15 @@
 .cluster-map .range-thumb:disabled::-webkit-slider-thumb { cursor: default; border-color: var(--cluster-map-ink-300); }
 .cluster-map .range-thumb:disabled::-moz-range-thumb     { cursor: default; border-color: var(--cluster-map-ink-300); }
 
+/**
+ * WebKit draws its own clear button inside `input[type="search"]`, which would
+ * sit next to ours — two crosses, one of them unlabelled and unstyled. The type
+ * is worth keeping for the semantics, so the native decoration goes instead.
+ */
+.cluster-map input[type='search']::-webkit-search-cancel-button {
+  appearance: none;
+}
+
 /* Keyframes are global by nature — they are referenced by name from scoped
    rules, so they cannot themselves be nested. Names are distinctive enough not
    to collide, and `rail-in` was dropped as dead. */
