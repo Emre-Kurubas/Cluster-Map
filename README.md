@@ -313,3 +313,15 @@ Measured on 50,000 synthetic listings (`lib/perf.test.ts`):
 | `2024 esas` | No price chip — esas numbers are not mistaken for prices |
 
 Every chip is removable, so the parser is never silently authoritative.
+
+## License
+
+MIT — see [LICENSE](LICENSE). Use it, change it, ship it in something you sell;
+just keep the copyright notice with it.
+
+The dependencies carry their own terms, and two are worth knowing about:
+`maplibre-gl` is BSD-3-Clause, and the default basemap is OpenFreeMap serving
+OpenStreetMap data under the ODbL, which requires the credit to appear on the
+page. This component deliberately renders no attribution control, so that
+obligation is yours — see
+[Attribution](#attribution--the-host-page-must-carry-it).

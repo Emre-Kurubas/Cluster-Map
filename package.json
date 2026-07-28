@@ -2,12 +2,13 @@
   "name": "cluster-map",
   "version": "0.1.0",
   "type": "module",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "description": "İcra auction listings on an interactive MapLibre map, clustered by category, as a drop-in React component.",
   "sideEffects": [
     "*.css"
   ],
   "files": [
+    "LICENSE",
     "dist"
   ],
   "exports": {
