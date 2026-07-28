@@ -13,6 +13,7 @@ import { useFilteredListings } from './hooks/useFilteredListings';
 import { useContainerSize } from './hooks/useContainerSize';
 import { useMapSelection } from './hooks/useMapSelection';
 import { useListingStore } from './store/useListingStore';
+import { resolveSlot } from './slots';
 import { DEFAULT_STYLE_URL } from './config/mapStyle';
 import type { ListingMapProps } from './ListingMap';
 import type { BBox, MapEngine } from './types/map';
@@ -32,6 +33,7 @@ export function ListingMapView({
   styleUrl = DEFAULT_STYLE_URL,
   onListingSelect,
   onListingOpen,
+  slots,
   className = '',
 }: ListingMapViewProps) {
   const [engine, setEngine] = useState<MapEngine | null>(null);
@@ -66,6 +68,22 @@ export function ListingMapView({
     [],
   );
 
+  /**
+   * Resolved once per render, above the tree rather than inline at each site:
+   * a component created during render is a new type every time and would
+   * remount its slot on every keystroke.
+   */
+  const Search = resolveSlot(slots?.searchBar, SearchBar);
+  const Filters = resolveSlot(slots?.filterBar, FilterBar);
+  const Rail = resolveSlot(slots?.rail, ResultsRail);
+  const Dock = resolveSlot(slots?.categoryDock, CategoryDock);
+  const Controls = resolveSlot(slots?.mapControls, MapControls);
+  const Notice = resolveSlot(slots?.errorNotice, ErrorNotice);
+  const Focus = resolveSlot(slots?.focusView, FocusView);
+  const Detail = resolveSlot(slots?.detail, ListingDetail);
+  // A handle for a rail that is not rendered would toggle nothing visible.
+  const Toggle = Rail && resolveSlot(slots?.railToggle, RailToggle);
+
   // `cluster-map` on the root is the package's style scope: the published
   // stylesheet emits every rule beneath it, so nothing leaks onto a host page
   // and nothing on a host page collides with us.
@@ -87,40 +105,44 @@ export function ListingMapView({
         {/* Chrome clears away in focus mode so the listing owns the surface. */}
         {!focused && (
           <>
-            <div
-              className="mx-auto flex w-full max-w-3xl items-start gap-2
-                         motion-safe:animate-[chrome-in_150ms_var(--ease-spring)]"
-            >
-              <SearchBar onFlyTo={handleFlyTo} />
-              <FilterBar />
-            </div>
+            {(Search || Filters) && (
+              <div
+                className="mx-auto flex w-full max-w-3xl items-start gap-2
+                           motion-safe:animate-[chrome-in_150ms_var(--ease-spring)]"
+              >
+                {Search && <Search onFlyTo={handleFlyTo} />}
+                {Filters && <Filters />}
+              </div>
+            )}
 
             {/* The rail collapses by width rather than unmounting, so the
                 handle beside it slides with the edge instead of teleporting
                 across the map. It keeps its 320px content width while the
                 wrapper clips it — nothing reflows mid-transition — and goes
                 inert when shut so no card is tabbable behind the fold. */}
-            <div className="flex min-h-0 flex-1 items-stretch">
-              <div
-                id="listing-rail"
-                inert={!railOpen}
-                className={[
-                  'hidden h-full min-h-0 overflow-hidden md:block',
-                  'transition-[width,opacity] duration-300 ease-[var(--ease-spring)]',
-                  railOpen ? 'md:w-80 opacity-100' : 'md:w-0 opacity-0',
-                ].join(' ')}
-              >
-                <ResultsRail listings={filtered} />
-              </div>
+            {Rail && (
+              <div className="flex min-h-0 flex-1 items-stretch">
+                <div
+                  id="listing-rail"
+                  inert={!railOpen}
+                  className={[
+                    'hidden h-full min-h-0 overflow-hidden md:block',
+                    'transition-[width,opacity] duration-300 ease-[var(--ease-spring)]',
+                    railOpen ? 'md:w-80 opacity-100' : 'md:w-0 opacity-0',
+                  ].join(' ')}
+                >
+                  <Rail listings={filtered} />
+                </div>
 
-              <RailToggle />
-            </div>
+                {Toggle && <Toggle />}
+              </div>
+            )}
           </>
         )}
 
-        {errorKind && (
+        {errorKind && Notice && (
           <div className="mt-auto flex justify-center">
-            <ErrorNotice kind={errorKind} onDismiss={() => setErrorKind(null)} />
+            <Notice kind={errorKind} onDismiss={() => setErrorKind(null)} />
           </div>
         )}
       </div>
@@ -133,18 +155,20 @@ export function ListingMapView({
           The legend sits to the left of the zoom stack on a shared baseline,
           so neither one adds height to the corner. Only the legend is chrome,
           so only it goes away in focus mode. */}
-      <div
-        className="pointer-events-none absolute bottom-3 right-3 flex items-end
-                   gap-2 md:bottom-4 md:right-4"
-      >
-        {!focused && <CategoryDock />}
-        <MapControls engine={engine} />
-      </div>
+      {(Controls || (!focused && Dock)) && (
+        <div
+          className="pointer-events-none absolute bottom-3 right-3 flex items-end
+                     gap-2 md:bottom-4 md:right-4"
+        >
+          {!focused && Dock && <Dock />}
+          {Controls && <Controls engine={engine} />}
+        </div>
+      )}
 
       {/* Desktop focus view. */}
-      {selected && (
+      {selected && Focus && (
         <div className="hidden md:block">
-          <FocusView
+          <Focus
             listing={selected}
             engine={engine}
             size={size}
@@ -154,9 +178,9 @@ export function ListingMapView({
       )}
 
       {/* Below md the original panel is unchanged. */}
-      {selected && (
+      {selected && Detail && (
         <div className="pointer-events-none absolute right-3 top-3 md:hidden">
-          <ListingDetail
+          <Detail
             listing={selected}
             onOpen={(listing) => onListingOpen?.(listing)}
           />
@@ -164,9 +188,9 @@ export function ListingMapView({
       )}
 
       {/* Mobile: the rail becomes a bottom sheet. */}
-      {railOpen && !focused && (
+      {Rail && railOpen && !focused && (
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 p-3 md:hidden">
-          <ResultsRail listings={filtered} />
+          <Rail listings={filtered} />
         </div>
       )}
     </div>
