@@ -13,7 +13,7 @@ import { widenBasemapDetail } from './engine/detailZoom';
 import { bindPointerAffordances } from './engine/pointerLayers';
 import * as subscribe from './engine/subscriptions';
 import { SOURCE_ID } from '../config/mapStyle';
-import { MAX_ZOOM, MIN_ZOOM, PROVINCE_FLY_ZOOM } from '../config/constants';
+import { MAX_ZOOM, MIN_ZOOM, PROVINCE_FLY_ZOOM, SYMBOL_FADE_MS } from '../config/constants';
 import { t } from '../i18n/tr';
 import type { Listing } from '../types/listing';
 import type { BBox, MapEngine } from '../types/map';
@@ -64,24 +64,18 @@ export function createMapEngine(
       // does. See README.
       attributionControl: false,
       /**
-       * No symbol cross-fade.
+       * The symbol cross-fade: the whole of how clusters and pins arrive and
+       * leave, and not an animation this component could write for itself —
+       * MapLibre carries an opacity per symbol *instance*, so only the symbols
+       * that actually changed fade, where a paint transition of ours would
+       * address the entire layer. It was 0 for a while, which is to say there
+       * was no animation at all. `SYMBOL_FADE_MS` carries the reasoning.
        *
-       * MapLibre spends this budget three times over, and all three land after
-       * a cluster is clicked and the zoom has already stopped. A tile that is
-       * no longer needed but carries symbols is *held* for `fadeDuration` so
-       * its icons can fade out, which is the clicked cluster still sitting
-       * there; the next placement cannot even begin while the previous one is
-       * `stillRecent`, another `fadeDuration`; and then the icons that replace
-       * it fade in over a third. Default 300ms — near enough the second the
-       * clusters were observed to linger for.
-       *
-       * At 0 the tile is dropped on the next update, placement is recomputed
-       * every frame, and icons swap the moment their tile is ready. The cost
-       * is that symbol placement loses its 2ms-per-frame budget and runs to
-       * completion each frame; that is the same path every map already takes
-       * before its first idle, and this style's label count is small.
+       * Non-zero also hands symbol placement back its 2ms-per-frame budget: at
+       * 0 MapLibre forces a full placement every frame, so that a newly loaded
+       * tile can draw in its first one.
        */
-      fadeDuration: 0,
+      fadeDuration: SYMBOL_FADE_MS,
       // Pin geometry is flat; skipping the 3D pitch keeps interaction cheap.
       pitchWithRotate: false,
       dragRotate: false,

@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { LAYER_CLUSTERS, LAYER_PINS_ACTIVE, SOURCE_ID } from '../config/mapStyle';
+import { SYMBOL_FADE_MS } from '../config/constants';
 import type { BBox } from '../types/map';
 
 /**
@@ -279,16 +280,21 @@ describe('createMapEngine', () => {
   });
 
   /**
-   * MapLibre charges for a symbol cross-fade three times, and all three land
-   * after a cluster click has already finished zooming: the clicked cluster's
-   * tile is held for `fadeDuration` so its icons can fade out, the replacing
-   * placement is deferred while the previous one is `stillRecent`, and then
-   * the new icons fade in. At the 300ms default that is close to a second of
-   * the old cluster sitting on top of the new view.
+   * The only thing that animates a cluster splitting or a pin arriving.
+   *
+   * This option was `0` for a while, and at 0 there is no appear or disappear
+   * animation at all — every swap is a one-frame pop. So what is worth
+   * defending is narrow: that a usable duration reaches MapLibre. Why the
+   * duration is the one it is belongs to `SYMBOL_FADE_MS`, and asserting
+   * against the constant rather than a literal keeps the two from drifting.
    */
-  it('turns the symbol cross-fade off', () => {
+  it('cross-fades symbols over a window that can be seen', () => {
     const engine = build();
-    expect(lastOptions.fadeDuration).toBe(0);
+    expect(lastOptions.fadeDuration).toBe(SYMBOL_FADE_MS);
+    // Both bounds were found by watching the map, and both are defects rather
+    // than preferences — see the constant.
+    expect(SYMBOL_FADE_MS).toBeGreaterThanOrEqual(200);
+    expect(SYMBOL_FADE_MS).toBeLessThanOrEqual(400);
     engine.destroy();
   });
 
