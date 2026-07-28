@@ -1,23 +1,38 @@
-# Uyap E-Satış — İlan Haritası
+# Cluster Map
 
 An interactive 2D map of İcra auction listings across Türkiye, built as a
 drop-in React component.
 
+Everything on the map is a MapLibre GL layer rather than a React marker, so
+panning and zooming cost no React renders and the frame budget does not grow
+with the listing count. Dense areas collapse into cluster pins whose outline is
+banded by category mix; clicking one expands it. Search, filtering and the
+Turkish text handling are all client-side, with no backend.
+
+The map engine is behind a code-split boundary, so importing the component does
+not pull MapLibre into your entry chunk.
+
 ## Install
 
+Not published to npm. Install from the repository:
+
 ```bash
-npm install @uyap/listing-map maplibre-gl react react-dom
+npm install github:Emre-Kurubas/Cluster-Map maplibre-gl react react-dom
 ```
 
 `react`, `react-dom` and `maplibre-gl` are peer dependencies. MapLibre
 especially: it is 477 kB and ships its own worker, and two copies on one page
 fight over WebGL contexts.
 
+Consuming it from a checkout means building it first — `npm run build:lib`
+writes the package into `dist/`, which is what `exports` points at and what is
+git-ignored. See [Development](#development).
+
 ## Using the component
 
 ```tsx
-import { ListingMap } from '@uyap/listing-map';
-import type { Listing } from '@uyap/listing-map';
+import { ListingMap } from 'cluster-map';
+import type { Listing } from 'cluster-map';
 
 <ListingMap
   listings={listings}
@@ -29,13 +44,13 @@ import type { Listing } from '@uyap/listing-map';
 extracts CSS rather than leaving it in the JS, so nothing pulls it in for you:
 
 ```ts
-import '@uyap/listing-map/styles.css';
+import 'cluster-map/styles.css';
 ```
 
 Omit it and you get a working but entirely unstyled map, with no error to
 explain it. Import it once, wherever your app imports its other global CSS.
 
-Every rule in it is scoped under `.uyap-listing-map`, the class on the
+Every rule in it is scoped under `.cluster-map`, the class on the
 component's root element. Nothing it ships can reach the rest of your page, and
 nothing on your page collides with it — including its copy of MapLibre's own
 stylesheet, so you do not need to import that separately either.
@@ -139,38 +154,38 @@ component's root. Redeclare any of them in your own stylesheet — no rebuild, n
 fork, no Tailwind config to import:
 
 ```css
-.uyap-listing-map {
-  --uyap-lm-brand-500: #0a5ed7;
-  --uyap-lm-cat-arsa:  #2f7a66;
+.cluster-map {
+  --cluster-map-brand-500: #0a5ed7;
+  --cluster-map-cat-arsa:  #2f7a66;
 }
 ```
 
 | Token | Default | Used for |
 |---|---|---|
-| `--uyap-lm-brand-100` | `#fdf1e5` | Selected card background, focus ring |
-| `--uyap-lm-brand-500` | `#f5821f` | Accents, slider thumbs, focus outlines |
-| `--uyap-lm-brand-700` | `#b4560a` | Prices, primary buttons |
-| `--uyap-lm-brand-900` | `#8f4408` | Primary button hover |
-| `--uyap-lm-ink-300` | `#8ea0ad` | Secondary text |
-| `--uyap-lm-ink-500` | `#485a6a` | Body text |
-| `--uyap-lm-ink-900` | `#22313f` | Headings, cluster counts |
-| `--uyap-lm-surface` | `#f2f6f9` | Behind the map canvas |
-| `--uyap-lm-line` | `#e9ecf3` | Hairline rules |
-| `--uyap-lm-danger` | `#ef4836` | Sale-type badge |
-| `--uyap-lm-cat-gayrimenkul` | `#4f6bd1` | Category swatch |
-| `--uyap-lm-cat-arsa` | `#3d9a82` | Category swatch |
-| `--uyap-lm-cat-arac` | `#e0912f` | Category swatch |
-| `--uyap-lm-font-sans` | `Inter, …` | All type |
-| `--uyap-lm-ease-spring` | `cubic-bezier(0.22, 1, 0.36, 1)` | Most transitions |
-| `--uyap-lm-ease-smooth` | `cubic-bezier(0.32, 0.08, 0.24, 1)` | Long size changes |
+| `--cluster-map-brand-100` | `#fdf1e5` | Selected card background, focus ring |
+| `--cluster-map-brand-500` | `#f5821f` | Accents, slider thumbs, focus outlines |
+| `--cluster-map-brand-700` | `#b4560a` | Prices, primary buttons |
+| `--cluster-map-brand-900` | `#8f4408` | Primary button hover |
+| `--cluster-map-ink-300` | `#8ea0ad` | Secondary text |
+| `--cluster-map-ink-500` | `#485a6a` | Body text |
+| `--cluster-map-ink-900` | `#22313f` | Headings, cluster counts |
+| `--cluster-map-surface` | `#f2f6f9` | Behind the map canvas |
+| `--cluster-map-line` | `#e9ecf3` | Hairline rules |
+| `--cluster-map-danger` | `#ef4836` | Sale-type badge |
+| `--cluster-map-cat-gayrimenkul` | `#4f6bd1` | Category swatch |
+| `--cluster-map-cat-arsa` | `#3d9a82` | Category swatch |
+| `--cluster-map-cat-arac` | `#e0912f` | Category swatch |
+| `--cluster-map-font-sans` | `Inter, …` | All type |
+| `--cluster-map-ease-spring` | `cubic-bezier(0.22, 1, 0.36, 1)` | Most transitions |
+| `--cluster-map-ease-smooth` | `cubic-bezier(0.32, 0.08, 0.24, 1)` | Long size changes |
 
 Pin and cluster colours are drawn into sprites at runtime from
-`getCategoryConfig`, so the three `--uyap-lm-cat-*` tokens restyle the chrome
+`getCategoryConfig`, so the three `--cluster-map-cat-*` tokens restyle the chrome
 but not the pins. Keep them in step by hand.
 
 ## Composing your own layout
 
-`@uyap/listing-map/primitives` exports the parts `<ListingMap>` is assembled
+`cluster-map/primitives` exports the parts `<ListingMap>` is assembled
 from, for consumers who want a different arrangement around the same behaviour.
 
 The naming rule is one sentence: **`X` reads the surrounding store and needs a
@@ -184,7 +199,7 @@ ceremony. `FocusViewView` is that rule applied consistently, not a typo.
 import {
   ListingStoreProvider, createListingStore,
   SearchBar, ResultsRail, MapCanvas,
-} from '@uyap/listing-map/primitives';
+} from 'cluster-map/primitives';
 
 const [store] = useState(createListingStore);
 
@@ -228,7 +243,7 @@ npm run build      # demo build
 ```
 
 The library lives in `src/` and the demo in `demo/`. The demo imports
-`@uyap/listing-map` by its published name, aliased to `dist/` — so a broken
+`cluster-map` by its published name, aliased to `dist/` — so a broken
 package build fails the demo rather than reaching a consumer. Run `build:lib`
 before `dev`, and again after changing anything under `src/`.
 

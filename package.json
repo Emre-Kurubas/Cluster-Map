@@ -1,9 +1,9 @@
 {
-  "name": "@uyap/listing-map",
+  "name": "cluster-map",
   "version": "0.1.0",
   "type": "module",
   "license": "UNLICENSED",
-  "description": "İcra auction listings on an interactive MapLibre map, as a drop-in React component.",
+  "description": "İcra auction listings on an interactive MapLibre map, clustered by category, as a drop-in React component.",
   "sideEffects": [
     "*.css"
   ],

@@ -5,7 +5,7 @@ import type { Container } from 'postcss';
 import type { Plugin } from 'vite';
 
 /** The class `ListingMapView` puts on its root element. */
-export const SCOPE = '.uyap-listing-map';
+export const SCOPE = '.cluster-map';
 
 /**
  * At-rules whose contents must not be touched.
@@ -18,7 +18,7 @@ const OPAQUE = /^(-\w+-)?(keyframes|font-face|property|import|charset|namespace)
 
 function scopeSelector(selector: string): string {
   const trimmed = selector.trim();
-  if (!trimmed || trimmed.includes('uyap-listing-map')) return trimmed;
+  if (!trimmed || trimmed.includes('cluster-map')) return trimmed;
 
   /**
    * `:root` and `:host` carry the theme's custom properties. Left alone they

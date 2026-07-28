@@ -38,7 +38,7 @@ describe('the package manifest', () => {
 
   it('is publishable', () => {
     expect(pkg.private).toBeUndefined();
-    expect(pkg.name).toBe('@uyap/listing-map');
+    expect(pkg.name).toBe('cluster-map');
     expect(pkg.files).toContain('dist');
   });
 });
@@ -114,7 +114,7 @@ describe('the built package', () => {
       container.each((node) => {
         if (node.type === 'rule') {
           for (const selector of node.selectors) {
-            if (!selector.includes('uyap-listing-map')) unscoped.push(selector);
+            if (!selector.includes('cluster-map')) unscoped.push(selector);
           }
         } else if (node.type === 'atrule' && !opaque.test(node.name)) {
           walk(node);

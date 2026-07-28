@@ -6,7 +6,7 @@ import css from './styles.css?raw';
 
 describe('the package stylesheet', () => {
   it('carries the pieces the components cannot render without', () => {
-    expect(css).toContain('--uyap-lm-brand-500');
+    expect(css).toContain('--cluster-map-brand-500');
     expect(css).toContain('.range-thumb');
     expect(css).toContain('@keyframes connector-draw');
   });
@@ -18,7 +18,7 @@ describe('the package stylesheet', () => {
    * only ours. A package that does either is one nobody can adopt.
    */
   it('scopes the rules that would otherwise reach outside the component', () => {
-    expect(css).toMatch(/\.uyap-listing-map[^{]*button:not\(:disabled\)/);
+    expect(css).toMatch(/\.cluster-map[^{]*button:not\(:disabled\)/);
     expect(css).not.toMatch(/^\s*\*,\s*\*::before/m);
   });
 
@@ -45,11 +45,11 @@ describe('the package stylesheet', () => {
 
   /**
    * Only the prefixed names are contract. The Tailwind tokens are internal and
-   * must resolve through them, or a consumer overriding `--uyap-lm-brand-500`
+   * must resolve through them, or a consumer overriding `--cluster-map-brand-500`
    * would change nothing.
    */
   it('routes every internal token through an overridable one', () => {
-    expect(css).toMatch(/--color-brand-500:\s*var\(--uyap-lm-brand-500\)/);
-    expect(css).toMatch(/--color-cat-arsa:\s*var\(--uyap-lm-cat-arsa\)/);
+    expect(css).toMatch(/--color-brand-500:\s*var\(--cluster-map-brand-500\)/);
+    expect(css).toMatch(/--color-cat-arsa:\s*var\(--cluster-map-cat-arsa\)/);
   });
 });

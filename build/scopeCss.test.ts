@@ -3,7 +3,7 @@ import { scopeCss } from './scopeCss.ts';
 
 describe('scopeCss', () => {
   it('puts ordinary rules under the scope', () => {
-    expect(scopeCss('.flex{display:flex}')).toContain('.uyap-listing-map .flex');
+    expect(scopeCss('.flex{display:flex}')).toContain('.cluster-map .flex');
   });
 
   /**
@@ -12,8 +12,8 @@ describe('scopeCss', () => {
    * are internal and reserved for renaming.
    */
   it('folds :root and :host into the scope itself', () => {
-    expect(scopeCss(':root{--a:1}')).toContain('.uyap-listing-map{--a:1}');
-    expect(scopeCss(':host{--a:1}')).toContain('.uyap-listing-map{--a:1}');
+    expect(scopeCss(':root{--a:1}')).toContain('.cluster-map{--a:1}');
+    expect(scopeCss(':host{--a:1}')).toContain('.cluster-map{--a:1}');
   });
 
   /**
@@ -24,22 +24,22 @@ describe('scopeCss', () => {
     const out = scopeCss('@keyframes fade{from{opacity:0}to{opacity:1}}');
     expect(out).toContain('from{opacity:0}');
     expect(out).toContain('to{opacity:1}');
-    expect(out).not.toContain('uyap-listing-map from');
+    expect(out).not.toContain('cluster-map from');
   });
 
   it('descends into media, supports and layer blocks', () => {
     expect(scopeCss('@media (min-width:40rem){.a{color:red}}'))
-      .toContain('.uyap-listing-map .a');
+      .toContain('.cluster-map .a');
     expect(scopeCss('@layer utilities{.b{color:red}}'))
-      .toContain('.uyap-listing-map .b');
+      .toContain('.cluster-map .b');
     expect(scopeCss('@supports (display:grid){.c{color:red}}'))
-      .toContain('.uyap-listing-map .c');
+      .toContain('.cluster-map .c');
   });
 
   it('scopes every selector in a list, not just the first', () => {
     const out = scopeCss('.a,.b{color:red}');
-    expect(out).toContain('.uyap-listing-map .a');
-    expect(out).toContain('.uyap-listing-map .b');
+    expect(out).toContain('.cluster-map .a');
+    expect(out).toContain('.cluster-map .b');
   });
 
   // Running the pass twice must not double-prefix; the build is not required to

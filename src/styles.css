@@ -3,9 +3,9 @@
  *
  * Published as one file the consumer imports:
  *
- *   import '@uyap/listing-map/styles.css';
+ *   import 'cluster-map/styles.css';
  *
- * Every rule is scoped under `.uyap-listing-map`, the class ListingMapView puts
+ * Every rule is scoped under `.cluster-map`, the class ListingMapView puts
  * on its root. Two of the rules below were global in the app stylesheet this
  * was extracted from — the button cursor and the reduced-motion override — and
  * a package that restyles every button on its host's site, or silences the
@@ -27,29 +27,29 @@
 
 /**
  * Internal Tailwind tokens, each resolving through an overridable public one.
- * Only the `--uyap-lm-` names below are contract; these are what the generated
+ * Only the `--cluster-map-` names below are contract; these are what the generated
  * utilities reference and may be renamed whenever Tailwind changes.
  */
 @theme {
-  --color-brand-100: var(--uyap-lm-brand-100);
-  --color-brand-500: var(--uyap-lm-brand-500);
-  --color-brand-700: var(--uyap-lm-brand-700);
-  --color-brand-900: var(--uyap-lm-brand-900);
-  --color-ink-300:   var(--uyap-lm-ink-300);
-  --color-ink-500:   var(--uyap-lm-ink-500);
-  --color-ink-900:   var(--uyap-lm-ink-900);
-  --color-surface:   var(--uyap-lm-surface);
-  --color-line:      var(--uyap-lm-line);
-  --color-danger:    var(--uyap-lm-danger);
+  --color-brand-100: var(--cluster-map-brand-100);
+  --color-brand-500: var(--cluster-map-brand-500);
+  --color-brand-700: var(--cluster-map-brand-700);
+  --color-brand-900: var(--cluster-map-brand-900);
+  --color-ink-300:   var(--cluster-map-ink-300);
+  --color-ink-500:   var(--cluster-map-ink-500);
+  --color-ink-900:   var(--cluster-map-ink-900);
+  --color-surface:   var(--cluster-map-surface);
+  --color-line:      var(--cluster-map-line);
+  --color-danger:    var(--cluster-map-danger);
 
-  --color-cat-gayrimenkul: var(--uyap-lm-cat-gayrimenkul);
-  --color-cat-arsa:        var(--uyap-lm-cat-arsa);
-  --color-cat-arac:        var(--uyap-lm-cat-arac);
+  --color-cat-gayrimenkul: var(--cluster-map-cat-gayrimenkul);
+  --color-cat-arsa:        var(--cluster-map-cat-arsa);
+  --color-cat-arac:        var(--cluster-map-cat-arac);
 
-  --font-sans: var(--uyap-lm-font-sans);
+  --font-sans: var(--cluster-map-font-sans);
 
-  --ease-spring: var(--uyap-lm-ease-spring);
-  --ease-smooth: var(--uyap-lm-ease-smooth);
+  --ease-spring: var(--cluster-map-ease-spring);
+  --ease-smooth: var(--cluster-map-ease-smooth);
 }
 
 /**
@@ -57,36 +57,36 @@
  * these in their own stylesheet — no rebuild, no fork, no exported Tailwind
  * config:
  *
- *   .uyap-listing-map { --uyap-lm-brand-500: #0a5ed7; }
+ *   .cluster-map { --cluster-map-brand-500: #0a5ed7; }
  */
-.uyap-listing-map {
-  --uyap-lm-brand-100: #fdf1e5;
-  --uyap-lm-brand-500: #f5821f;
-  --uyap-lm-brand-700: #b4560a;
-  --uyap-lm-brand-900: #8f4408;
-  --uyap-lm-ink-300:   #8ea0ad;
-  --uyap-lm-ink-500:   #485a6a;
-  --uyap-lm-ink-900:   #22313f;
-  --uyap-lm-surface:   #f2f6f9;
-  --uyap-lm-line:      #e9ecf3;
-  --uyap-lm-danger:    #ef4836;
+.cluster-map {
+  --cluster-map-brand-100: #fdf1e5;
+  --cluster-map-brand-500: #f5821f;
+  --cluster-map-brand-700: #b4560a;
+  --cluster-map-brand-900: #8f4408;
+  --cluster-map-ink-300:   #8ea0ad;
+  --cluster-map-ink-500:   #485a6a;
+  --cluster-map-ink-900:   #22313f;
+  --cluster-map-surface:   #f2f6f9;
+  --cluster-map-line:      #e9ecf3;
+  --cluster-map-danger:    #ef4836;
 
-  --uyap-lm-cat-gayrimenkul: #4f6bd1;
-  --uyap-lm-cat-arsa:        #3d9a82;
-  --uyap-lm-cat-arac:        #e0912f;
+  --cluster-map-cat-gayrimenkul: #4f6bd1;
+  --cluster-map-cat-arsa:        #3d9a82;
+  --cluster-map-cat-arac:        #e0912f;
 
-  --uyap-lm-font-sans: Inter, ui-sans-serif, system-ui, sans-serif;
+  --cluster-map-font-sans: Inter, ui-sans-serif, system-ui, sans-serif;
 
-  --uyap-lm-ease-spring: cubic-bezier(0.22, 1, 0.36, 1);
+  --cluster-map-ease-spring: cubic-bezier(0.22, 1, 0.36, 1);
   /**
-   * Gentler than --uyap-lm-ease-spring, which lands hard by design. Used where
+   * Gentler than --cluster-map-ease-spring, which lands hard by design. Used where
    * a shape changes size over a longer distance and the arrival should not be
    * felt.
    */
-  --uyap-lm-ease-smooth: cubic-bezier(0.32, 0.08, 0.24, 1);
+  --cluster-map-ease-smooth: cubic-bezier(0.32, 0.08, 0.24, 1);
 
-  font-family: var(--uyap-lm-font-sans);
-  color: var(--uyap-lm-ink-500);
+  font-family: var(--cluster-map-font-sans);
+  color: var(--cluster-map-ink-500);
 }
 
 /**
@@ -99,8 +99,8 @@
  * controls keep the arrow: a hand over something that will not respond is worse
  * than no hand at all.
  */
-.uyap-listing-map button:not(:disabled),
-.uyap-listing-map [role="button"]:not([aria-disabled="true"]) {
+.cluster-map button:not(:disabled),
+.cluster-map [role="button"]:not([aria-disabled="true"]) {
   cursor: pointer;
 }
 
@@ -112,7 +112,7 @@
  * plain div — and only the thumbs take the pointer, which is what lets the
  * lower input sit on top of the upper one without swallowing its drags.
  */
-.uyap-listing-map .range-thumb {
+.cluster-map .range-thumb {
   position: absolute;
   left: 0;
   width: 100%;
@@ -125,46 +125,46 @@
   pointer-events: none;
 }
 
-.uyap-listing-map .range-thumb::-webkit-slider-thumb {
+.cluster-map .range-thumb::-webkit-slider-thumb {
   appearance: none;
   pointer-events: auto;
   width: 1.125rem;
   height: 1.125rem;
   border-radius: 9999px;
-  border: 2px solid var(--uyap-lm-brand-500);
+  border: 2px solid var(--cluster-map-brand-500);
   background: #fff;
   box-shadow: 0 1px 4px rgb(34 49 63 / 0.28);
   cursor: grab;
-  transition: transform 150ms var(--uyap-lm-ease-spring),
-              box-shadow 150ms var(--uyap-lm-ease-spring);
+  transition: transform 150ms var(--cluster-map-ease-spring),
+              box-shadow 150ms var(--cluster-map-ease-spring);
 }
 
-.uyap-listing-map .range-thumb::-moz-range-thumb {
+.cluster-map .range-thumb::-moz-range-thumb {
   pointer-events: auto;
   width: 1.125rem;
   height: 1.125rem;
   border-radius: 9999px;
-  border: 2px solid var(--uyap-lm-brand-500);
+  border: 2px solid var(--cluster-map-brand-500);
   background: #fff;
   box-shadow: 0 1px 4px rgb(34 49 63 / 0.28);
   cursor: grab;
-  transition: transform 150ms var(--uyap-lm-ease-spring),
-              box-shadow 150ms var(--uyap-lm-ease-spring);
+  transition: transform 150ms var(--cluster-map-ease-spring),
+              box-shadow 150ms var(--cluster-map-ease-spring);
 }
 
-.uyap-listing-map .range-thumb:active::-webkit-slider-thumb { cursor: grabbing; transform: scale(1.15); }
-.uyap-listing-map .range-thumb:active::-moz-range-thumb     { cursor: grabbing; transform: scale(1.15); }
+.cluster-map .range-thumb:active::-webkit-slider-thumb { cursor: grabbing; transform: scale(1.15); }
+.cluster-map .range-thumb:active::-moz-range-thumb     { cursor: grabbing; transform: scale(1.15); }
 
-.uyap-listing-map .range-thumb:focus { outline: none; }
-.uyap-listing-map .range-thumb:focus-visible::-webkit-slider-thumb {
-  box-shadow: 0 0 0 3px var(--uyap-lm-brand-100), 0 1px 4px rgb(34 49 63 / 0.28);
+.cluster-map .range-thumb:focus { outline: none; }
+.cluster-map .range-thumb:focus-visible::-webkit-slider-thumb {
+  box-shadow: 0 0 0 3px var(--cluster-map-brand-100), 0 1px 4px rgb(34 49 63 / 0.28);
 }
-.uyap-listing-map .range-thumb:focus-visible::-moz-range-thumb {
-  box-shadow: 0 0 0 3px var(--uyap-lm-brand-100), 0 1px 4px rgb(34 49 63 / 0.28);
+.cluster-map .range-thumb:focus-visible::-moz-range-thumb {
+  box-shadow: 0 0 0 3px var(--cluster-map-brand-100), 0 1px 4px rgb(34 49 63 / 0.28);
 }
 
-.uyap-listing-map .range-thumb:disabled::-webkit-slider-thumb { cursor: default; border-color: var(--uyap-lm-ink-300); }
-.uyap-listing-map .range-thumb:disabled::-moz-range-thumb     { cursor: default; border-color: var(--uyap-lm-ink-300); }
+.cluster-map .range-thumb:disabled::-webkit-slider-thumb { cursor: default; border-color: var(--cluster-map-ink-300); }
+.cluster-map .range-thumb:disabled::-moz-range-thumb     { cursor: default; border-color: var(--cluster-map-ink-300); }
 
 /* Keyframes are global by nature — they are referenced by name from scoped
    rules, so they cannot themselves be nested. Names are distinctive enough not
@@ -211,10 +211,10 @@
  * a setting about our component becoming a setting about their whole site.
  */
 @media (prefers-reduced-motion: reduce) {
-  .uyap-listing-map,
-  .uyap-listing-map *,
-  .uyap-listing-map *::before,
-  .uyap-listing-map *::after {
+  .cluster-map,
+  .cluster-map *,
+  .cluster-map *::before,
+  .cluster-map *::after {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
   }

@@ -1,6 +1,6 @@
 /**
  * OpenFreeMap "positron" — free, keyless, MapLibre-native vector tiles.
- * Overridable per-instance through the ListingMap `styleUrl` prop so Uyap can
+ * Overridable per-instance through the ListingMap `styleUrl` prop so a consumer can
  * point at self-hosted tiles without touching component code.
  */
 export const DEFAULT_STYLE_URL = 'https://tiles.openfreemap.org/styles/positron';

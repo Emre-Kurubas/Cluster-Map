@@ -66,13 +66,13 @@ export function ListingMapView({
     [],
   );
 
-  // `uyap-listing-map` on the root is the package's style scope: the published
+  // `cluster-map` on the root is the package's style scope: the published
   // stylesheet emits every rule beneath it, so nothing leaks onto a host page
   // and nothing on a host page collides with us.
   return (
     <div
       ref={rootRef}
-      className={`uyap-listing-map relative h-full w-full overflow-hidden bg-surface ${className}`}
+      className={`cluster-map relative h-full w-full overflow-hidden bg-surface ${className}`}
     >
       <MapCanvasLazy
         listings={mapListings}

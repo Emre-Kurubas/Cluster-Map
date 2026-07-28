@@ -56,9 +56,9 @@ export default defineConfig({
    */
   resolve: {
     alias: {
-      '@uyap/listing-map/styles.css': fileURLToPath(new URL('./dist/styles.css', import.meta.url)),
-      '@uyap/listing-map/primitives': fileURLToPath(new URL('./dist/primitives.js', import.meta.url)),
-      '@uyap/listing-map': fileURLToPath(new URL('./dist/index.js', import.meta.url)),
+      'cluster-map/styles.css': fileURLToPath(new URL('./dist/styles.css', import.meta.url)),
+      'cluster-map/primitives': fileURLToPath(new URL('./dist/primitives.js', import.meta.url)),
+      'cluster-map': fileURLToPath(new URL('./dist/index.js', import.meta.url)),
     },
   },
   plugins: [react(), tailwindcss(), maplibreWorkerAssets(), scopeComponentCss()],

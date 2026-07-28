@@ -1,5 +1,5 @@
-import { getCategoryConfig } from '@uyap/listing-map/primitives';
-import type { Listing } from '@uyap/listing-map';
+import { getCategoryConfig } from 'cluster-map/primitives';
+import type { Listing } from 'cluster-map';
 
 /**
  * Photos per category, so the same listing always shows the same picture and
