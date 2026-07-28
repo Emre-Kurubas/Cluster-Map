@@ -16,6 +16,10 @@ export const t = {
   priceRange: 'Fiyat aralığı',
   priceMinLabel: 'En düşük fiyat',
   priceMaxLabel: 'En yüksek fiyat',
+  /** The typed fields, which reach the same two bounds as the thumbs above. */
+  priceMinInput: 'En düşük fiyatı gir',
+  priceMaxInput: 'En yüksek fiyatı gir',
+  currencySymbol: '₺',
   sort: 'Sırala',
   sortRelevance: 'İlgi düzeyi',
   sortPriceAsc: 'Fiyat (artan)',

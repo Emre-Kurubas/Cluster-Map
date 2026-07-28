@@ -24,6 +24,7 @@
   },
   "scripts": {
     "dev": "vite",
+    "prepare": "npm run build:lib",
     "build": "tsc -b && vite build",
     "build:lib": "vite build --config vite.lib.config.ts && tsc -p tsconfig.build.json",
     "lint": "oxlint",
