@@ -60,6 +60,22 @@ export { IconButton } from './ui/IconButton';
 export { Lightbox } from './ui/Lightbox';
 export { ListingImage } from './ui/ListingImage';
 
+/**
+ * The derivation the assembled component runs before it renders anything.
+ *
+ * `<ListingMap>` turns raw listings into the filtered, sorted set the rail
+ * shows and the dataset-ordered set the map clusters, and it keeps selection,
+ * hover and the camera in step. A consumer building their own layout needs the
+ * same work done and has no way to reproduce it — the search index alone is
+ * Turkish normalization, intent parsing and bounded fuzzy matching.
+ */
+export { useFilteredListings } from './hooks/useFilteredListings';
+export type { FilteredListings } from './hooks/useFilteredListings';
+export { useContainerSize } from './hooks/useContainerSize';
+export type { Size } from './hooks/useContainerSize';
+export { useMapSelection } from './hooks/useMapSelection';
+export { useSmartSearch } from './search/useSmartSearch';
+
 // State
 export { ListingStoreProvider, useListingStore, useListingStoreApi } from './store/ListingStoreContext';
 export { createListingStore } from './store/createListingStore';
@@ -71,6 +87,22 @@ export type { ListingState, ListingStore } from './store/createListingStore';
  */
 export { CATEGORIES, CATEGORY_LIST, getCategoryConfig } from './config/categories';
 export type { CategoryConfig } from './config/categories';
+
+/**
+ * Slots, for anyone who wants `<ListingMap>`'s layout with different contents.
+ *
+ * The prop types come with them: a replacement is a drop-in for the connected
+ * component it stands in for, so it should be typed against that component's
+ * props rather than restating them.
+ */
+export { resolveSlot } from './slots';
+export type { Slot, ListingMapSlots } from './slots';
+export type { SearchBarProps } from './search/SearchBar';
+export type { ResultsRailProps } from './list/ResultsRail';
+export type { MapControlsProps } from './controls/MapControls';
+export type { ErrorNoticeProps } from './controls/ErrorNotice';
+export type { FocusViewProps } from './detail/FocusView';
+export type { ListingDetailProps } from './detail/ListingDetail';
 
 // The types those components speak in
 export type { Listing, Category } from './types/listing';

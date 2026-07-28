@@ -3,7 +3,7 @@ import { useListingStore } from '../store/useListingStore';
 import { SearchBarView } from './SearchBarView';
 import type { BBox } from '../types/map';
 
-interface SearchBarProps {
+export interface SearchBarProps {
   onFlyTo(bbox: BBox): void;
 }
 

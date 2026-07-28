@@ -12,7 +12,11 @@ import type { MapEngine } from '../types/map';
  * the legend's treatment settles that, and it also drops the blur from three
  * layers to one.
  */
-export function MapControls({ engine }: { engine: MapEngine | null }) {
+export interface MapControlsProps {
+  engine: MapEngine | null;
+}
+
+export function MapControls({ engine }: MapControlsProps) {
   return (
     <GlassPanel className="pointer-events-auto flex flex-col gap-0.5 p-1">
       <IconButton

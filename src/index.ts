@@ -10,4 +10,7 @@ import './styles.css';
 
 export { ListingMap } from './ListingMap';
 export type { ListingMapProps } from './ListingMap';
+// So `slots` is typeable without reaching for the primitives entry. Types only:
+// the runtime surface of this entry stays exactly `ListingMap`.
+export type { ListingMapSlots, Slot } from './slots';
 export type { Listing, Category } from './types/listing';

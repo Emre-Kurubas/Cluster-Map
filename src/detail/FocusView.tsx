@@ -4,7 +4,7 @@ import { FocusViewView } from './FocusViewView';
 import type { Listing } from '../types/listing';
 import type { MapEngine } from '../types/map';
 
-interface FocusViewProps {
+export interface FocusViewProps {
   listing: Listing;
   engine: MapEngine | null;
   /** The map container's pixel size, used to decide if the pin is on screen. */

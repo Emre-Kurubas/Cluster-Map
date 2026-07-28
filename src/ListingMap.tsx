@@ -3,6 +3,7 @@ import { ListingMapView } from './ListingMapView';
 import { createListingStore } from './store/createListingStore';
 import { ListingStoreProvider } from './store/ListingStoreContext';
 import { ImageBaseUrlProvider } from './lib/imageBaseUrl';
+import type { ListingMapSlots } from './slots';
 import type { Listing } from './types/listing';
 
 export interface ListingMapProps {
@@ -19,6 +20,20 @@ export interface ListingMapProps {
   onListingSelect?(listing: Listing): void;
   /** Fired by the detail CTA. The consumer owns navigation. */
   onListingOpen?(listing: Listing): void;
+  /**
+   * What renders at each position of the chrome. `false` removes a piece, a
+   * component replaces it, an omitted key keeps the default.
+   *
+   * The layout, the responsive behaviour and focus mode stay with this
+   * component either way — a replacement is rendered where the default was and
+   * inherits all of it. Consumers wanting a different *arrangement* rather than
+   * different contents want `cluster-map/primitives` instead.
+   *
+   * Hold the components still across renders. An arrow function written inline
+   * here is a new component type every render, which remounts the slot and
+   * throws away whatever state it held.
+   */
+  slots?: ListingMapSlots;
   className?: string;
 }
 

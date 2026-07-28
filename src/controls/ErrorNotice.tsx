@@ -1,7 +1,7 @@
 import { GlassPanel } from '../ui/GlassPanel';
 import { t } from '../i18n/tr';
 
-interface ErrorNoticeProps {
+export interface ErrorNoticeProps {
   kind: 'tile' | 'webgl';
   onDismiss(): void;
 }
