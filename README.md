@@ -1,22 +1,59 @@
-# Uyap E-Satış — İlan Haritası
+# Cluster Map
 
 An interactive 2D map of İcra auction listings across Türkiye, built as a
 drop-in React component.
 
+Everything on the map is a MapLibre GL layer rather than a React marker, so
+panning and zooming cost no React renders and the frame budget does not grow
+with the listing count. Dense areas collapse into cluster pins whose outline is
+banded by category mix; clicking one expands it. Search, filtering and the
+Turkish text handling are all client-side, with no backend.
+
+The map engine is behind a code-split boundary, so importing the component does
+not pull MapLibre into your entry chunk.
+
+## Install
+
+Not published to npm. Install from the repository:
+
+```bash
+npm install github:Emre-Kurubas/Cluster-Map maplibre-gl react react-dom
+```
+
+`react`, `react-dom` and `maplibre-gl` are peer dependencies. MapLibre
+especially: it is 477 kB and ships its own worker, and two copies on one page
+fight over WebGL contexts.
+
+Consuming it from a checkout means building it first — `npm run build:lib`
+writes the package into `dist/`, which is what `exports` points at and what is
+git-ignored. See [Development](#development).
+
 ## Using the component
 
-The deliverable is `src/components/ListingMap/`. Copy that folder into the host
-project — nothing inside it imports from outside itself.
-
 ```tsx
-import { ListingMap } from './components/ListingMap';
-import type { Listing } from './components/ListingMap';
+import { ListingMap } from 'cluster-map';
+import type { Listing } from 'cluster-map';
 
 <ListingMap
   listings={listings}
   onListingOpen={(listing) => router.push(listing.detailUrl)}
 />
 ```
+
+**The stylesheet is a separate import and it is required.** Vite's library build
+extracts CSS rather than leaving it in the JS, so nothing pulls it in for you:
+
+```ts
+import 'cluster-map/styles.css';
+```
+
+Omit it and you get a working but entirely unstyled map, with no error to
+explain it. Import it once, wherever your app imports its other global CSS.
+
+Every rule in it is scoped under `.cluster-map`, the class on the
+component's root element. Nothing it ships can reach the rest of your page, and
+nothing on your page collides with it — including its copy of MapLibre's own
+stylesheet, so you do not need to import that separately either.
 
 ### Props
 
@@ -48,22 +85,167 @@ shows it, the embedding page must — for example:
 Self-hosted tiles passed via `styleUrl` carry whatever obligations their source
 data does; the same applies.
 
+## MapLibre's worker — read this before you file a bug
+
+**Symptom:** the map area is blank, and the console carries a worker parse
+error or a 404 for `maplibre-gl-worker.mjs`.
+
+MapLibre derives its worker URL at runtime, from its own module location:
+
+```js
+new URL(`./maplibre-gl-worker.mjs`, import.meta.url)
+```
+
+That template literal is dynamic, so no bundler can see it statically and none
+emits the worker. In a production build `import.meta.url` points at your hashed
+entry chunk, so the worker is requested from a directory it was never copied to.
+A dev server answers that request with SPA-fallback HTML, which a module worker
+then fails to parse.
+
+This is MapLibre's behaviour, not this package's — but because `maplibre-gl` is
+a peer dependency, resolving it is your build's job. It is the most likely cause
+of a failed first integration.
+
+For Vite, both halves are needed:
+
+```ts
+// vite.config.ts
+import { readFileSync } from 'node:fs';
+import { createRequire } from 'node:module';
+import { dirname, join } from 'node:path';
+import { defineConfig, type Plugin } from 'vite';
+
+const require = createRequire(import.meta.url);
+
+function maplibreWorkerAssets(): Plugin {
+  const FILES = ['maplibre-gl-worker.mjs', 'maplibre-gl-shared.mjs'];
+  return {
+    name: 'maplibre-worker-assets',
+    apply: 'build',
+    generateBundle() {
+      const dist = dirname(require.resolve('maplibre-gl/dist/maplibre-gl.mjs'));
+      for (const file of FILES) {
+        this.emitFile({
+          type: 'asset',
+          fileName: `assets/${file}`,
+          source: readFileSync(join(dist, file), 'utf8'),
+        });
+      }
+    },
+  };
+}
+
+export default defineConfig({
+  plugins: [maplibreWorkerAssets()],
+  // Dev counterpart: pre-bundling relocates MapLibre's entry into .vite/deps/
+  // without its worker sibling, so the same derived URL 404s.
+  optimizeDeps: { exclude: ['maplibre-gl'] },
+});
+```
+
+The shared chunk is required too — the worker imports it as a sibling. Other
+bundlers need their own equivalent: copy both files next to the chunk that
+imports MapLibre.
+
+## Theming
+
+Brand, ink, surface and category colours are CSS custom properties on the
+component's root. Redeclare any of them in your own stylesheet — no rebuild, no
+fork, no Tailwind config to import:
+
+```css
+.cluster-map {
+  --cluster-map-brand-500: #0a5ed7;
+  --cluster-map-cat-arsa:  #2f7a66;
+}
+```
+
+| Token | Default | Used for |
+|---|---|---|
+| `--cluster-map-brand-100` | `#fdf1e5` | Selected card background, focus ring |
+| `--cluster-map-brand-500` | `#f5821f` | Accents, slider thumbs, focus outlines |
+| `--cluster-map-brand-700` | `#b4560a` | Prices, primary buttons |
+| `--cluster-map-brand-900` | `#8f4408` | Primary button hover |
+| `--cluster-map-ink-300` | `#8ea0ad` | Secondary text |
+| `--cluster-map-ink-500` | `#485a6a` | Body text |
+| `--cluster-map-ink-900` | `#22313f` | Headings, cluster counts |
+| `--cluster-map-surface` | `#f2f6f9` | Behind the map canvas |
+| `--cluster-map-line` | `#e9ecf3` | Hairline rules |
+| `--cluster-map-danger` | `#ef4836` | Sale-type badge |
+| `--cluster-map-cat-gayrimenkul` | `#4f6bd1` | Category swatch |
+| `--cluster-map-cat-arsa` | `#3d9a82` | Category swatch |
+| `--cluster-map-cat-arac` | `#e0912f` | Category swatch |
+| `--cluster-map-font-sans` | `Inter, …` | All type |
+| `--cluster-map-ease-spring` | `cubic-bezier(0.22, 1, 0.36, 1)` | Most transitions |
+| `--cluster-map-ease-smooth` | `cubic-bezier(0.32, 0.08, 0.24, 1)` | Long size changes |
+
+Pin and cluster colours are drawn into sprites at runtime from
+`getCategoryConfig`, so the three `--cluster-map-cat-*` tokens restyle the chrome
+but not the pins. Keep them in step by hand.
+
+## Composing your own layout
+
+`cluster-map/primitives` exports the parts `<ListingMap>` is assembled
+from, for consumers who want a different arrangement around the same behaviour.
+
+The naming rule is one sentence: **`X` reads the surrounding store and needs a
+provider above it; `XView` is pure, takes props and renders anywhere.**
+Components that never read the store — `ListingCard`, `MapControls`,
+`CategoryDock`, and the `GlassPanel` / `Chip` / `IconButton` / `Lightbox` /
+`ListingImage` kit — have no `View` twin, because inventing one would be
+ceremony. `FocusViewView` is that rule applied consistently, not a typo.
+
+```tsx
+import {
+  ListingStoreProvider, createListingStore,
+  SearchBar, ResultsRail, MapCanvas,
+} from 'cluster-map/primitives';
+
+const [store] = useState(createListingStore);
+
+<ListingStoreProvider store={store}>
+  <MyLayout>
+    <SearchBar onFlyTo={flyTo} />
+    <ResultsRail listings={filtered} />
+    <MapCanvas listings={filtered} styleUrl={url} … />
+  </MyLayout>
+</ListingStoreProvider>
+```
+
+`createListingStore` returns one store per map. Using a `useState` initialiser
+rather than calling it inline matters: called inline it rebuilds on every render
+and throws the user's filters away.
+
+`useListingStore(selector)` reads a slice, and throws a message naming the fix
+if used outside a provider. `ListingState` is public and semver-bound. Two
+fields deserve a note:
+
+- `filters.categories` (inclusion, from the search query) and
+  `filters.hiddenCategories` (exclusion, from the legend) carry **opposite
+  polarity**. `categories: []` means "no inclusion filter", not "nothing shown".
+- `visibleIds` is rewritten on every map `idle`. Subscribe to it deliberately.
+
 ### Peer requirements
 
-React 18+ (developed against 19), Tailwind CSS v4. The `@theme` token block in
-`src/index.css` must be present in the host's stylesheet — it defines the brand,
-ink, surface and category colors every component reads.
+React 18+ (developed against 19) and `maplibre-gl` 6. **Tailwind is not
+required** — the package ships precompiled CSS.
 
 ## Development
 
 ```bash
 npm install
-npm run dev        # harness at http://localhost:5173
-npm run test       # 165 correctness tests
+npm run build:lib  # build the package into dist/ — do this first
+npm run dev        # demo at http://localhost:5173, consuming dist/
+npm run test       # correctness suite
 npm run test:perf  # 4 benchmarks, run without file parallelism
-npm run verify     # test + test:perf + build
-npm run build      # production build
+npm run verify     # test + test:perf + build:lib + build
+npm run build      # demo build
 ```
+
+The library lives in `src/` and the demo in `demo/`. The demo imports
+`cluster-map` by its published name, aliased to `dist/` — so a broken
+package build fails the demo rather than reaching a consumer. Run `build:lib`
+before `dev`, and again after changing anything under `src/`.
 
 Benchmarks are deliberately excluded from `npm run test` and run single-threaded.
 A wall-clock assertion competing with 22 other test files measures the OS
@@ -131,3 +313,15 @@ Measured on 50,000 synthetic listings (`lib/perf.test.ts`):
 | `2024 esas` | No price chip — esas numbers are not mistaken for prices |
 
 Every chip is removable, so the parser is never silently authoritative.
+
+## License
+
+MIT — see [LICENSE](LICENSE). Use it, change it, ship it in something you sell;
+just keep the copyright notice with it.
+
+The dependencies carry their own terms, and two are worth knowing about:
+`maplibre-gl` is BSD-3-Clause, and the default basemap is OpenFreeMap serving
+OpenStreetMap data under the ODbL, which requires the credit to appear on the
+page. This component deliberately renders no attribution control, so that
+obligation is yours — see
+[Attribution](#attribution--the-host-page-must-carry-it).

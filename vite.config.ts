@@ -1,9 +1,11 @@
 import { readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { defineConfig, type Plugin } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
+import { scopeComponentCss } from './build/scopeCss.ts';
 
 const require = createRequire(import.meta.url);
 
@@ -42,7 +44,24 @@ function maplibreWorkerAssets(): Plugin {
 }
 
 export default defineConfig({
-  plugins: [react(), tailwindcss(), maplibreWorkerAssets()],
+  // The demo is the app this config builds; the library it consumes lives in
+  // src/ and gets its own config in vite.lib.config.ts.
+  root: 'demo',
+  publicDir: 'public',
+  build: { outDir: '../dist-demo', emptyOutDir: true },
+  /**
+   * The demo consumes the built package by its published name, so a broken
+   * build fails the demo rather than reaching a consumer. Run `npm run
+   * build:lib` before `npm run dev`.
+   */
+  resolve: {
+    alias: {
+      'cluster-map/styles.css': fileURLToPath(new URL('./dist/styles.css', import.meta.url)),
+      'cluster-map/primitives': fileURLToPath(new URL('./dist/primitives.js', import.meta.url)),
+      'cluster-map': fileURLToPath(new URL('./dist/index.js', import.meta.url)),
+    },
+  },
+  plugins: [react(), tailwindcss(), maplibreWorkerAssets(), scopeComponentCss()],
   optimizeDeps: {
     // Dev counterpart to the plugin above: pre-bundling would relocate the
     // MapLibre entry into .vite/deps/ without its worker sibling, so the same
@@ -50,12 +69,16 @@ export default defineConfig({
     exclude: ['maplibre-gl'],
   },
   test: {
+    // The demo is the Vite root, but the tests live beside the library they
+    // exercise, so the test runner keeps the repo root.
+    root: '.',
     environment: 'jsdom',
     globals: true,
-    setupFiles: ['./src/test-setup.ts'],
+    setupFiles: ['./test-setup.ts'],
     // Vitest stubs every CSS import to an empty string, so a `?raw` read of
     // MapLibre's stylesheet came back blank and the cascade guard in
-    // MapCanvas.test.tsx passed against nothing. Let that one file through.
-    css: { include: [/maplibre-gl\.css/] },
+    // MapCanvas.test.tsx passed against nothing. Let that one through, plus our
+    // own published stylesheet, which styles.test.ts reads the same way.
+    css: { include: [/maplibre-gl\.css/, /src[\\/]styles\.css/] },
   },
 });

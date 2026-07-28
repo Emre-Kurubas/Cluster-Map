@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cluster Map</title>
+    <!--
+      App-shell sizing, inline so it stays out of the bundled stylesheet: that
+      bundle gets scoped under `.cluster-map` at build time, which would
+      turn these into selectors matching nothing and collapse the map to 0px.
+      A real consumer gives the component's parent a height however they like.
+    -->
+    <style>
+      html, body, #root { height: 100%; margin: 0; }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="./main.tsx"></script>
+  </body>
+</html>

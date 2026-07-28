@@ -1,4 +1,8 @@
 node_modules/
 dist/
+dist-demo/
 .remember/
 *.local
+
+# Raw scrape the demo dataset was derived from. Not published.
+turkiye_icra_ilanlari.json

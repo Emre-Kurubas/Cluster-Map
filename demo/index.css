@@ -1,0 +1,5 @@
+/* The demo's own markup uses Tailwind utilities, so it needs a Tailwind build
+   of its own. A real consumer needs none of this: the package ships its
+   stylesheet precompiled, and importing the component pulls it in. */
+@import "tailwindcss";
+@source "../demo";

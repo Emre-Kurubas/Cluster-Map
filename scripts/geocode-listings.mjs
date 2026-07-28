@@ -15,7 +15,7 @@
  */
 import { readFile, writeFile } from 'node:fs/promises';
 
-const FILE = new URL('../src/data/listings.json', import.meta.url);
+const FILE = new URL('../demo/data/listings.json', import.meta.url);
 const ENDPOINT = 'https://nominatim.openstreetmap.org/reverse';
 const USER_AGENT = 'uyap-esatis-map-demo/1.0 (listing address back-fill)';
 const DELAY_MS = 1100;
