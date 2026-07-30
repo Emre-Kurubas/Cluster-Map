@@ -2,12 +2,25 @@ import { describe, it, expect } from 'vitest';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import postcss from 'postcss';
-import type { Container } from 'postcss';
+import type { Container, Rule } from 'postcss';
 
 // Vitest pins `test.root` to the repo root, so cwd is the reliable anchor here;
 // `import.meta.url` does not survive its transform intact.
 const root = (path: string) => join(process.cwd(), path);
 const pkg = JSON.parse(readFileSync(root('package.json'), 'utf8'));
+
+/** At-rules that hold no element selectors — see the scoping pass. */
+const OPAQUE = /^(-\w+-)?(keyframes|font-face|property|import|charset|namespace)$/;
+
+/** Every style rule in the sheet, at whatever nesting depth. */
+function* rules(container: Container): Generator<Rule> {
+  for (const node of container.nodes ?? []) {
+    if (node.type === 'rule') yield node;
+    else if (node.type === 'atrule' && !OPAQUE.test(node.name)) yield* rules(node);
+  }
+}
+
+const stylesheet = () => postcss.parse(readFileSync(root('dist/styles.css'), 'utf8'));
 
 describe('the package manifest', () => {
   /**
@@ -106,22 +119,42 @@ describe('the built package', () => {
     expect(readFileSync(root('dist/index.d.ts'), 'utf8')).not.toContain('zustand');
   });
 
-  it.skipIf(!built)('publishes no unscoped rules', () => {
-    const opaque = /^(-\w+-)?(keyframes|font-face|property|import|charset|namespace)$/;
-    const unscoped: string[] = [];
+  /**
+   * The root element carries the scope class *and* the utilities that give the
+   * component its box — `relative h-full w-full overflow-hidden bg-surface`.
+   * Scoped as descendants those five could never match it, so the published
+   * package rendered a correct, fully working map at zero pixels tall, with
+   * nothing in any console to say why. Selector text is checked against the
+   * real element here for that reason: the broken form read perfectly.
+   */
+  it.skipIf(!built)('styles the component root, not only its descendants', () => {
+    const element = document.createElement('div');
+    element.className = 'cluster-map relative h-full w-full overflow-hidden bg-surface';
+    document.body.append(element);
 
-    const walk = (container: Container) => {
-      container.each((node) => {
-        if (node.type === 'rule') {
-          for (const selector of node.selectors) {
-            if (!selector.includes('cluster-map')) unscoped.push(selector);
-          }
-        } else if (node.type === 'atrule' && !opaque.test(node.name)) {
-          walk(node);
-        }
+    const applied = new Map<string, string>();
+    for (const rule of rules(stylesheet())) {
+      // A pseudo-element or vendor pseudo-class throws in jsdom rather than
+      // returning false; none of them style the root anyway.
+      const hits = rule.selectors.some((selector) => {
+        try { return element.matches(selector); } catch { return false; }
       });
-    };
-    walk(postcss.parse(readFileSync(root('dist/styles.css'), 'utf8')));
+      if (hits) rule.walkDecls((decl) => { applied.set(decl.prop, decl.value); });
+    }
+
+    expect(Object.fromEntries(applied)).toMatchObject({
+      position: 'relative',
+      height: '100%',
+      width: '100%',
+      overflow: 'hidden',
+    });
+    expect(applied.get('background-color')).toBeDefined();
+  });
+
+  it.skipIf(!built)('publishes no unscoped rules', () => {
+    const unscoped = [...rules(stylesheet())]
+      .flatMap((rule) => rule.selectors)
+      .filter((selector) => !selector.includes('cluster-map'));
 
     expect(unscoped, `these would leak onto a host page: ${unscoped.join(', ')}`)
       .toEqual([]);

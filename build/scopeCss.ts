@@ -8,6 +8,22 @@ import type { Plugin } from 'vite';
 export const SCOPE = '.cluster-map';
 
 /**
+ * The scope root *or* anything inside it.
+ *
+ * A plain descendant combinator — `.cluster-map .h-full` — cannot match the
+ * element against itself, and the root is both: it carries `cluster-map` and
+ * the utilities `relative h-full w-full overflow-hidden bg-surface`. Scoped
+ * that way all five were inert, so the published component rendered at zero
+ * pixels tall with its overlays positioned against the viewport, and only a
+ * consumer's own `.cluster-map { height: 100% }` override brought it back.
+ *
+ * `:is()` takes the specificity of its most specific argument, and both of
+ * these are one class — so rules keep the exact weight the descendant form gave
+ * them, and nothing in the sheet reorders.
+ */
+export const WITHIN = `:is(${SCOPE},${SCOPE} *)`;
+
+/**
  * At-rules whose contents must not be touched.
  *
  * `keyframes` holds percentage selectors, not element selectors — prefixing
@@ -15,6 +31,43 @@ export const SCOPE = '.cluster-map';
  * The rest have no selectors to scope at all.
  */
 const OPAQUE = /^(-\w+-)?(keyframes|font-face|property|import|charset|namespace)$/;
+
+/** Combinators that end the leftmost compound selector. */
+const COMBINATOR = /[\s>+~]/;
+
+/**
+ * A type or universal selector, which must stay first in its compound —
+ * `div:is(…)` is valid where `:is(…)div` is not.
+ */
+const LEADING_TYPE = /^(?:\*|[a-zA-Z][\w-]*)/;
+
+/**
+ * Split a complex selector into its leftmost compound and everything after it.
+ *
+ * Only that first compound gets the scope: once its subject is known to be
+ * inside the component, whatever descends from it is too. Parentheses, brackets
+ * and quotes are tracked because Tailwind emits both `:not(.a .b)` and escaped
+ * class names like `.w-\[calc\(100\%-1px\)\]`, either of which would otherwise
+ * be cut in half at a space or a `+`.
+ */
+function splitLeadingCompound(selector: string): [compound: string, rest: string] {
+  let depth = 0;
+  let quote = '';
+
+  for (let i = 0; i < selector.length; i++) {
+    const char = selector[i];
+    if (char === '\\') i++;
+    else if (quote) { if (char === quote) quote = ''; }
+    else if (char === '"' || char === "'") quote = char;
+    else if (char === '(' || char === '[') depth++;
+    else if (char === ')' || char === ']') depth--;
+    else if (depth === 0 && COMBINATOR.test(char)) {
+      return [selector.slice(0, i), selector.slice(i)];
+    }
+  }
+
+  return [selector, ''];
+}
 
 function scopeSelector(selector: string): string {
   const trimmed = selector.trim();
@@ -28,7 +81,10 @@ function scopeSelector(selector: string): string {
    */
   if (trimmed === ':root' || trimmed === ':host') return SCOPE;
 
-  return `${SCOPE} ${trimmed}`;
+  const [compound, rest] = splitLeadingCompound(trimmed);
+  const type = LEADING_TYPE.exec(compound)?.[0] ?? '';
+
+  return `${type}${WITHIN}${compound.slice(type.length)}${rest}`;
 }
 
 function walk(container: Container): void {
