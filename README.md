@@ -50,10 +50,12 @@ import 'cluster-map/styles.css';
 Omit it and you get a working but entirely unstyled map, with no error to
 explain it. Import it once, wherever your app imports its other global CSS.
 
-Every rule in it is scoped under `.cluster-map`, the class on the
-component's root element. Nothing it ships can reach the rest of your page, and
-nothing on your page collides with it — including its copy of MapLibre's own
-stylesheet, so you do not need to import that separately either.
+Every rule in it is scoped to `.cluster-map`, the class on the component's root
+element, and to everything inside it — the emitted selectors read
+`:is(.cluster-map, .cluster-map *)`, so the root is covered by its own scope
+rather than only its descendants. Nothing it ships can reach the rest of your
+page, and nothing on your page collides with it — including its copy of
+MapLibre's own stylesheet, so you do not need to import that separately either.
 
 ### Props
 
@@ -65,7 +67,12 @@ stylesheet, so you do not need to import that separately either.
 | `onListingOpen` | `(l: Listing) => void` | — | Detail CTA. The component never navigates |
 | `className` | `string` | `''` | Applied to the root |
 
-The root element fills its container, so give the parent a definite height.
+The root element fills its container — `height: 100%` — so the parent needs a
+definite height. Give it one in pixels, `vh`, or a grid/flex track; a parent
+left at `height: auto` collapses the component to zero pixels tall. That failure
+is silent: the component mounts, MapLibre initialises, tiles and fonts load, the
+listing count logs, and the page shows nothing. Measure the `.cluster-map`
+element first when a map does not appear.
 
 ## Choosing what renders
 
@@ -344,9 +351,15 @@ npm run build:lib  # build the package into dist/ — do this first
 npm run dev        # demo at http://localhost:5173, consuming dist/
 npm run test       # correctness suite
 npm run test:perf  # 4 benchmarks, run without file parallelism
-npm run verify     # test + test:perf + build:lib + build
+npm run verify     # build:lib + test + test:perf + build
 npm run build      # demo build
 ```
+
+`verify` builds the package before running the suite, because part of the suite
+reads `dist/` — the guards in `build/package.test.ts` that check what the
+published stylesheet and bundles actually contain skip themselves when there is
+nothing built, and a release gate that quietly skips its release checks is worth
+nothing.
 
 The library lives in `src/` and the demo in `demo/`. The demo imports
 `cluster-map` by its published name, aliased to `dist/` — so a broken
@@ -371,6 +384,12 @@ budgets meaningful and the correctness suite trustworthy.
   listings in React. The map already knows what it drew.
 - **Search is fully client-side** — Turkish normalization, intent parsing and
   bounded fuzzy matching, with no backend.
+- **The stylesheet is scoped after the build, in `build/scopeCss.ts`.** Every
+  selector is rewritten to `:is(.cluster-map, .cluster-map *)`, which includes
+  the root element; the descendant form it replaced could not match the root
+  against itself, and the root is the element that carries both the scope class
+  and the utilities sizing the component. `:is()` takes the specificity of its
+  most specific argument, so no rule changes weight.
 
 ### Turkish text handling
 

@@ -2,7 +2,14 @@
   "compilerOptions": {
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo",
     "target": "es2023",
-    "lib": ["ES2023"],
+    /**
+     * DOM for the tests only: `scopeCss.test.ts` asserts on which elements the
+     * scoped selectors actually pick up, through jsdom, because selector text
+     * that reads correctly and matches nothing is exactly how the root element
+     * lost its own styles once already. Nothing this project builds runs in a
+     * browser.
+     */
+    "lib": ["ES2023", "DOM"],
     "types": ["node"],
     "skipLibCheck": true,
 
